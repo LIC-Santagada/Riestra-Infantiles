@@ -21,7 +21,12 @@
         {
             "id": "2014",
             "nombre": "Categoría 2014",
-            "excels": [],
+            "excels": [
+                {
+                    "nombre":  "Mediciones y evoluciones Junio 2025",
+                    "archivo": "Valores_2014_evolución.xlsx"
+                }
+            ],
             "informes": []
         },
         {
