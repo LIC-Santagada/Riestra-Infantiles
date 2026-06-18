@@ -1,7 +1,7 @@
 {
     "nombre":       "Infantiles Riestra",
     "creador":      "Lic. Leandro Santagada",
-    "actualizado":  "Junio 2025",
+    "actualizado":  "Junio 2026",
 
     "passwordHash": "fa723a05ecf28b0ce8bc03b306b2113c9b31287408d5b163069d7a097f834104",
 
@@ -24,7 +24,7 @@
             "excels": [
                 {
                     "nombre":  "Mediciones y evoluciones Junio 2025",
-                    "archivo": "Valores_2014_evolución.xlsx"
+                    "archivo": "valores_2014_evolucion.xlsx"
                 }
             ],
             "informes": []
