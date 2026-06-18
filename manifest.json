@@ -15,7 +15,12 @@
         {
             "id": "2013",
             "nombre": "Categoría 2013",
-            "excels": [],
+            "excels": [
+                {
+                    "nombre":  "Mediciones y evoluciones Junio 2025",
+                    "archivo": "mediciones_Infantiles_2013.xlsx"
+                }
+            ],
             "informes": []
         },
         {
