@@ -1,0 +1,40 @@
+{
+    "nombre":       "Infantiles Riestra",
+    "creador":      "Lic. Leandro Santagada",
+    "actualizado":  "Junio 2025",
+
+    "passwordHash": "fa723a05ecf28b0ce8bc03b306b2113c9b31287408d5b163069d7a097f834104",
+
+    "logros": [
+        { "valor": "120", "label": "Mediciones realizadas" },
+        { "valor": "45",  "label": "Jugadores evaluados" },
+        { "valor": "4",   "label": "Categorías activas" }
+    ],
+
+    "categorias": [
+        {
+            "id": "2013",
+            "nombre": "Categoría 2013",
+            "excels": [],
+            "informes": []
+        },
+        {
+            "id": "2014",
+            "nombre": "Categoría 2014",
+            "excels": [],
+            "informes": []
+        },
+        {
+            "id": "2015",
+            "nombre": "Categoría 2015",
+            "excels": [],
+            "informes": []
+        },
+        {
+            "id": "2016",
+            "nombre": "Categoría 2016",
+            "excels": [],
+            "informes": []
+        }
+    ]
+}

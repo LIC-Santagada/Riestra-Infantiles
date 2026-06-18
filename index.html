@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infantiles Riestra</title>
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --c1:#CAD2C5; --c2:#84A98C; --c3:#52796F; --c4:#354F52; --c5:#2F3E46;
+  --ink:#2F3E46; --ink-soft:#52796F;
+  --bg:#F7F8F6; --card:#FFFFFF; --border:#E2E7E2;
+  --text:#2A3530; --text-2:#6B7B72; --text-3:#9FACA3;
+  --err-bg:#FBEAE9; --err-text:#9A3B34; --err-border:#E8C4C0;
+  --r:8px;
+  --serif:'Fraunces',Georgia,serif;
+  --sans:'Inter',system-ui,-apple-system,sans-serif;
+}
+
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;
+  display:flex;flex-direction:column;font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+
+/* ── LOGIN ─────────────────────────────────── */
+#loginOverlay{position:fixed;inset:0;background:var(--ink);display:flex;align-items:center;
+  justify-content:center;z-index:9999;padding:24px}
+
+.login-card{width:100%;max-width:400px;background:#fff;border-radius:14px;padding:48px 40px 40px;
+  box-shadow:0 30px 90px rgba(0,0,0,.35);text-align:center}
+
+.login-logo{width:84px;height:84px;object-fit:contain;margin:0 auto 20px}
+.login-title{font-family:var(--serif);font-size:25px;font-weight:600;color:var(--ink);
+  letter-spacing:-.3px;margin-bottom:6px}
+.login-author{font-size:12.5px;color:var(--text-3);font-style:italic;margin-bottom:30px}
+
+.login-label{display:block;font-size:11px;font-weight:600;color:var(--text-2);
+  text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;text-align:left}
+
+.login-input-wrap{position:relative;margin-bottom:14px}
+.login-input{width:100%;padding:12px 44px 12px 14px;background:var(--bg);
+  border:1.5px solid var(--border);border-radius:7px;color:var(--ink);
+  font-family:var(--sans);font-size:15px;outline:none;transition:border-color .15s,box-shadow .15s}
+.login-input:focus{border-color:var(--c3);box-shadow:0 0 0 3px rgba(82,121,111,.13)}
+.login-input::placeholder{color:var(--text-3)}
+
+.toggle-pass{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;
+  border:none;color:var(--text-3);cursor:pointer;padding:4px;line-height:0}
+.toggle-pass:hover{color:var(--text-2)}
+
+.login-error{display:none;background:var(--err-bg);border:1px solid var(--err-border);
+  border-radius:7px;padding:10px 14px;font-size:12.5px;color:var(--err-text);
+  margin-bottom:14px;text-align:left}
+.login-error.visible{display:block}
+
+.login-btn{width:100%;padding:13px;background:var(--c4);color:#fff;border:none;border-radius:7px;
+  font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;
+  letter-spacing:.2px;transition:background .15s}
+.login-btn:hover{background:var(--c5)}
+.login-btn:disabled{opacity:.55;cursor:not-allowed}
+
+.login-spinner{display:none;width:17px;height:17px;border:2px solid rgba(255,255,255,.35);
+  border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+
+/* ── HEADER ────────────────────────────────── */
+.header{background:var(--ink);padding:18px 28px;flex-shrink:0;position:sticky;top:0;z-index:200}
+.header-inner{display:flex;align-items:center;justify-content:space-between;max-width:1180px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:14px}
+.brand-logo{width:38px;height:38px;object-fit:contain;flex-shrink:0}
+.brand-text-h{font-family:var(--serif);font-size:18px;font-weight:600;color:#fff;letter-spacing:-.2px;line-height:1.2}
+.brand-text-s{font-size:11px;color:rgba(255,255,255,.4);font-style:italic;margin-top:1px}
+.logout-btn{padding:7px 16px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);
+  border-radius:6px;color:rgba(255,255,255,.65);font-family:var(--sans);font-size:12px;font-weight:500;
+  cursor:pointer;transition:background .15s,color .15s;white-space:nowrap}
+.logout-btn:hover{background:rgba(255,255,255,.13);color:#fff}
+
+/* ── TABS ──────────────────────────────────── */
+.tabs-nav{background:#fff;border-bottom:1.5px solid var(--border);position:sticky;top:74px;z-index:190}
+.tabs-nav-inner{display:flex;gap:4px;max-width:1180px;margin:0 auto;padding:0 28px;
+  overflow-x:auto;scrollbar-width:none}
+.tabs-nav-inner::-webkit-scrollbar{display:none}
+.top-tab{padding:15px 18px;font-family:var(--sans);font-size:13.5px;font-weight:600;color:var(--text-3);
+  background:none;border:none;border-bottom:2.5px solid transparent;cursor:pointer;white-space:nowrap;
+  transition:color .15s,border-color .15s}
+.top-tab:hover{color:var(--text)}
+.top-tab.active{color:var(--c4);border-bottom-color:var(--c3)}
+
+/* ── MAIN ──────────────────────────────────── */
+.main{flex:1;max-width:1180px;width:100%;margin:0 auto;padding:36px 28px 64px}
+
+/* ── HOME ──────────────────────────────────── */
+.home-hero{text-align:center;padding:36px 20px 44px;border-bottom:1px solid var(--border);margin-bottom:40px}
+.home-hero img{width:96px;height:96px;object-fit:contain;margin:0 auto 18px}
+.home-hero h1{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--ink);letter-spacing:-.5px}
+.home-hero p{font-size:13.5px;color:var(--text-3);font-style:italic;margin-top:6px}
+
+.logros-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:18px;margin-bottom:48px}
+.logro-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:26px 20px;text-align:center}
+.logro-valor{font-family:var(--serif);font-size:36px;font-weight:700;color:var(--c4);letter-spacing:-1px}
+.logro-label{font-size:12.5px;color:var(--text-2);margin-top:4px;font-weight:500}
+
+.cats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.cat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  padding:22px;cursor:pointer;transition:border-color .15s,transform .12s}
+.cat-card:hover{border-color:var(--c2);transform:translateY(-2px)}
+.cat-card-title{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink)}
+.cat-card-meta{font-size:12px;color:var(--text-3);margin-top:5px}
+
+.section-label{font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;
+  letter-spacing:1px;margin-bottom:16px}
+
+/* ── CATEGORY VIEW ─────────────────────────── */
+.cat-header{margin-bottom:24px}
+.cat-header h2{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--ink);letter-spacing:-.3px}
+
+.chip-groups{display:flex;flex-direction:column;gap:18px;margin-bottom:28px}
+.chip-group-label{font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;
+  letter-spacing:.8px;margin-bottom:9px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:8px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:20px;
+  font-family:var(--sans);font-size:13px;font-weight:500;color:var(--text-2);cursor:pointer;
+  transition:all .15s}
+.chip:hover{border-color:var(--c2);color:var(--text)}
+.chip.active{background:var(--c4);border-color:var(--c4);color:#fff}
+.chip-empty{font-size:12.5px;color:var(--text-3);font-style:italic}
+
+/* ── CONTENT VIEWER ────────────────────────── */
+.viewer-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:12px}
+.viewer-title{font-family:var(--serif);font-size:19px;font-weight:600;color:var(--ink);letter-spacing:-.2px}
+.viewer-sub{font-size:12.5px;color:var(--text-3);margin-top:3px}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:20px;
+  font-size:11.5px;font-weight:700;letter-spacing:.3px;flex-shrink:0;text-transform:uppercase}
+.badge-xl{background:#EAF1EC;color:var(--c4)}
+.badge-pdf{background:#F3EFE6;color:#7A5C2E}
+
+.tabs-bar{display:flex;gap:2px;border-bottom:1.5px solid var(--border);margin-bottom:18px}
+.sheet-tab{padding:8px 16px;font-family:var(--sans);font-size:12.5px;font-weight:500;color:var(--text-2);
+  background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1.5px;cursor:pointer}
+.sheet-tab:hover{color:var(--text)}
+.sheet-tab.active{color:var(--c4);border-bottom-color:var(--c3);font-weight:600}
+
+.toolbar{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;max-width:300px}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-3)}
+.search-input{width:100%;padding:8px 12px 8px 34px;border:1.5px solid var(--border);border-radius:7px;
+  font-family:var(--sans);font-size:13px;color:var(--text);background:var(--card);outline:none;
+  transition:border-color .15s}
+.search-input:focus{border-color:var(--c3)}
+.row-count{font-size:12px;color:var(--text-3);font-weight:500;white-space:nowrap}
+
+.table-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+thead th{background:var(--c5);color:rgba(255,255,255,.85);padding:11px 16px;text-align:left;
+  font-size:11.5px;font-weight:600;letter-spacing:.3px;white-space:nowrap;cursor:pointer;
+  user-select:none;position:sticky;top:0;text-transform:uppercase}
+thead th:hover{background:var(--c4)}
+thead th.sort-asc::after{content:" ↑";color:var(--c2)}
+thead th.sort-desc::after{content:" ↓";color:var(--c2)}
+tbody tr{border-bottom:1px solid var(--border)}
+tbody tr:last-child{border-bottom:none}
+tbody tr:nth-child(even){background:#FAFBFA}
+tbody tr:hover{background:#F0F4F1}
+tbody td{padding:10px 16px;white-space:nowrap}
+tbody td:first-child{font-weight:600;color:var(--ink)}
+.no-rows{text-align:center;padding:48px 20px;color:var(--text-3)}
+
+/* ── PDF VIEWER (custom, pdf.js) ───────────── */
+.pdf-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.pdf-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px 16px;background:var(--c5);flex-wrap:wrap}
+.pdf-toolbar-group{display:flex;align-items:center;gap:6px}
+.pdf-btn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:6px;
+  color:#fff;cursor:pointer;font-size:14px;transition:background .15s}
+.pdf-btn:hover{background:rgba(255,255,255,.18)}
+.pdf-btn:disabled{opacity:.3;cursor:not-allowed}
+.pdf-page-info{color:rgba(255,255,255,.8);font-size:12.5px;font-weight:500;min-width:64px;text-align:center}
+.pdf-link{color:rgba(255,255,255,.55);font-size:12px;text-decoration:none;font-weight:500}
+.pdf-link:hover{color:#fff}
+.pdf-canvas-area{background:#E8EAE6;padding:24px;display:flex;flex-direction:column;align-items:center;
+  gap:16px;max-height:calc(100vh - 280px);overflow-y:auto}
+.pdf-canvas-area canvas{box-shadow:0 4px 20px rgba(0,0,0,.15);max-width:100%;height:auto}
+.pdf-loading{padding:60px 20px;text-align:center;color:var(--text-3)}
+
+/* ── LOADING / ERROR ───────────────────────── */
+.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:70px 20px;gap:14px;color:var(--text-3)}
+.spinner{width:30px;height:30px;border:3px solid var(--border);border-top-color:var(--c3);
+  border-radius:50%;animation:spin .75s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.error-card{background:var(--err-bg);border:1px solid var(--err-border);border-radius:8px;
+  padding:20px 24px;color:var(--err-text);font-size:13.5px;line-height:1.6}
+
+@media (max-width:760px){
+  .header{padding:14px 18px}
+  .tabs-nav{top:66px}
+  .tabs-nav-inner{padding:0 18px}
+  .main{padding:24px 18px 48px}
+  .home-hero h1{font-size:26px}
+  .viewer-header{flex-direction:column}
+  .login-card{padding:38px 26px 32px}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginOverlay">
+  <div class="login-card">
+    <img class="login-logo" src="logo.png" alt="Escudo">
+    <div class="login-title" id="loginTitle">Infantiles Riestra</div>
+    <div class="login-author" id="loginAuthor">Creado por Lic. Leandro Santagada</div>
+
+    <label class="login-label" for="passInput">Contraseña</label>
+    <div class="login-input-wrap">
+      <input type="password" id="passInput" class="login-input" placeholder="Ingresá la contraseña"
+        autocomplete="current-password" onkeydown="if(event.key==='Enter') submitLogin()">
+      <button class="toggle-pass" type="button" onclick="togglePass()">
+        <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="login-error" id="loginError">Contraseña incorrecta. Intentá de nuevo.</div>
+
+    <button class="login-btn" id="loginBtn" onclick="submitLogin()">
+      <span id="loginBtnText">Ingresar</span>
+      <div class="login-spinner" id="loginSpinner"></div>
+    </button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <img class="brand-logo" src="logo.png" alt="Escudo">
+      <div>
+        <div class="brand-text-h" id="brandTitle">Infantiles Riestra</div>
+        <div class="brand-text-s" id="brandSub">Creado por Lic. Leandro Santagada</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+  </div>
+</header>
+
+<!-- TOP TABS -->
+<nav class="tabs-nav">
+  <div class="tabs-nav-inner" id="topTabs"></div>
+</nav>
+
+<!-- MAIN -->
+<main class="main" id="main"></main>
+
+<script>
+let manifest=null, activeData=[], sortState={col:-1,dir:'asc'}, sheets={}, activeFile=null, sheetNames=[];
+let currentCatId=null, currentChip=null;
+let pdfDoc=null, pdfScale=1.1, pdfPagesRendered=0;
+const SESSION_KEY='portal_auth_v1';
+
+async function sha256(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));
+  return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')}
+
+async function submitLogin(){
+  const input=document.getElementById('passInput').value; if(!input) return;
+  const btn=document.getElementById('loginBtn'),sp=document.getElementById('loginSpinner'),
+    bt=document.getElementById('loginBtnText'),err=document.getElementById('loginError');
+  btn.disabled=true; sp.style.display='block'; bt.style.display='none'; err.classList.remove('visible');
+  try{
+    const r=await fetch('manifest.json?_='+Date.now()); const m=await r.json();
+    const hash=await sha256(input);
+    if(hash===m.passwordHash){
+      sessionStorage.setItem(SESSION_KEY,'ok');
+      document.getElementById('loginOverlay').style.display='none';
+      initApp(m);
+    } else {
+      err.classList.add('visible');
+      document.getElementById('passInput').value=''; document.getElementById('passInput').focus();
+    }
+  } catch(e){ err.textContent='Error al conectar.'; err.classList.add('visible'); }
+  btn.disabled=false; sp.style.display='none'; bt.style.display='inline';
+}
+
+function togglePass(){
+  const i=document.getElementById('passInput'); const isPass=i.type==='password';
+  i.type=isPass?'text':'password';
+  document.getElementById('eyeIcon').innerHTML=isPass
+    ? `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`
+    : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+}
+
+function logout(){ if(!confirm('¿Cerrar sesión?')) return; sessionStorage.removeItem(SESSION_KEY); location.reload(); }
+
+async function checkSession(){
+  try{
+    const r=await fetch('manifest.json?_='+Date.now()); const m=await r.json();
+    document.getElementById('loginTitle').textContent=m.nombre||'Portal';
+    document.getElementById('loginAuthor').textContent=m.creador?('Creado por '+m.creador):'';
+    if(sessionStorage.getItem(SESSION_KEY)==='ok'){
+      document.getElementById('loginOverlay').style.display='none';
+      initApp(m);
+    }
+  }catch(e){}
+}
+
+function initApp(m){
+  manifest=m;
+  document.getElementById('brandTitle').textContent=m.nombre||'Portal';
+  document.getElementById('brandSub').textContent=m.creador?('Creado por '+m.creador):'';
+  document.title=m.nombre||'Portal';
+  buildTopTabs();
+  showHome();
+}
+
+function buildTopTabs(){
+  const wrap=document.getElementById('topTabs');
+  let html=`<button class="top-tab active" id="tab-home" onclick="showHome()">Inicio</button>`;
+  manifest.categorias.forEach(c=>{
+    html+=`<button class="top-tab" id="tab-${c.id}" onclick="showCategory('${c.id}')">${c.nombre}</button>`;
+  });
+  wrap.innerHTML=html;
+}
+
+function setActiveTab(id){
+  document.querySelectorAll('.top-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id)?.classList.add('active');
+}
+
+// ── HOME ──────────────────────────────────────
+function showHome(){
+  setActiveTab('home');
+  const logros = computeLogros();
+  let html = `
+    <div class="home-hero">
+      <img src="logo.png" alt="Escudo">
+      <h1>${manifest.nombre}</h1>
+      <p>${manifest.creador ? 'Creado por '+manifest.creador : ''}</p>
+    </div>
+    <div class="section-label">Resultados destacados</div>
+    <div class="logros-grid">
+      ${logros.map(l=>`<div class="logro-card"><div class="logro-valor">${l.valor}</div><div class="logro-label">${l.label}</div></div>`).join('')}
+    </div>
+    <div class="section-label">Categorías</div>
+    <div class="cats-grid">
+      ${manifest.categorias.map(c=>`
+        <div class="cat-card" onclick="showCategory('${c.id}')">
+          <div class="cat-card-title">${c.nombre}</div>
+          <div class="cat-card-meta">${c.excels.length} mediciones · ${c.informes.length} informes</div>
+        </div>`).join('')}
+    </div>`;
+  document.getElementById('main').innerHTML = html;
+}
+
+function computeLogros(){
+  // Si el manifest trae logros manuales, se usan tal cual.
+  if (manifest.logros && manifest.logros.length) return manifest.logros;
+  return [{valor:'—', label:'Sin datos cargados'}];
+}
+
+// ── CATEGORY VIEW ─────────────────────────────
+function showCategory(catId){
+  setActiveTab(catId);
+  currentCatId = catId;
+  const cat = manifest.categorias.find(c => c.id === catId);
+
+  let chipsExcel = cat.excels.length
+    ? cat.excels.map((f,i)=>`<button class="chip" id="chip-x-${i}" onclick="openExcel('${catId}',${i})">${f.nombre}</button>`).join('')
+    : `<span class="chip-empty">Sin mediciones cargadas en esta categoría</span>`;
+
+  let chipsPdf = cat.informes.length
+    ? cat.informes.map((f,i)=>`<button class="chip" id="chip-p-${i}" onclick="openPDF('${catId}',${i})">${f.nombre}</button>`).join('')
+    : `<span class="chip-empty">Sin informes cargados en esta categoría</span>`;
+
+  document.getElementById('main').innerHTML = `
+    <div class="cat-header"><h2>${cat.nombre}</h2></div>
+    <div class="chip-groups">
+      <div>
+        <div class="chip-group-label">📊 Mediciones (Excel)</div>
+        <div class="chips">${chipsExcel}</div>
+      </div>
+      <div>
+        <div class="chip-group-label">📄 Informes (PDF)</div>
+        <div class="chips">${chipsPdf}</div>
+      </div>
+    </div>
+    <div id="viewerArea"></div>`;
+}
+
+function setChipActive(id){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  document.getElementById(id)?.classList.add('active');
+}
+
+// ── EXCEL ─────────────────────────────────────
+async function openExcel(catId, idx){
+  const cat = manifest.categorias.find(c=>c.id===catId);
+  const file = cat.excels[idx];
+  setChipActive(`chip-x-${idx}`);
+  setViewer(`<div class="loading-state"><div class="spinner"></div><div>Cargando ${file.nombre}…</div></div>`);
+
+  try{
+    const r = await fetch(`archivos/${catId}/excel/${file.archivo}?_=${Date.now()}`);
+    if(!r.ok) throw new Error(`Archivo no encontrado: ${file.archivo}`);
+    const buf = await r.arrayBuffer();
+    const wb = XLSX.read(buf,{type:'array',cellDates:true});
+    sheets={};
+    wb.SheetNames.forEach(name=>{
+      const data = XLSX.utils.sheet_to_json(wb.Sheets[name],{defval:''});
+      if(data.length) sheets[name]=data;
+    });
+    const names=Object.keys(sheets);
+    if(!names.length) throw new Error('El archivo no tiene datos tabulares.');
+    activeFile=file; sheetNames=names;
+    renderExcel(names[0]);
+  }catch(err){ showViewerError(err.message); }
+}
+
+function renderExcel(activeSheet){
+  const data=sheets[activeSheet]||[]; activeData=data; sortState={col:-1,dir:'asc'};
+  const cols=data.length?Object.keys(data[0]):[];
+  const tabsHTML = sheetNames.length>1
+    ? `<div class="tabs-bar">${sheetNames.map(n=>`<button class="sheet-tab${n===activeSheet?' active':''}" onclick="renderExcel('${n.replace(/'/g,"\\'")}')">${n}</button>`).join('')}</div>`
+    : '';
+  setViewer(`
+    <div class="viewer-header">
+      <div><div class="viewer-title">${activeFile.nombre}</div>
+        <div class="viewer-sub">${activeSheet} · ${data.length} registros</div></div>
+      <span class="badge badge-xl">Excel</span>
+    </div>
+    ${tabsHTML}
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="Buscar…" oninput="filterTable()">
+      </div>
+      <span class="row-count" id="rowCount">${data.length} registros</span>
+    </div>
+    <div class="table-card"><table>
+      <thead><tr>${cols.map((c,i)=>`<th onclick="sortTable(${i},'${c.replace(/'/g,"\\'")}')">${c}</th>`).join('')}</tr></thead>
+      <tbody id="tbody">${buildRows(data,cols)}</tbody>
+    </table></div>`);
+}
+
+function buildRows(data,cols){
+  if(!data.length) return `<tr><td class="no-rows" colspan="${cols.length||1}">Sin resultados</td></tr>`;
+  return data.map(row=>`<tr>${cols.map(c=>`<td>${row[c]??''}</td>`).join('')}</tr>`).join('');
+}
+
+function filterTable(){
+  const q=document.getElementById('searchInput').value.toLowerCase().trim();
+  const cols=activeData.length?Object.keys(activeData[0]):[];
+  const out=q?activeData.filter(r=>Object.values(r).some(v=>String(v).toLowerCase().includes(q))):activeData;
+  document.getElementById('tbody').innerHTML=buildRows(out,cols);
+  document.getElementById('rowCount').textContent=`${out.length} registros`;
+}
+
+function sortTable(colIdx,colName){
+  document.querySelectorAll('thead th').forEach(t=>t.classList.remove('sort-asc','sort-desc'));
+  sortState.dir = sortState.col===colIdx ? (sortState.dir==='asc'?'desc':'asc') : 'asc';
+  sortState.col=colIdx;
+  document.querySelectorAll('thead th')[colIdx].classList.add(`sort-${sortState.dir}`);
+  const cols=activeData.length?Object.keys(activeData[0]):[];
+  activeData=[...activeData].sort((a,b)=>{
+    const va=a[colName],vb=b[colName]; const na=parseFloat(va),nb=parseFloat(vb);
+    if(!isNaN(na)&&!isNaN(nb)) return sortState.dir==='asc'?na-nb:nb-na;
+    return sortState.dir==='asc' ? String(va).localeCompare(String(vb),'es') : String(vb).localeCompare(String(va),'es');
+  });
+  const q=document.getElementById('searchInput')?.value.toLowerCase().trim()||'';
+  const out=q?activeData.filter(r=>Object.values(r).some(v=>String(v).toLowerCase().includes(q))):activeData;
+  document.getElementById('tbody').innerHTML=buildRows(out,cols);
+  document.getElementById('rowCount').textContent=`${out.length} registros`;
+}
+
+// ── PDF (visor propio con pdf.js, sin barra de Chrome) ──
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+async function openPDF(catId, idx){
+  const cat = manifest.categorias.find(c=>c.id===catId);
+  const file = cat.informes[idx];
+  setChipActive(`chip-p-${idx}`);
+  const url = `archivos/${catId}/informes/${file.archivo}`;
+
+  setViewer(`
+    <div class="viewer-header">
+      <div><div class="viewer-title">${file.nombre}</div><div class="viewer-sub">${file.fecha||''}</div></div>
+      <span class="badge badge-pdf">PDF</span>
+    </div>
+    <div class="pdf-card">
+      <div class="pdf-toolbar">
+        <div class="pdf-toolbar-group">
+          <button class="pdf-btn" onclick="pdfZoom(-0.15)" title="Alejar">−</button>
+          <button class="pdf-btn" onclick="pdfZoom(0.15)" title="Acercar">+</button>
+        </div>
+        <span class="pdf-page-info" id="pdfPageInfo">Cargando…</span>
+        <a class="pdf-link" href="${url}" target="_blank">Abrir original ↗</a>
+      </div>
+      <div class="pdf-canvas-area" id="pdfCanvasArea">
+        <div class="pdf-loading">Cargando informe…</div>
+      </div>
+    </div>`);
+
+  try{
+    pdfDoc = await pdfjsLib.getDocument(url).promise;
+    pdfScale = 1.1;
+    await renderAllPdfPages();
+  }catch(err){
+    document.getElementById('pdfCanvasArea').innerHTML =
+      `<div class="error-card">No se pudo cargar el PDF.<br><span style="font-size:11.5px;opacity:.7">${err.message}</span></div>`;
+  }
+}
+
+async function renderAllPdfPages(){
+  const area = document.getElementById('pdfCanvasArea');
+  area.innerHTML = '';
+  document.getElementById('pdfPageInfo').textContent = `${pdfDoc.numPages} página${pdfDoc.numPages>1?'s':''}`;
+
+  for(let n=1; n<=pdfDoc.numPages; n++){
+    const page = await pdfDoc.getPage(n);
+    const viewport = page.getViewport({ scale: pdfScale });
+    const canvas = document.createElement('canvas');
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    const ctx = canvas.getContext('2d');
+    await page.render({ canvasContext: ctx, viewport }).promise;
+    area.appendChild(canvas);
+  }
+}
+
+function pdfZoom(delta){
+  if(!pdfDoc) return;
+  pdfScale = Math.min(2.4, Math.max(0.5, pdfScale + delta));
+  renderAllPdfPages();
+}
+
+// ── HELPERS ───────────────────────────────────
+function setViewer(html){
+  const v = document.getElementById('viewerArea');
+  if(v){ v.innerHTML = html; } else { document.getElementById('main').innerHTML = html; }
+}
+function showViewerError(msg){
+  setViewer(`<div class="error-card"><strong>No se pudo cargar el archivo.</strong><br>${msg}</div>`);
+}
+
+checkSession();
+</script>
+</body>
+</html>
