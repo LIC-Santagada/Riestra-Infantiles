@@ -131,6 +131,23 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 .legend-val{margin-left:auto;font-weight:600;color:var(--ink)}
 
+/* ── EVOLUCIÓN (tarjetas + barras agrupadas) ── */
+.evolucion-block{margin-bottom:36px}
+.stat-cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:16px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px}
+.stat-card-label{font-size:12px;color:var(--text-3);margin-bottom:9px;line-height:1.3}
+.stat-card-value{font-family:var(--serif);font-size:23px;font-weight:700;color:var(--ink);letter-spacing:-.3px}
+.stat-card-value.good{color:#52796F}
+.stat-card-value.warn{color:#B5604A}
+.stat-card-sub{font-size:11.5px;color:var(--text-3);margin-top:4px}
+.evolucion-chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px}
+.evolucion-chart-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ink);margin-bottom:4px}
+.evolucion-legend-top{display:flex;gap:18px;margin-bottom:16px}
+.evolucion-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-2)}
+.evolucion-legend-dot{width:10px;height:10px;border-radius:3px}
+.evolucion-scroll{overflow-x:auto}
+.evolucion-canvas-wrap{height:320px;position:relative}
+
 .chip-groups{display:flex;flex-direction:column;gap:18px;margin-bottom:28px}
 .chip-group-label{font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;
   letter-spacing:.8px;margin-bottom:9px}
@@ -391,12 +408,21 @@ function showCategory(catId){
     ? cat.informes.map((f,i)=>`<button class="chip" id="chip-p-${i}" onclick="openPDF('${catId}',${i})">${f.nombre}</button>`).join('')
     : `<span class="chip-empty">Sin informes cargados en esta categoría</span>`;
 
-  const indicadoresHTML = (cat.indicadores && cat.indicadores.length)
-    ? `<div class="indicadores-wrap">
-         <div class="section-label">Indicadores</div>
-         <div class="indicadores-grid" id="indicadoresGrid"></div>
-       </div>`
-    : '';
+  const todosIndicadores = cat.indicadores || [];
+  const miniIndicadores  = todosIndicadores.filter(i => i.tipo !== 'evolucion');
+  const evolIndicadores  = todosIndicadores.filter(i => i.tipo === 'evolucion');
+
+  let indicadoresHTML = '';
+  if (evolIndicadores.length) {
+    indicadoresHTML += evolIndicadores.map((ind,i) => `<div class="evolucion-block" id="evol-${i}"></div>`).join('');
+  }
+  if (miniIndicadores.length) {
+    indicadoresHTML += `
+      <div class="indicadores-wrap">
+        <div class="section-label">Indicadores</div>
+        <div class="indicadores-grid" id="indicadoresGrid"></div>
+      </div>`;
+  }
 
   document.getElementById('main').innerHTML = `
     <div class="cat-header"><h2>${cat.nombre}</h2></div>
@@ -413,7 +439,8 @@ function showCategory(catId){
     </div>
     <div id="viewerArea"></div>`;
 
-  if (cat.indicadores && cat.indicadores.length) renderIndicadores(cat.indicadores);
+  if (miniIndicadores.length) renderIndicadores(miniIndicadores);
+  evolIndicadores.forEach((ind,i) => renderEvolucion(ind, i));
 }
 
 // Paleta tierra para gráficos: verde salvia / ocre / terracota
@@ -450,6 +477,90 @@ function renderIndicadores(indicadores){
         <span>${d.etiqueta}</span>
         <span class="legend-val">${d.valor}/${total}</span>
       </div>`).join('');
+  });
+}
+
+// ── EVOLUCIÓN: tarjetas automáticas + barras agrupadas ──
+function renderEvolucion(ind, idx){
+  const p1 = ind.jugadores.map(j => j.p1);
+  const p2 = ind.jugadores.map(j => j.p2);
+  const total = ind.jugadores.length;
+  const avg1 = p1.reduce((a,b)=>a+b,0) / total;
+  const avg2 = p2.reduce((a,b)=>a+b,0) / total;
+  const mejora = avg2 - avg1;
+  const mejoraPct = (mejora / avg1) * 100;
+
+  const uOpt = ind.umbral_optimo, uEle = ind.umbral_elevado;
+  const zona = v => v <= uOpt ? 'Zona óptima' : v > uEle ? 'Zona elevada' : 'Zona aceptable';
+
+  const opt1 = p1.filter(v => v <= uOpt).length, opt2 = p2.filter(v => v <= uOpt).length;
+  const ele1 = p1.filter(v => v > uEle).length,  ele2 = p2.filter(v => v > uEle).length;
+
+  const mejoraClass = mejora <= 0 ? 'good' : 'warn';
+  const mejoraSigno = mejora > 0 ? '+' : '';
+
+  const cardsHTML = `
+    <div class="stat-cards-grid">
+      <div class="stat-card">
+        <div class="stat-card-label">Promedio ${ind.unidad||''} ${ind.periodo1_label}</div>
+        <div class="stat-card-value">${avg1.toFixed(1)} ${ind.unidad||''}</div>
+        <div class="stat-card-sub">${zona(avg1)}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Promedio ${ind.unidad||''} ${ind.periodo2_label}</div>
+        <div class="stat-card-value">${avg2.toFixed(1)} ${ind.unidad||''}</div>
+        <div class="stat-card-sub">${zona(avg2)}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">Mejora promedio</div>
+        <div class="stat-card-value ${mejoraClass}">${mejoraSigno}${mejora.toFixed(1)} ${ind.unidad||''}</div>
+        <div class="stat-card-sub">${mejoraSigno}${mejoraPct.toFixed(0)}%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">En zona óptima (≤${uOpt})</div>
+        <div class="stat-card-value">${opt2} / ${total}</div>
+        <div class="stat-card-sub">vs ${opt1} en ${ind.periodo1_label}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-label">En zona elevada (&gt;${uEle})</div>
+        <div class="stat-card-value">${ele2} / ${total}</div>
+        <div class="stat-card-sub">vs ${ele1} en ${ind.periodo1_label}</div>
+      </div>
+    </div>`;
+
+  const chartHTML = `
+    <div class="evolucion-chart-card">
+      <div class="evolucion-chart-title">${ind.titulo}</div>
+      <div class="evolucion-legend-top">
+        <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:#B5604A"></span>${ind.periodo1_label}</div>
+        <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:#52796F"></span>${ind.periodo2_label}</div>
+      </div>
+      <div class="evolucion-scroll">
+        <div class="evolucion-canvas-wrap" style="min-width:${Math.max(600, total*32)}px">
+          <canvas id="evolChart-${idx}"></canvas>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById(`evol-${idx}`).innerHTML = cardsHTML + chartHTML;
+
+  new Chart(document.getElementById(`evolChart-${idx}`), {
+    type: 'bar',
+    data: {
+      labels: ind.jugadores.map(j => j.nombre),
+      datasets: [
+        { label: ind.periodo1_label, data: p1, backgroundColor: '#B5604A', borderRadius: 3 },
+        { label: ind.periodo2_label, data: p2, backgroundColor: '#52796F', borderRadius: 3 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { font: { size: 10 } }, grid: { display: false } },
+        y: { beginAtZero: true, grid: { color: '#EDF0EC' } }
+      }
+    }
   });
 }
 
