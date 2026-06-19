@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
@@ -118,6 +119,17 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 /* ── CATEGORY VIEW ─────────────────────────── */
 .cat-header{margin-bottom:24px}
 .cat-header h2{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--ink);letter-spacing:-.3px}
+
+/* ── INDICADORES (gráficos) ────────────────── */
+.indicadores-wrap{margin-bottom:36px}
+.indicadores-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.indicador-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px}
+.indicador-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ink);margin-bottom:14px}
+.indicador-chart-wrap{position:relative;height:200px;display:flex;align-items:center;justify-content:center}
+.indicador-legend{display:flex;flex-direction:column;gap:7px;margin-top:14px}
+.legend-row{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-2)}
+.legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.legend-val{margin-left:auto;font-weight:600;color:var(--ink)}
 
 .chip-groups{display:flex;flex-direction:column;gap:18px;margin-bottom:28px}
 .chip-group-label{font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;
@@ -379,8 +391,16 @@ function showCategory(catId){
     ? cat.informes.map((f,i)=>`<button class="chip" id="chip-p-${i}" onclick="openPDF('${catId}',${i})">${f.nombre}</button>`).join('')
     : `<span class="chip-empty">Sin informes cargados en esta categoría</span>`;
 
+  const indicadoresHTML = (cat.indicadores && cat.indicadores.length)
+    ? `<div class="indicadores-wrap">
+         <div class="section-label">Indicadores</div>
+         <div class="indicadores-grid" id="indicadoresGrid"></div>
+       </div>`
+    : '';
+
   document.getElementById('main').innerHTML = `
     <div class="cat-header"><h2>${cat.nombre}</h2></div>
+    ${indicadoresHTML}
     <div class="chip-groups">
       <div>
         <div class="chip-group-label">📊 Mediciones (Excel)</div>
@@ -392,6 +412,45 @@ function showCategory(catId){
       </div>
     </div>
     <div id="viewerArea"></div>`;
+
+  if (cat.indicadores && cat.indicadores.length) renderIndicadores(cat.indicadores);
+}
+
+// Paleta tierra para gráficos: verde salvia / ocre / terracota
+const CHART_COLORS = ['#52796F', '#C99A4A', '#B5604A', '#84A98C', '#354F52'];
+
+function renderIndicadores(indicadores){
+  const grid = document.getElementById('indicadoresGrid');
+  grid.innerHTML = indicadores.map((ind,i) => `
+    <div class="indicador-card">
+      <div class="indicador-title">${ind.titulo}</div>
+      <div class="indicador-chart-wrap"><canvas id="chart-${i}"></canvas></div>
+      <div class="indicador-legend" id="legend-${i}"></div>
+    </div>`).join('');
+
+  indicadores.forEach((ind,i) => {
+    const labels = ind.datos.map(d=>d.etiqueta);
+    const values = ind.datos.map(d=>d.valor);
+    const colors = labels.map((_,j)=>CHART_COLORS[j % CHART_COLORS.length]);
+
+    new Chart(document.getElementById(`chart-${i}`), {
+      type: ind.tipo === 'barras' ? 'bar' : 'doughnut',
+      data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 0 }] },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        cutout: ind.tipo === 'barras' ? undefined : '62%'
+      }
+    });
+
+    const total = values.reduce((a,b)=>a+b,0);
+    document.getElementById(`legend-${i}`).innerHTML = ind.datos.map((d,j)=>`
+      <div class="legend-row">
+        <span class="legend-dot" style="background:${colors[j]}"></span>
+        <span>${d.etiqueta}</span>
+        <span class="legend-val">${d.valor}/${total}</span>
+      </div>`).join('');
+  });
 }
 
 function setChipActive(id){
