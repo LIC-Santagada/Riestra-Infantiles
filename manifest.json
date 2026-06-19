@@ -37,7 +37,18 @@
                     "nombre":  "Informe Junio 2025",
                     "archivo": "informe_cat2014.pdf"
                 }
-            ]
+            ],
+            "indicadores": [
+    {
+        "tipo": "dona",
+        "titulo": "Estado de pliegues cutáneos",
+        "datos": [
+            { "etiqueta": "Óptimo",    "valor": 17 },
+            { "etiqueta": "Aceptable", "valor": 7 },
+            { "etiqueta": "Elevado",   "valor": 4 }
+        ]
+    }
+]
         },
         {
             "id": "2015",
