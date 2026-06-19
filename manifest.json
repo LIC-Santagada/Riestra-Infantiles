@@ -41,11 +41,48 @@
             "indicadores": [
     {
         "tipo": "dona",
-        "titulo": "Estado de pliegues cutáneos",
+        "titulo": "Estado de pliegues cutáneos (Junio)",
         "datos": [
-            { "etiqueta": "Óptimo",    "valor": 17 },
-            { "etiqueta": "Aceptable", "valor": 7 },
-            { "etiqueta": "Elevado",   "valor": 4 }
+            { "etiqueta": "Óptimo",    "valor": 20 },
+            { "etiqueta": "Aceptable", "valor": 4 },
+            { "etiqueta": "Elevado",   "valor": 2 }
+        ]
+    },
+    {
+        "tipo": "evolucion",
+        "titulo": "Evolución de pliegues por jugador",
+        "periodo1_label": "Ene/Feb",
+        "periodo2_label": "Junio",
+        "unidad": "mm",
+        "umbral_optimo": 65,
+        "umbral_elevado": 75,
+        "jugadores": [
+                        { "nombre": "Carlo Di Iernia", "p1": 70, "p2": 60 },
+                        { "nombre": "Jonas Lucero", "p1": 85, "p2": 70 },
+                        { "nombre": "Mateo Benitez", "p1": 53, "p2": 57 },
+                        { "nombre": "Ian Rodas", "p1": 90, "p2": 81 },
+                        { "nombre": "Noah Varas", "p1": 56, "p2": 50 },
+                        { "nombre": "Ramiro Caceres", "p1": 93, "p2": 66 },
+                        { "nombre": "Owen Luna", "p1": 46, "p2": 42 },
+                        { "nombre": "Lucas Amarilla", "p1": 58, "p2": 57 },
+                        { "nombre": "Thiago Gonzalez", "p1": 50, "p2": 41 },
+                        { "nombre": "Esteban Solis", "p1": 56, "p2": 55 },
+                        { "nombre": "Gaston Gonzalez", "p1": 86, "p2": 73 },
+                        { "nombre": "Sebastian Duarte", "p1": 53, "p2": 48 },
+                        { "nombre": "Galo Meza", "p1": 51, "p2": 38 },
+                        { "nombre": "Milo Juarez", "p1": 76, "p2": 59 },
+                        { "nombre": "Romeo Monjes", "p1": 51, "p2": 53 },
+                        { "nombre": "Valentin Zarate", "p1": 40, "p2": 30 },
+                        { "nombre": "Franco Guzman", "p1": 83, "p2": 67 },
+                        { "nombre": "Sebastian Rojas", "p1": 45, "p2": 42 },
+                        { "nombre": "Luciano Aumasque", "p1": 73, "p2": 62 },
+                        { "nombre": "Valentino Santillan", "p1": 86, "p2": 65 },
+                        { "nombre": "Ian Bera", "p1": 42, "p2": 45 },
+                        { "nombre": "Nehuen Atela", "p1": 92, "p2": 76 },
+                        { "nombre": "Santiago Palavecino", "p1": 37, "p2": 36 },
+                        { "nombre": "Leon Ferreira", "p1": 65, "p2": 40 },
+                        { "nombre": "Fabricio Allou", "p1": 65, "p2": 49 },
+                        { "nombre": "Bautista Almiron", "p1": 50, "p2": 40 }
         ]
     }
 ]
