@@ -11,6 +11,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
@@ -147,6 +148,22 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .evolucion-legend-dot{width:10px;height:10px;border-radius:3px}
 .evolucion-scroll{overflow-x:auto}
 .evolucion-canvas-wrap{height:320px;position:relative}
+
+/* ── Genérico: tarjeta de gráfico completa ──── */
+.chart-card-full{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:24px}
+.chart-card-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.chart-card-subtitle{font-size:12px;color:var(--text-3);margin-bottom:16px}
+.chart-card-legend{display:flex;gap:18px;margin-bottom:14px}
+
+/* ── Promedios (3 mini gráficos en fila) ────── */
+.promedios-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+.promedio-mini{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:14px 16px}
+.promedio-mini-label{font-size:11.5px;font-weight:600;color:var(--text-2);text-align:center;margin-bottom:10px}
+.promedio-mini-wrap{height:130px;position:relative}
+
+/* ── Maduración / dispersión ──────────────── */
+.tall-chart-wrap{height:520px;position:relative}
+.scatter-chart-wrap{height:420px;position:relative}
 
 .chip-groups{display:flex;flex-direction:column;gap:18px;margin-bottom:28px}
 .chip-group-label{font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;
@@ -409,12 +426,12 @@ function showCategory(catId){
     : `<span class="chip-empty">Sin informes cargados en esta categoría</span>`;
 
   const todosIndicadores = cat.indicadores || [];
-  const miniIndicadores  = todosIndicadores.filter(i => i.tipo !== 'evolucion');
-  const evolIndicadores  = todosIndicadores.filter(i => i.tipo === 'evolucion');
+  const miniIndicadores  = todosIndicadores.filter(i => i.tipo === 'dona');
+  const fullIndicadores  = todosIndicadores.filter(i => i.tipo !== 'dona');
 
   let indicadoresHTML = '';
-  if (evolIndicadores.length) {
-    indicadoresHTML += evolIndicadores.map((ind,i) => `<div class="evolucion-block" id="evol-${i}"></div>`).join('');
+  if (fullIndicadores.length) {
+    indicadoresHTML += fullIndicadores.map((ind,i) => `<div class="evolucion-block" id="ind-${i}"></div>`).join('');
   }
   if (miniIndicadores.length) {
     indicadoresHTML += `
@@ -440,8 +457,45 @@ function showCategory(catId){
     <div id="viewerArea"></div>`;
 
   if (miniIndicadores.length) renderIndicadores(miniIndicadores);
-  evolIndicadores.forEach((ind,i) => renderEvolucion(ind, i));
+  fullIndicadores.forEach((ind,i) => renderIndicadorFull(ind, i));
 }
+
+function renderIndicadorFull(ind, idx){
+  switch(ind.tipo){
+    case 'evolucion':             renderEvolucion(ind, idx); break;
+    case 'comparacion-promedios': renderComparacionPromedios(ind, idx); break;
+    case 'barras-grupo':          renderBarrasGrupo(ind, idx); break;
+    case 'maduracion':            renderMaduracion(ind, idx); break;
+    case 'dispersion':            renderDispersion(ind, idx); break;
+  }
+}
+
+// Plugin de etiquetas de datos (números/nombres sobre barras y puntos)
+Chart.register(ChartDataLabels);
+
+// Plugin propio: líneas de referencia punteadas (promedio, cero, etc.)
+const refLinesPlugin = {
+  id: 'refLines',
+  afterDraw(chart, args, opts){
+    if(!opts || !opts.lines) return;
+    const {ctx, chartArea, scales} = chart;
+    opts.lines.forEach(line => {
+      const scale = scales[line.axis];
+      if(!scale) return;
+      const pix = scale.getPixelForValue(line.value);
+      ctx.save();
+      ctx.strokeStyle = line.color || '#9FACA3';
+      ctx.setLineDash([4,4]);
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      if(line.axis === 'x'){ ctx.moveTo(pix, chartArea.top); ctx.lineTo(pix, chartArea.bottom); }
+      else { ctx.moveTo(chartArea.left, pix); ctx.lineTo(chartArea.right, pix); }
+      ctx.stroke();
+      ctx.restore();
+    });
+  }
+};
+Chart.register(refLinesPlugin);
 
 // Paleta tierra para gráficos: verde salvia / ocre / terracota
 const CHART_COLORS = ['#52796F', '#C99A4A', '#B5604A', '#84A98C', '#354F52'];
@@ -465,7 +519,7 @@ function renderIndicadores(indicadores){
       data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 0 }] },
       options: {
         responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
+        plugins: { legend: { display: false }, datalabels: { display: false } },
         cutout: ind.tipo === 'barras' ? undefined : '62%'
       }
     });
@@ -542,7 +596,7 @@ function renderEvolucion(ind, idx){
       </div>
     </div>`;
 
-  document.getElementById(`evol-${idx}`).innerHTML = cardsHTML + chartHTML;
+  document.getElementById(`ind-${idx}`).innerHTML = cardsHTML + chartHTML;
 
   new Chart(document.getElementById(`evolChart-${idx}`), {
     type: 'bar',
@@ -555,7 +609,7 @@ function renderEvolucion(ind, idx){
     },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      plugins: { legend: { display: false }, datalabels: { display: false } },
       scales: {
         x: { ticks: { font: { size: 10 } }, grid: { display: false } },
         y: { beginAtZero: true, grid: { color: '#EDF0EC' } }
@@ -564,7 +618,170 @@ function renderEvolucion(ind, idx){
   });
 }
 
-function setChipActive(id){
+// ── COMPARACIÓN DE PROMEDIOS (3 mini gráficos: talla/peso/imc, etc.) ──
+function renderComparacionPromedios(ind, idx){
+  const subtitle = ind.subtitulo ? `<div class="chart-card-subtitle">${ind.subtitulo}</div>` : '';
+  const html = `
+    <div class="chart-card-full">
+      <div class="chart-card-title">${ind.titulo}</div>
+      ${subtitle}
+      <div class="promedios-row">
+        ${ind.metricas.map((m,j) => `
+          <div class="promedio-mini">
+            <div class="promedio-mini-label">${m.nombre}${m.unidad ? ' ('+m.unidad+')' : ''}</div>
+            <div class="promedio-mini-wrap"><canvas id="cmpChart-${idx}-${j}"></canvas></div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  document.getElementById(`ind-${idx}`).innerHTML = html;
+
+  ind.metricas.forEach((m,j) => {
+    new Chart(document.getElementById(`cmpChart-${idx}-${j}`), {
+      type: 'bar',
+      data: {
+        labels: [ind.periodo1_label, ind.periodo2_label],
+        datasets: [{ data: [m.p1, m.p2], backgroundColor: ['#A9C2B8','#354F52'], borderRadius: 4 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          datalabels: {
+            anchor: 'end', align: 'top', color: '#2F3E46',
+            font: { size: 12, weight: '700' },
+            formatter: v => v
+          }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+          y: { display: false, beginAtZero: false }
+        },
+        layout: { padding: { top: 14 } }
+      }
+    });
+  });
+}
+
+// ── BARRAS AGRUPADAS POR CATEGORÍA (ej: estado nutricional) ──
+function renderBarrasGrupo(ind, idx){
+  const subtitle = ind.subtitulo ? `<div class="chart-card-subtitle">${ind.subtitulo}</div>` : '';
+  const html = `
+    <div class="chart-card-full">
+      <div class="chart-card-title">${ind.titulo}</div>
+      ${subtitle}
+      <div class="chart-card-legend">
+        <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:#A9C2B8"></span>${ind.periodo1_label}</div>
+        <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:#354F52"></span>${ind.periodo2_label}</div>
+      </div>
+      <div class="evolucion-canvas-wrap"><canvas id="grpChart-${idx}"></canvas></div>
+    </div>`;
+  document.getElementById(`ind-${idx}`).innerHTML = html;
+
+  new Chart(document.getElementById(`grpChart-${idx}`), {
+    type: 'bar',
+    data: {
+      labels: ind.categorias.map(c => c.etiqueta),
+      datasets: [
+        { label: ind.periodo1_label, data: ind.categorias.map(c=>c.p1), backgroundColor: '#A9C2B8', borderRadius: 3 },
+        { label: ind.periodo2_label, data: ind.categorias.map(c=>c.p2), backgroundColor: '#354F52', borderRadius: 3 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        datalabels: { anchor: 'end', align: 'top', color: '#2F3E46', font: { size: 11, weight: '700' } }
+      },
+      scales: {
+        x: { grid: { display: false } },
+        y: { beginAtZero: true, grid: { color: '#EDF0EC' }, title: { display: !!ind.eje_y_label, text: ind.eje_y_label||'' } }
+      },
+      layout: { padding: { top: 16 } }
+    }
+  });
+}
+
+// ── MADURACIÓN BIOLÓGICA (puntos por jugador, ordenado, línea de promedio) ──
+function renderMaduracion(ind, idx){
+  const ordenados = [...ind.jugadores].sort((a,b) => b.valor - a.valor);
+  const promedio = ind.promedio ?? (ordenados.reduce((s,j)=>s+j.valor,0) / ordenados.length);
+
+  const html = `
+    <div class="chart-card-full">
+      <div class="chart-card-title">${ind.titulo}</div>
+      <div class="chart-card-subtitle">Promedio del plantel: ${promedio.toFixed(1)} ${ind.unidad||''}</div>
+      <div class="tall-chart-wrap"><canvas id="madChart-${idx}"></canvas></div>
+    </div>`;
+  document.getElementById(`ind-${idx}`).innerHTML = html;
+
+  new Chart(document.getElementById(`madChart-${idx}`), {
+    type: 'bar',
+    data: {
+      labels: ordenados.map(j => j.nombre),
+      datasets: [{
+        data: ordenados.map(j => j.valor),
+        backgroundColor: '#52796F',
+        borderRadius: 20,
+        barThickness: 7
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        datalabels: { display: false },
+        refLines: { lines: [{ axis: 'x', value: promedio, color: '#9FACA3' }] }
+      },
+      scales: {
+        x: { title: { display: !!ind.unidad, text: ind.unidad||'' }, grid: { color: '#EDF0EC' } },
+        y: { ticks: { font: { size: 10.5 } }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ── DISPERSIÓN (Δ talla vs Δ peso, u otra relación de dos variables) ──
+function renderDispersion(ind, idx){
+  const subtitle = ind.subtitulo ? `<div class="chart-card-subtitle">${ind.subtitulo}</div>` : '';
+  const html = `
+    <div class="chart-card-full">
+      <div class="chart-card-title">${ind.titulo}</div>
+      ${subtitle}
+      <div class="scatter-chart-wrap"><canvas id="dispChart-${idx}"></canvas></div>
+    </div>`;
+  document.getElementById(`ind-${idx}`).innerHTML = html;
+
+  new Chart(document.getElementById(`dispChart-${idx}`), {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        data: ind.jugadores.map(j => ({ x: j.x, y: j.y, nombre: j.nombre })),
+        backgroundColor: '#354F52',
+        pointRadius: 5, pointHoverRadius: 7
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        datalabels: {
+          align: 'top', anchor: 'end', color: '#52796F',
+          font: { size: 10 },
+          formatter: (v) => v.nombre
+        },
+        refLines: { lines: [
+          { axis: 'x', value: 0, color: '#C7CDC8' },
+          { axis: 'y', value: 0, color: '#C7CDC8' }
+        ] }
+      },
+      scales: {
+        x: { title: { display: !!ind.eje_x_label, text: ind.eje_x_label||'' }, grid: { color: '#F2F4F1' } },
+        y: { title: { display: !!ind.eje_y_label, text: ind.eje_y_label||'' }, grid: { color: '#F2F4F1' } }
+      }
+    }
+  });
+}
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
   document.getElementById(id)?.classList.add('active');
 }
