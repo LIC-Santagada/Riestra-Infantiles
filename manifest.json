@@ -64,7 +64,7 @@
             { "etiqueta": "Sobrepeso",  "p1": 8,  "p2": 8 },
             { "etiqueta": "Obesidad",   "p1": 1,  "p2": 2 }
         ]
-    }
+    },
     {
         "tipo": "dona",
         "titulo": "Estado de pliegues cutáneos (Junio)",
