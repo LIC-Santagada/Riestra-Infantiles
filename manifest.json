@@ -40,6 +40,32 @@
             ],
             "indicadores": [
     {
+        "tipo": "comparacion-promedios",
+        "titulo": "Promedios del plantel — Febrero vs Junio 2026",
+        "subtitulo": "n=28; excluye 1 caso a reverificar",
+        "periodo1_label": "Febrero",
+        "periodo2_label": "Junio",
+        "metricas": [
+            { "nombre": "Talla promedio", "unidad": "cm",    "p1": 142.2, "p2": 142.5 },
+            { "nombre": "Peso promedio",  "unidad": "kg",    "p1": 36.6,  "p2": 37.8 },
+            { "nombre": "IMC promedio",   "unidad": "kg/m²", "p1": 18.0,  "p2": 18.5 }
+        ]
+    },
+    {
+        "tipo": "barras-grupo",
+        "titulo": "Distribución del estado nutricional por IMC",
+        "subtitulo": "Percentilo OMS/SAP — Febrero vs Junio 2026",
+        "periodo1_label": "Febrero",
+        "periodo2_label": "Junio",
+        "eje_y_label": "N° de jugadores",
+        "categorias": [
+            { "etiqueta": "Bajo peso",  "p1": 1,  "p2": 1 },
+            { "etiqueta": "Adecuado",   "p1": 19, "p2": 19 },
+            { "etiqueta": "Sobrepeso",  "p1": 8,  "p2": 8 },
+            { "etiqueta": "Obesidad",   "p1": 1,  "p2": 2 }
+        ]
+    }
+    {
         "tipo": "dona",
         "titulo": "Estado de pliegues cutáneos (Junio)",
         "datos": [
@@ -90,8 +116,46 @@
         {
             "id": "2015",
             "nombre": "Categoría 2015",
-            "excels": [],
-            "informes": []
+            "excels": [
+                {
+                    "nombre":  "Mediciones y evoluciones Junio 2025",
+                    "archivo": "mediciones_infantiles_2015.xlsx"
+                }
+            ],
+            "informes": [
+                {
+                    "nombre": "Informe JUN 2026",
+                    "archivo": "informe_riestra_cat2015_feb-jun2026.pdf"
+                }
+            ],
+            "indicadores": [
+    {
+        "tipo": "comparacion-promedios",
+        "titulo": "Promedios del plantel — Febrero vs Junio 2026",
+        "subtitulo": "n=28; excluye 1 caso a reverificar",
+        "periodo1_label": "Febrero",
+        "periodo2_label": "Junio",
+        "metricas": [
+            { "nombre": "Talla promedio", "unidad": "cm",    "p1": 142.2, "p2": 142.5 },
+            { "nombre": "Peso promedio",  "unidad": "kg",    "p1": 36.6,  "p2": 37.8 },
+            { "nombre": "IMC promedio",   "unidad": "kg/m²", "p1": 18.0,  "p2": 18.5 }
+        ]
+    },
+    {
+        "tipo": "barras-grupo",
+        "titulo": "Distribución del estado nutricional por IMC",
+        "subtitulo": "Percentilo OMS/SAP — Febrero vs Junio 2026",
+        "periodo1_label": "Febrero",
+        "periodo2_label": "Junio",
+        "eje_y_label": "N° de jugadores",
+        "categorias": [
+            { "etiqueta": "Bajo peso",  "p1": 1,  "p2": 1 },
+            { "etiqueta": "Adecuado",   "p1": 19, "p2": 19 },
+            { "etiqueta": "Sobrepeso",  "p1": 8,  "p2": 8 },
+            { "etiqueta": "Obesidad",   "p1": 1,  "p2": 2 }
+        ]
+    }
+]
         },
         {
             "id": "2016",
