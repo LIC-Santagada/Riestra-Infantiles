@@ -6,8 +6,8 @@
     "passwordHash": "e450c190510396f331cf43020d70981b46e66747a6adc67d12d95a2fac884235",
 
     "logros": [
-        { "valor": "161", "label": "Mediciones realizadas" },
-        { "valor": "86",  "label": "Jugadores evaluados" },
+        { "valor": "196", "label": "Mediciones realizadas" },
+        { "valor": "121",  "label": "Jugadores evaluados" },
         { "valor": "4",   "label": "Categorías activas" }
     ],
 
