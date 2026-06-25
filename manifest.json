@@ -214,11 +214,15 @@
         {
             "id": "2016",
             "nombre": "Categoría 2016",
-            "excels": [],
+            "excels": [
+                {
+                    "nombre": "Mediones | CAT 2016 | JUN 2026",
+                    "archivo": "riestra_cat2016_mediciones_junio2026"
+            ],
             "informes": [
                 {
                     "nombre": "Informe JUN 2026",
-                    "archivo": "informe_riestra_cat2015_feb-jun2026.pdf"
+                    "archivo": "riestra_cat2016_informe_junio2026.pdf"
                 }
             ],
             "indicadores": [
