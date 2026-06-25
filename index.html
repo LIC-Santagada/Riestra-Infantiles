@@ -216,7 +216,26 @@ tbody td{padding:10px 16px;white-space:nowrap}
 tbody td:first-child{font-weight:600;color:var(--ink)}
 .no-rows{text-align:center;padding:48px 20px;color:var(--text-3)}
 
-/* ── PDF VIEWER (custom, pdf.js) ───────────── */
+/* ── Ampliar / Fullscreen ──────────────────── */
+.ampliar-btn{
+  float:right; padding:5px 12px; font-size:12px; font-weight:500;
+  background:var(--bg); border:1px solid var(--border); border-radius:5px;
+  cursor:pointer; color:var(--text-2); font-family:var(--font);
+  transition:all .15s; margin-bottom:10px; line-height:1.4;
+}
+.ampliar-btn:hover{background:var(--border);color:var(--text)}
+
+.chart-card-full.fullscreen{
+  position:fixed!important; inset:0!important; z-index:4000!important;
+  border-radius:0!important; margin:0!important; overflow-y:auto!important;
+  padding:28px!important; box-shadow:none!important;
+}
+.chart-card-full.fullscreen .ampliar-btn::before{content:"✕ Cerrar"}
+.chart-card-full.fullscreen .ampliar-btn .btn-label{display:none}
+
+/* ── Gráfico de percentil por jugador ─────── */
+.percentil-legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px}
+.percentil-scroll{overflow-y:auto}
 .pdf-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
 .pdf-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;
   padding:10px 16px;background:var(--c5);flex-wrap:wrap}
@@ -467,7 +486,15 @@ function renderIndicadorFull(ind, idx){
     case 'barras-grupo':          renderBarrasGrupo(ind, idx); break;
     case 'maduracion':            renderMaduracion(ind, idx); break;
     case 'dispersion':            renderDispersion(ind, idx); break;
+    case 'percentil':             renderPercentil(ind, idx); break;
   }
+}
+
+function toggleFullscreen(cardId){
+  const card = document.getElementById(cardId);
+  const isFs = card.classList.toggle('fullscreen');
+  card.querySelector('.ampliar-btn').textContent = isFs ? '✕ Cerrar' : '⛶ Ampliar';
+  if(!isFs) card.scrollTop = 0;
 }
 
 // Plugin de etiquetas de datos (números/nombres sobre barras y puntos)
@@ -704,13 +731,20 @@ function renderBarrasGrupo(ind, idx){
 // ── MADURACIÓN BIOLÓGICA (puntos por jugador, ordenado, línea de promedio) ──
 function renderMaduracion(ind, idx){
   const ordenados = [...ind.jugadores].sort((a,b) => b.valor - a.valor);
-  const promedio = ind.promedio ?? (ordenados.reduce((s,j)=>s+j.valor,0) / ordenados.length);
+  const promedio = ind.promedio ?? (ordenados.reduce((s,j)=>s+j.valor,0)/ordenados.length);
+  const h = Math.max(360, ordenados.length * 22 + 60);
+  const cardId = `madCard-${idx}`;
 
   const html = `
-    <div class="chart-card-full">
+    <div class="chart-card-full" id="${cardId}">
+      <button class="ampliar-btn" onclick="toggleFullscreen('${cardId}')">⛶ Ampliar</button>
       <div class="chart-card-title">${ind.titulo}</div>
       <div class="chart-card-subtitle">Promedio del plantel: ${promedio.toFixed(1)} ${ind.unidad||''}</div>
-      <div class="tall-chart-wrap"><canvas id="madChart-${idx}"></canvas></div>
+      <div class="percentil-scroll">
+        <div style="position:relative;height:${h}px;min-width:480px">
+          <canvas id="madChart-${idx}"></canvas>
+        </div>
+      </div>
     </div>`;
   document.getElementById(`ind-${idx}`).innerHTML = html;
 
@@ -718,25 +752,24 @@ function renderMaduracion(ind, idx){
     type: 'bar',
     data: {
       labels: ordenados.map(j => j.nombre),
-      datasets: [{
-        data: ordenados.map(j => j.valor),
-        backgroundColor: '#52796F',
-        borderRadius: 20,
-        barThickness: 7
-      }]
+      datasets: [{ data: ordenados.map(j=>j.valor), backgroundColor:'#52796F', borderRadius:4, barThickness:14 }]
     },
     options: {
-      indexAxis: 'y',
-      responsive: true, maintainAspectRatio: false,
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
       plugins: {
-        legend: { display: false },
-        datalabels: { display: false },
-        refLines: { lines: [{ axis: 'x', value: promedio, color: '#9FACA3' }] }
+        legend:{ display:false },
+        datalabels:{
+          anchor:'end', align:'right', color:'#354F52',
+          font:{ size:10.5, weight:'700' },
+          formatter: v => `${v} ${ind.unidad||''}`
+        },
+        refLines:{ lines:[{ axis:'x', value:promedio, color:'#C99A4A' }] }
       },
-      scales: {
-        x: { title: { display: !!ind.unidad, text: ind.unidad||'' }, grid: { color: '#EDF0EC' } },
-        y: { ticks: { font: { size: 10.5 } }, grid: { display: false } }
-      }
+      scales:{
+        x:{ title:{ display:!!ind.unidad, text:ind.unidad||'' }, grid:{ color:'#EDF0EC' } },
+        y:{ ticks:{ font:{ size:10.5 } }, grid:{ display:false } }
+      },
+      layout:{ padding:{ right:55 } }
     }
   });
 }
@@ -744,8 +777,10 @@ function renderMaduracion(ind, idx){
 // ── DISPERSIÓN (Δ talla vs Δ peso, u otra relación de dos variables) ──
 function renderDispersion(ind, idx){
   const subtitle = ind.subtitulo ? `<div class="chart-card-subtitle">${ind.subtitulo}</div>` : '';
+  const cardId = `dispCard-${idx}`;
   const html = `
-    <div class="chart-card-full">
+    <div class="chart-card-full" id="${cardId}">
+      <button class="ampliar-btn" onclick="toggleFullscreen('${cardId}')">⛶ Ampliar</button>
       <div class="chart-card-title">${ind.titulo}</div>
       ${subtitle}
       <div class="scatter-chart-wrap"><canvas id="dispChart-${idx}"></canvas></div>
@@ -756,29 +791,98 @@ function renderDispersion(ind, idx){
     type: 'scatter',
     data: {
       datasets: [{
-        data: ind.jugadores.map(j => ({ x: j.x, y: j.y, nombre: j.nombre })),
-        backgroundColor: '#354F52',
-        pointRadius: 5, pointHoverRadius: 7
+        data: ind.jugadores.map(j => ({ x:j.x, y:j.y, nombre:j.nombre })),
+        backgroundColor: '#354F52', pointRadius:5, pointHoverRadius:7
       }]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
+      responsive:true, maintainAspectRatio:false,
       plugins: {
-        legend: { display: false },
-        datalabels: {
-          align: 'top', anchor: 'end', color: '#52796F',
-          font: { size: 10 },
-          formatter: (v) => v.nombre
+        legend:{ display:false },
+        datalabels:{
+          align:'top', anchor:'end', color:'#52796F',
+          font:{ size:10 }, formatter:(v) => v.nombre
         },
-        refLines: { lines: [
-          { axis: 'x', value: 0, color: '#C7CDC8' },
-          { axis: 'y', value: 0, color: '#C7CDC8' }
-        ] }
+        refLines:{ lines:[
+          { axis:'x', value:0, color:'#C7CDC8' },
+          { axis:'y', value:0, color:'#C7CDC8' }
+        ]}
       },
       scales: {
-        x: { title: { display: !!ind.eje_x_label, text: ind.eje_x_label||'' }, grid: { color: '#F2F4F1' } },
-        y: { title: { display: !!ind.eje_y_label, text: ind.eje_y_label||'' }, grid: { color: '#F2F4F1' } }
+        x:{ title:{ display:!!ind.eje_x_label, text:ind.eje_x_label||'' }, grid:{ color:'#F2F4F1' } },
+        y:{ title:{ display:!!ind.eje_y_label, text:ind.eje_y_label||'' }, grid:{ color:'#F2F4F1' } }
       }
+    }
+  });
+}
+
+// ── PERCENTIL POR JUGADOR (barras horizontales, colores por zona) ──
+function renderPercentil(ind, idx){
+  const ordenados = [...ind.jugadores].sort((a,b) => b.valor - a.valor);
+  const h = Math.max(400, ordenados.length * 22 + 60);
+  const cardId = `percCard-${idx}`;
+
+  const getColor = (v) => {
+    if (v < 10)  return '#4A90D9';
+    if (v <= 85) return '#2E8B57';
+    if (v <= 97) return '#E87722';
+    return '#CC2222';
+  };
+
+  const zonas = ind.zonas || [
+    { label:'Bajo (<P10)',        color:'#4A90D9' },
+    { label:'Normal (P10-P85)',   color:'#2E8B57' },
+    { label:'Elevado (P85-P97)',  color:'#E87722' },
+    { label:'Muy Elevado (>P97)', color:'#CC2222' }
+  ];
+
+  const legendHTML = zonas.map(z =>
+    `<div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:${z.color}"></span>${z.label}</div>`
+  ).join('');
+
+  const refLines = (ind.ref_lines || [10,85,97]).map(v => ({ axis:'x', value:v, color:'rgba(150,80,80,.55)' }));
+
+  const html = `
+    <div class="chart-card-full" id="${cardId}">
+      <button class="ampliar-btn" onclick="toggleFullscreen('${cardId}')">⛶ Ampliar</button>
+      <div class="chart-card-title">${ind.titulo}</div>
+      ${ind.subtitulo ? `<div class="chart-card-subtitle">${ind.subtitulo}</div>` : ''}
+      <div class="percentil-legend">${legendHTML}</div>
+      <div class="percentil-scroll">
+        <div style="position:relative;height:${h}px;min-width:480px">
+          <canvas id="percChart-${idx}"></canvas>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById(`ind-${idx}`).innerHTML = html;
+
+  new Chart(document.getElementById(`percChart-${idx}`), {
+    type: 'bar',
+    data: {
+      labels: ordenados.map(j => j.nombre),
+      datasets: [{
+        data: ordenados.map(j => j.valor),
+        backgroundColor: ordenados.map(j => getColor(j.valor)),
+        borderRadius: 3, barThickness: 14
+      }]
+    },
+    options: {
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins: {
+        legend:{ display:false },
+        datalabels:{
+          anchor:'end', align:'right',
+          color: ctx => getColor(ctx.dataset.data[ctx.dataIndex]),
+          font:{ size:10.5, weight:'700' },
+          formatter: v => `P${v}`
+        },
+        refLines:{ lines: refLines }
+      },
+      scales:{
+        x:{ min:0, max:110, title:{ display:!!ind.eje_x_label, text:ind.eje_x_label||'' }, grid:{ color:'#F2F4F1' } },
+        y:{ ticks:{ font:{ size:10.5 } }, grid:{ display:false } }
+      },
+      layout:{ padding:{ right:40 } }
     }
   });
 }
