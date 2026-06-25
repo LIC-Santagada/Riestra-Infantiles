@@ -215,7 +215,114 @@
             "id": "2016",
             "nombre": "Categoría 2016",
             "excels": [],
-            "informes": []
-        }
-    ]
-}
+            "informes": [
+                {
+                    "nombre": "Informe JUN 2026",
+                    "archivo": "informe_riestra_cat2015_feb-jun2026.pdf"
+                }
+            ],
+            "indicadores": [
+    {
+        "tipo": "comparacion-promedios",
+        "titulo": "Promedios Grupales — Febrero vs. Junio 2026",
+        "periodo1_label": "Feb 2026",
+        "periodo2_label": "Jun 2026",
+        "metricas": [
+            { "nombre": "Talla", "unidad": "cm",    "p1": 139.6, "p2": 141.4 },
+            { "nombre": "Peso",  "unidad": "kg",    "p1": 36.4,  "p2": 38.2 },
+            { "nombre": "IMC",   "unidad": "kg/m²", "p1": 18.6,  "p2": 19.0 }
+        ]
+    },
+    {
+        "tipo": "maduracion",
+        "titulo": "Edad Estimada del Pico de Crecimiento (PHV) por Jugador — Junio 2026",
+        "unidad": "años",
+        "promedio": 13.6,
+        "jugadores": [
+            { "nombre": "Leon Ojeda",          "valor": 14.4 },
+            { "nombre": "Axel Sasone",         "valor": 14.1 },
+            { "nombre": "Diego Samudio",       "valor": 14.1 },
+            { "nombre": "Yosias Barreto",      "valor": 14.0 },
+            { "nombre": "Axel Michelini",      "valor": 14.0 },
+            { "nombre": "Santino Luraschi",    "valor": 14.0 },
+            { "nombre": "Elton Oviedo",        "valor": 13.9 },
+            { "nombre": "Luca Morata",         "valor": 13.9 },
+            { "nombre": "Leandro Pinto",       "valor": 13.8 },
+            { "nombre": "Mateo Santillan",     "valor": 13.8 },
+            { "nombre": "Giovanni Padre",      "valor": 13.8 },
+            { "nombre": "Gael Martinez",       "valor": 13.7 },
+            { "nombre": "Benicio Benitez",     "valor": 13.7 },
+            { "nombre": "Luca Baez",           "valor": 13.7 },
+            { "nombre": "Enzo Nievas",         "valor": 13.6 },
+            { "nombre": "Uriel Cespedes",      "valor": 13.6 },
+            { "nombre": "Franco Zambrana",     "valor": 13.6 },
+            { "nombre": "Jano Santillan",      "valor": 13.6 },
+            { "nombre": "Tiaziano Albornoz",   "valor": 13.6 },
+            { "nombre": "Ciro Rivero",         "valor": 13.6 },
+            { "nombre": "Valentino Gomez",     "valor": 13.6 },
+            { "nombre": "Leon Arevena",        "valor": 13.5 },
+            { "nombre": "Mirko Marin",         "valor": 13.4 },
+            { "nombre": "Roman Zurita",        "valor": 13.4 },
+            { "nombre": "Santino Diaz",        "valor": 13.4 },
+            { "nombre": "Ramses Dominguez",    "valor": 13.3 },
+            { "nombre": "Salvador Tartara",    "valor": 13.3 },
+            { "nombre": "Clementi Clementi",   "valor": 13.2 },
+            { "nombre": "Dyel Satera",         "valor": 13.2 },
+            { "nombre": "Simon Guerrero",      "valor": 13.2 },
+            { "nombre": "Vitto Serrano/Jonas", "valor": 13.1 },
+            { "nombre": "Leon Pederaza",       "valor": 13.0 },
+            { "nombre": "Kevin Cano",          "valor": 12.9 },
+            { "nombre": "Juani Cuello",        "valor": 12.7 },
+            { "nombre": "Jairo Mendoza",       "valor": 12.6 }
+        ]
+    },
+    {
+        "tipo": "percentil",
+        "titulo": "Percentil de Peso-para-Edad por Jugador — Junio 2026 (SAP/WHO 2007)",
+        "eje_x_label": "Percentil de Peso-para-Edad",
+        "ref_lines": [10, 85, 97],
+        "zonas": [
+            { "label": "Bajo (<P10)",        "color": "#4A90D9" },
+            { "label": "Normal (P10-P85)",   "color": "#2E8B57" },
+            { "label": "Elevado (P85-P97)",  "color": "#E87722" },
+            { "label": "Muy Elevado (>P97)", "color": "#CC2222" }
+        ],
+        "jugadores": [
+            { "nombre": "Juani Cuello",        "valor": 100 },
+            { "nombre": "Jairo Mendoza",       "valor": 100 },
+            { "nombre": "Leon Pederaza",       "valor": 99  },
+            { "nombre": "Kevin Cano",          "valor": 99  },
+            { "nombre": "Ramses Dominguez",    "valor": 98  },
+            { "nombre": "Dyel Satera",         "valor": 97  },
+            { "nombre": "Vitto Serrano/Jonas", "valor": 96  },
+            { "nombre": "Simon Guerrero",      "valor": 92  },
+            { "nombre": "Roman Zurita",        "valor": 88  },
+            { "nombre": "Jano Santillan",      "valor": 87  },
+            { "nombre": "Leon Arevena",        "valor": 87  },
+            { "nombre": "Santino Diaz",        "valor": 86  },
+            { "nombre": "Uriel Cespedes",      "valor": 85  },
+            { "nombre": "Mateo Santillan",     "valor": 83  },
+            { "nombre": "Tiaziano Albornoz",   "valor": 81  },
+            { "nombre": "Elton Oviedo",        "valor": 80  },
+            { "nombre": "Clementi Clementi",   "valor": 78  },
+            { "nombre": "Salvador Tartara",    "valor": 77  },
+            { "nombre": "Leandro Pinto",       "valor": 75  },
+            { "nombre": "Mirko Marin",         "valor": 67  },
+            { "nombre": "Valentino Gomez",     "valor": 66  },
+            { "nombre": "Enzo Nievas",         "valor": 65  },
+            { "nombre": "Gael Martinez",       "valor": 65  },
+            { "nombre": "Benicio Benitez",     "valor": 64  },
+            { "nombre": "Luca Baez",           "valor": 62  },
+            { "nombre": "Franco Zambrana",     "valor": 57  },
+            { "nombre": "Giovanni Padre",      "valor": 56  },
+            { "nombre": "Ciro Rivero",         "valor": 53  },
+            { "nombre": "Yosias Barreto",      "valor": 42  },
+            { "nombre": "Santino Luraschi",    "valor": 40  },
+            { "nombre": "Diego Samudio",       "valor": 39  },
+            { "nombre": "Axel Michelini",      "valor": 36  },
+            { "nombre": "Luca Morata",         "valor": 26  },
+            { "nombre": "Leon Ojeda",          "valor": 25  },
+            { "nombre": "Axel Sasone",         "valor": 10  }
+        ]
+    }
+]
