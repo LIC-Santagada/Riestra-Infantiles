@@ -7,7 +7,7 @@
 
     "logros": [
         { "valor": "196", "label": "Mediciones realizadas" },
-        { "valor": "121",  "label": "Jugadores evaluados" },
+        { "valor": "162",  "label": "Jugadores evaluados" },
         { "valor": "4",   "label": "Categorías activas" }
     ],
 
@@ -18,10 +18,127 @@
             "excels": [
                 {
                     "nombre":  "Mediciones y evoluciones Junio 2025",
-                    "archivo": "mediciones_infantiles_2013.xlsx"
+                    "archivo": "mediciones2013.xlsx"
                 }
             ],
-            "informes": []
+            "informes": [
+                {
+                    "nombre":  "Informe evoluciones Junio 2025",
+                    "archivo": "informe_riestra_cat2013.pdf"
+                }
+            ],
+            "indicadores": [
+    {
+        "tipo": "evolucion",
+        "titulo": "Evolución de pliegues por jugador — Febrero vs. Junio 2026",
+        "periodo1_label": "Febrero 2026",
+        "periodo2_label": "Junio 2026",
+        "unidad": "mm",
+        "umbral_optimo": 49,
+        "umbral_elevado": 70,
+        "ref_lines_y": [
+            { "value": 49, "label": "Bien ≤49",     "color": "#6FA86A" },
+            { "value": 69, "label": "Aceptable ≤69", "color": "#C99A4A" }
+        ],
+        "jugadores": [
+            { "nombre": "Ciro Padilla", "p1": 110, "p2": 91 },
+            { "nombre": "Tomas Marin", "p1": 87, "p2": 83 },
+            { "nombre": "Lautaro Barrera", "p1": 85, "p2": 73 },
+            { "nombre": "Thiago Ahumada", "p1": 73, "p2": 61 },
+            { "nombre": "Mateo Toledo", "p1": 69, "p2": 61 },
+            { "nombre": "Brando Arzamendia", "p1": 68, "p2": 68 },
+            { "nombre": "Valentin Peretti", "p1": 59, "p2": 51 },
+            { "nombre": "Tiziano Vega", "p1": 58, "p2": 55 },
+            { "nombre": "Porfirio Morinigo", "p1": 56, "p2": 54 },
+            { "nombre": "Ciro Schiavelli", "p1": 54, "p2": 62 },
+            { "nombre": "Byron Gonzalez", "p1": 51, "p2": 56 },
+            { "nombre": "Bastian Salvatierra", "p1": 51, "p2": 54 },
+            { "nombre": "Ever Ruiz", "p1": 49, "p2": 57 },
+            { "nombre": "Aron Yucra", "p1": 48, "p2": 58 },
+            { "nombre": "Dylan Miranda", "p1": 47, "p2": 41 },
+            { "nombre": "Bauti Covello", "p1": 45, "p2": 50 },
+            { "nombre": "Gael Gonzalez", "p1": 45, "p2": 51 },
+            { "nombre": "Luka Lopez", "p1": 45, "p2": 42 },
+            { "nombre": "Nahuel Barreto", "p1": 44, "p2": 47 },
+            { "nombre": "Donato Gonzalez", "p1": 43, "p2": 44 },
+            { "nombre": "Kevin Fernandez", "p1": 42, "p2": 41 },
+            { "nombre": "Valentin Brenta", "p1": 42, "p2": 43 },
+            { "nombre": "Tiziano Constantino", "p1": 41, "p2": 38 },
+            { "nombre": "Fran Bueno", "p1": 40, "p2": 45 },
+            { "nombre": "Mirko Anderson", "p1": 39, "p2": 36 },
+            { "nombre": "Thiago Cuneo", "p1": 39, "p2": 30 },
+            { "nombre": "Fran Amendola", "p1": 36, "p2": 38 },
+            { "nombre": "Joshua Recinas", "p1": 36, "p2": 37 },
+            { "nombre": "Thiago Morillo", "p1": 35, "p2": 36 },
+            { "nombre": "Ezequiel Sanchez", "p1": 34, "p2": 37 },
+            { "nombre": "Felipe Nasep", "p1": 30, "p2": 31 }
+        ]
+    },
+    {
+        "tipo": "barras-grupo",
+        "titulo": "Jugadores por categoría de pliegues (Σ6)",
+        "subtitulo": "Feb (n=33) vs Jun (n=31)",
+        "periodo1_label": "Febrero 2026",
+        "periodo2_label": "Junio 2026",
+        "eje_y_label": "Cantidad de jugadores",
+        "categorias": [
+            { "etiqueta": "Bien (≤49mm)",       "p1": 20, "p2": 15, "color1": "#C5E8C0", "color2": "#3A7A35" },
+            { "etiqueta": "Aceptable (50-69mm)", "p1": 8,  "p2": 13, "color1": "#F0D585", "color2": "#9B7A10" },
+            { "etiqueta": "Exceso (≥70mm)",      "p1": 5,  "p2": 3,  "color1": "#F5B8AE", "color2": "#8B2020" }
+        ]
+    },
+    {
+        "tipo": "maduracion",
+        "estilo": "puntos",
+        "titulo": "Maduración biológica estimada por jugador (ecuación de Mirwald, datos junio 2026)",
+        "unidad": "años",
+        "promedio": 14.1,
+        "destacados": ["Mateo Toledo", "Lautaro Barrera"],
+        "jugadores": [
+            { "nombre": "Lionel Mamani", "valor": 15.59 },
+            { "nombre": "Leonel Baez", "valor": 15.36 },
+            { "nombre": "Fran Amendola", "valor": 15.24 },
+            { "nombre": "Porfirio Morinigo", "valor": 14.99 },
+            { "nombre": "Ian Caballero", "valor": 14.91 },
+            { "nombre": "Gael Gonzalez", "valor": 14.87 },
+            { "nombre": "Luka Lopez", "valor": 14.84 },
+            { "nombre": "Tiziano Vega", "valor": 14.81 },
+            { "nombre": "Aron Yucra", "valor": 14.8 },
+            { "nombre": "Bastian Salvatierra", "valor": 14.78 },
+            { "nombre": "Bauti Covello", "valor": 14.69 },
+            { "nombre": "Kevin Fernandez", "valor": 14.6 },
+            { "nombre": "Valentin Brenta", "valor": 14.54 },
+            { "nombre": "Ezequiel Sanchez", "valor": 14.54 },
+            { "nombre": "Ciro Schiavelli", "valor": 14.54 },
+            { "nombre": "Santino Carvallo", "valor": 14.52 },
+            { "nombre": "Thiago Cuneo", "valor": 14.5 },
+            { "nombre": "Dylan Miranda", "valor": 14.33 },
+            { "nombre": "Ever Ruiz", "valor": 14.3 },
+            { "nombre": "Alejo Barreiro", "valor": 14.28 },
+            { "nombre": "Nahuel Barreto", "valor": 14.21 },
+            { "nombre": "Felipe Nasep", "valor": 14.14 },
+            { "nombre": "Mirko Anderson", "valor": 14.12 },
+            { "nombre": "Donato Gonzalez", "valor": 14.06 },
+            { "nombre": "Valentin Peretti", "valor": 14.05 },
+            { "nombre": "Ciro Padilla", "valor": 13.99 },
+            { "nombre": "Fran Bueno", "valor": 13.87 },
+            { "nombre": "Thiago Ahumada", "valor": 13.75 },
+            { "nombre": "Tomas Marin", "valor": 13.7 },
+            { "nombre": "Tiziano Constantino", "valor": 13.66 },
+            { "nombre": "Joshua Recinas", "valor": 13.61 },
+            { "nombre": "Bastian Espinoza", "valor": 13.54 },
+            { "nombre": "Lautaro Barrera", "valor": 13.53 },
+            { "nombre": "Ian San martin", "valor": 13.51 },
+            { "nombre": "Thiago Morillo", "valor": 13.2 },
+            { "nombre": "Brando Arzamendia", "valor": 13.18 },
+            { "nombre": "Dante Ramirez", "valor": 13.17 },
+            { "nombre": "Facundo Muñoz", "valor": 13.08 },
+            { "nombre": "Mateo Toledo", "valor": 12.96 },
+            { "nombre": "Byron Gonzalez", "valor": 12.93 },
+            { "nombre": "Thiago Riveros", "valor": 12.65 }
+        ]
+    }
+]
         },
         {
             "id": "2014",
