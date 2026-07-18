@@ -14,63 +14,50 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
 :root{
-  --c1:#CAD2C5; --c2:#84A98C; --c3:#52796F; --c4:#354F52; --c5:#2F3E46;
-  --ink:#2F3E46; --ink-soft:#52796F;
-  --bg:#F7F8F6; --card:#FFFFFF; --border:#E2E7E2;
-  --text:#2A3530; --text-2:#6B7B72; --text-3:#9FACA3;
-  --err-bg:#FBEAE9; --err-text:#9A3B34; --err-border:#E8C4C0;
+  --c1:#CAD2C5;--c2:#84A98C;--c3:#52796F;--c4:#354F52;--c5:#2F3E46;
+  --bg:#F7F8F6;--card:#FFFFFF;--border:#E2E7E2;
+  --text:#2A3530;--text-2:#6B7B72;--text-3:#9FACA3;
+  --err-bg:#FBEAE9;--err-text:#9A3B34;--err-border:#E8C4C0;
   --r:8px;
   --serif:'Fraunces',Georgia,serif;
   --sans:'Inter',system-ui,-apple-system,sans-serif;
 }
-
 body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;
   display:flex;flex-direction:column;font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
 
-/* ── LOGIN ─────────────────────────────────── */
-#loginOverlay{position:fixed;inset:0;background:var(--ink);display:flex;align-items:center;
+/* ── LOGIN ──────────────────────────────── */
+#loginOverlay{position:fixed;inset:0;background:var(--c5);display:flex;align-items:center;
   justify-content:center;z-index:9999;padding:24px}
-
 .login-card{width:100%;max-width:400px;background:#fff;border-radius:14px;padding:48px 40px 40px;
   box-shadow:0 30px 90px rgba(0,0,0,.35);text-align:center}
-
 .login-logo{width:84px;height:84px;object-fit:contain;margin:0 auto 20px}
-.login-title{font-family:var(--serif);font-size:25px;font-weight:600;color:var(--ink);
-  letter-spacing:-.3px;margin-bottom:6px}
+.login-title{font-family:var(--serif);font-size:25px;font-weight:600;color:var(--c5);letter-spacing:-.3px;margin-bottom:6px}
 .login-author{font-size:12.5px;color:var(--text-3);font-style:italic;margin-bottom:30px}
-
 .login-label{display:block;font-size:11px;font-weight:600;color:var(--text-2);
   text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;text-align:left}
-
 .login-input-wrap{position:relative;margin-bottom:14px}
 .login-input{width:100%;padding:12px 44px 12px 14px;background:var(--bg);
-  border:1.5px solid var(--border);border-radius:7px;color:var(--ink);
+  border:1.5px solid var(--border);border-radius:7px;color:var(--c5);
   font-family:var(--sans);font-size:15px;outline:none;transition:border-color .15s,box-shadow .15s}
 .login-input:focus{border-color:var(--c3);box-shadow:0 0 0 3px rgba(82,121,111,.13)}
 .login-input::placeholder{color:var(--text-3)}
-
 .toggle-pass{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;
   border:none;color:var(--text-3);cursor:pointer;padding:4px;line-height:0}
 .toggle-pass:hover{color:var(--text-2)}
-
 .login-error{display:none;background:var(--err-bg);border:1px solid var(--err-border);
   border-radius:7px;padding:10px 14px;font-size:12.5px;color:var(--err-text);
   margin-bottom:14px;text-align:left}
 .login-error.visible{display:block}
-
 .login-btn{width:100%;padding:13px;background:var(--c4);color:#fff;border:none;border-radius:7px;
-  font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;
-  letter-spacing:.2px;transition:background .15s}
+  font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:background .15s}
 .login-btn:hover{background:var(--c5)}
 .login-btn:disabled{opacity:.55;cursor:not-allowed}
-
 .login-spinner{display:none;width:17px;height:17px;border:2px solid rgba(255,255,255,.35);
   border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
 
-/* ── HEADER ────────────────────────────────── */
-.header{background:var(--ink);padding:18px 28px;flex-shrink:0;position:sticky;top:0;z-index:200}
+/* ── HEADER ─────────────────────────────── */
+.header{background:var(--c5);padding:18px 28px;flex-shrink:0;position:sticky;top:0;z-index:200}
 .header-inner{display:flex;align-items:center;justify-content:space-between;max-width:1180px;margin:0 auto}
 .brand{display:flex;align-items:center;gap:14px}
 .brand-logo{width:38px;height:38px;object-fit:contain;flex-shrink:0}
@@ -81,7 +68,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
   cursor:pointer;transition:background .15s,color .15s;white-space:nowrap}
 .logout-btn:hover{background:rgba(255,255,255,.13);color:#fff}
 
-/* ── TABS ──────────────────────────────────── */
+/* ── TOP TABS ────────────────────────────── */
 .tabs-nav{background:#fff;border-bottom:1.5px solid var(--border);position:sticky;top:74px;z-index:190}
 .tabs-nav-inner{display:flex;gap:4px;max-width:1180px;margin:0 auto;padding:0 28px;
   overflow-x:auto;scrollbar-width:none}
@@ -92,93 +79,56 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .top-tab:hover{color:var(--text)}
 .top-tab.active{color:var(--c4);border-bottom-color:var(--c3)}
 
-/* ── MAIN ──────────────────────────────────── */
+/* ── MAIN ────────────────────────────────── */
 .main{flex:1;max-width:1180px;width:100%;margin:0 auto;padding:36px 28px 64px}
 
-/* ── HOME ──────────────────────────────────── */
+/* ── HOME ────────────────────────────────── */
 .home-hero{text-align:center;padding:36px 20px 44px;border-bottom:1px solid var(--border);margin-bottom:40px}
 .home-hero img{width:96px;height:96px;object-fit:contain;margin:0 auto 18px}
-.home-hero h1{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--ink);letter-spacing:-.5px}
+.home-hero h1{font-family:var(--serif);font-size:32px;font-weight:600;color:var(--c5);letter-spacing:-.5px}
 .home-hero p{font-size:13.5px;color:var(--text-3);font-style:italic;margin-top:6px}
-
 .logros-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:18px;margin-bottom:48px}
-.logro-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
-  padding:26px 20px;text-align:center}
+.logro-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:26px 20px;text-align:center}
 .logro-valor{font-family:var(--serif);font-size:36px;font-weight:700;color:var(--c4);letter-spacing:-1px}
 .logro-label{font-size:12.5px;color:var(--text-2);margin-top:4px;font-weight:500}
-
 .cats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
 .cat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
   padding:22px;cursor:pointer;transition:border-color .15s,transform .12s}
 .cat-card:hover{border-color:var(--c2);transform:translateY(-2px)}
-.cat-card-title{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink)}
+.cat-card-title{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--c5)}
 .cat-card-meta{font-size:12px;color:var(--text-3);margin-top:5px}
-
 .section-label{font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;
   letter-spacing:1px;margin-bottom:16px}
 
-/* ── CATEGORY VIEW ─────────────────────────── */
+/* ── CATEGORY VIEW ───────────────────────── */
 .cat-header{margin-bottom:24px}
-.cat-header h2{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--ink);letter-spacing:-.3px}
+.cat-header h2{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--c5);letter-spacing:-.3px}
 
-/* ── INDICADORES (gráficos) ────────────────── */
+/* ── INDICADORES ─────────────────────────── */
 .indicadores-wrap{margin-bottom:36px}
 .indicadores-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
 .indicador-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px}
-.indicador-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ink);margin-bottom:14px}
+.indicador-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--c5);margin-bottom:14px}
 .indicador-chart-wrap{position:relative;height:200px;display:flex;align-items:center;justify-content:center}
 .indicador-legend{display:flex;flex-direction:column;gap:7px;margin-top:14px}
 .legend-row{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-2)}
 .legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.legend-val{margin-left:auto;font-weight:600;color:var(--ink)}
+.legend-val{margin-left:auto;font-weight:600;color:var(--c5)}
 
-/* ── EVOLUCIÓN (tarjetas + barras agrupadas) ── */
-.evolucion-block{margin-bottom:36px}
-.stat-cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:16px}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px}
-.stat-card-label{font-size:12px;color:var(--text-3);margin-bottom:9px;line-height:1.3}
-.stat-card-value{font-family:var(--serif);font-size:23px;font-weight:700;color:var(--ink);letter-spacing:-.3px}
-.stat-card-value.good{color:#52796F}
-.stat-card-value.warn{color:#B5604A}
-.stat-card-sub{font-size:11.5px;color:var(--text-3);margin-top:4px}
-.evolucion-chart-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px}
-.evolucion-chart-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ink);margin-bottom:4px}
-.evolucion-legend-top{display:flex;gap:18px;margin-bottom:16px}
-.evolucion-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-2)}
-.evolucion-legend-dot{width:10px;height:10px;border-radius:3px}
-.evolucion-scroll{overflow-x:auto}
-.evolucion-canvas-wrap{height:320px;position:relative}
-
-/* ── Genérico: tarjeta de gráfico completa ──── */
-.chart-card-full{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:24px}
-.chart-card-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--ink);margin-bottom:3px}
-.chart-card-subtitle{font-size:12px;color:var(--text-3);margin-bottom:16px}
-.chart-card-legend{display:flex;gap:18px;margin-bottom:14px}
-
-/* ── Promedios (3 mini gráficos en fila) ────── */
-.promedios-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
-.promedio-mini{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:14px 16px}
-.promedio-mini-label{font-size:11.5px;font-weight:600;color:var(--text-2);text-align:center;margin-bottom:10px}
-.promedio-mini-wrap{height:130px;position:relative}
-
-/* ── Maduración / dispersión ──────────────── */
-.tall-chart-wrap{height:520px;position:relative}
-.scatter-chart-wrap{height:420px;position:relative}
-
+/* ── CHIP NAVIGATION ─────────────────────── */
 .chip-groups{display:flex;flex-direction:column;gap:18px;margin-bottom:28px}
 .chip-group-label{font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;
   letter-spacing:.8px;margin-bottom:9px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{padding:8px 16px;background:var(--card);border:1.5px solid var(--border);border-radius:20px;
-  font-family:var(--sans);font-size:13px;font-weight:500;color:var(--text-2);cursor:pointer;
-  transition:all .15s}
+  font-family:var(--sans);font-size:13px;font-weight:500;color:var(--text-2);cursor:pointer;transition:all .15s}
 .chip:hover{border-color:var(--c2);color:var(--text)}
 .chip.active{background:var(--c4);border-color:var(--c4);color:#fff}
 .chip-empty{font-size:12.5px;color:var(--text-3);font-style:italic}
 
-/* ── CONTENT VIEWER ────────────────────────── */
+/* ── CONTENT VIEWER ──────────────────────── */
 .viewer-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:12px}
-.viewer-title{font-family:var(--serif);font-size:19px;font-weight:600;color:var(--ink);letter-spacing:-.2px}
+.viewer-title{font-family:var(--serif);font-size:19px;font-weight:600;color:var(--c5);letter-spacing:-.2px}
 .viewer-sub{font-size:12.5px;color:var(--text-3);margin-top:3px}
 .badge{display:inline-flex;align-items:center;gap:5px;padding:5px 13px;border-radius:20px;
   font-size:11.5px;font-weight:700;letter-spacing:.3px;flex-shrink:0;text-transform:uppercase}
@@ -195,9 +145,9 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .search-wrap{position:relative;flex:1;max-width:300px}
 .search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--text-3)}
 .search-input{width:100%;padding:8px 12px 8px 34px;border:1.5px solid var(--border);border-radius:7px;
-  font-family:var(--sans);font-size:13px;color:var(--text);background:var(--card);outline:none;
-  transition:border-color .15s}
+  font-family:var(--sans);font-size:13px;color:var(--text);background:var(--card);outline:none;transition:border-color .15s}
 .search-input:focus{border-color:var(--c3)}
+.search-input::placeholder{color:var(--text-3)}
 .row-count{font-size:12px;color:var(--text-3);font-weight:500;white-space:nowrap}
 
 .table-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:auto}
@@ -213,29 +163,10 @@ tbody tr:last-child{border-bottom:none}
 tbody tr:nth-child(even){background:#FAFBFA}
 tbody tr:hover{background:#F0F4F1}
 tbody td{padding:10px 16px;white-space:nowrap}
-tbody td:first-child{font-weight:600;color:var(--ink)}
+tbody td:first-child{font-weight:600;color:var(--c5)}
 .no-rows{text-align:center;padding:48px 20px;color:var(--text-3)}
 
-/* ── Ampliar / Fullscreen ──────────────────── */
-.ampliar-btn{
-  float:right; padding:5px 12px; font-size:12px; font-weight:500;
-  background:var(--bg); border:1px solid var(--border); border-radius:5px;
-  cursor:pointer; color:var(--text-2); font-family:var(--font);
-  transition:all .15s; margin-bottom:10px; line-height:1.4;
-}
-.ampliar-btn:hover{background:var(--border);color:var(--text)}
-
-.chart-card-full.fullscreen{
-  position:fixed!important; inset:0!important; z-index:4000!important;
-  border-radius:0!important; margin:0!important; overflow-y:auto!important;
-  padding:28px!important; box-shadow:none!important;
-}
-.chart-card-full.fullscreen .ampliar-btn::before{content:"✕ Cerrar"}
-.chart-card-full.fullscreen .ampliar-btn .btn-label{display:none}
-
-/* ── Gráfico de percentil por jugador ─────── */
-.percentil-legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px}
-.percentil-scroll{overflow-y:auto}
+/* ── PDF VIEWER ──────────────────────────── */
 .pdf-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
 .pdf-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;
   padding:10px 16px;background:var(--c5);flex-wrap:wrap}
@@ -248,29 +179,77 @@ tbody td:first-child{font-weight:600;color:var(--ink)}
 .pdf-page-info{color:rgba(255,255,255,.8);font-size:12.5px;font-weight:500;min-width:64px;text-align:center}
 .pdf-link{color:rgba(255,255,255,.55);font-size:12px;text-decoration:none;font-weight:500}
 .pdf-link:hover{color:#fff}
-.pdf-canvas-area{background:#E8EAE6;padding:24px;display:flex;flex-direction:column;align-items:center;
-  gap:16px;max-height:calc(100vh - 280px);overflow-y:auto}
+.pdf-canvas-area{background:#E8EAE6;padding:24px;display:flex;flex-direction:column;
+  align-items:center;gap:16px;max-height:calc(100vh - 280px);overflow-y:auto}
 .pdf-canvas-area canvas{box-shadow:0 4px 20px rgba(0,0,0,.15);max-width:100%;height:auto}
-.pdf-loading{padding:60px 20px;text-align:center;color:var(--text-3)}
 
-/* ── LOADING / ERROR ───────────────────────── */
+/* ── CHART CARDS ─────────────────────────── */
+.evolucion-block{margin-bottom:24px}
+.stat-cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:16px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px}
+.stat-card-label{font-size:12px;color:var(--text-3);margin-bottom:9px;line-height:1.3}
+.stat-card-value{font-family:var(--serif);font-size:23px;font-weight:700;color:var(--c5);letter-spacing:-.3px}
+.stat-card-value.good{color:#52796F}
+.stat-card-value.warn{color:#B5604A}
+.stat-card-sub{font-size:11.5px;color:var(--text-3);margin-top:4px}
+.chart-card-full{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:24px}
+.chart-card-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--c5);margin-bottom:3px}
+.chart-card-subtitle{font-size:12px;color:var(--text-3);margin-bottom:14px}
+.chart-card-legend{display:flex;gap:18px;margin-bottom:14px;flex-wrap:wrap}
+.evolucion-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-2)}
+.evolucion-legend-dot{width:10px;height:10px;border-radius:3px}
+.evolucion-scroll{overflow-x:auto}
+.evolucion-canvas-wrap{height:320px;position:relative}
+.promedios-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+.promedio-mini{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:14px 16px}
+.promedio-mini-label{font-size:11.5px;font-weight:600;color:var(--text-2);text-align:center;margin-bottom:10px}
+.promedio-mini-wrap{height:130px;position:relative}
+.tall-chart-wrap{height:520px;position:relative}
+.scatter-chart-wrap{height:420px;position:relative}
+.percentil-legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:14px}
+.percentil-scroll{overflow-y:auto}
+
+/* ── AMPLIAR / FULLSCREEN ────────────────── */
+.ampliar-btn{float:right;padding:5px 12px;font-size:12px;font-weight:500;
+  background:var(--bg);border:1px solid var(--border);border-radius:5px;
+  cursor:pointer;color:var(--text-2);font-family:var(--sans);transition:all .15s;margin-bottom:10px}
+.ampliar-btn:hover{background:var(--border);color:var(--text)}
+.chart-card-full.fullscreen{
+  position:fixed!important;inset:0!important;z-index:4000!important;
+  border-radius:0!important;margin:0!important;overflow-y:auto!important;padding:28px!important}
+
+/* ── LOADING / ERROR ─────────────────────── */
 .loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:70px 20px;gap:14px;color:var(--text-3)}
+  padding:70px 20px;gap:14px;color:var(--text-3);font-size:14px}
 .spinner{width:30px;height:30px;border:3px solid var(--border);border-top-color:var(--c3);
   border-radius:50%;animation:spin .75s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .error-card{background:var(--err-bg);border:1px solid var(--err-border);border-radius:8px;
   padding:20px 24px;color:var(--err-text);font-size:13.5px;line-height:1.6}
 
-@media (max-width:760px){
+/* ── MOBILE ──────────────────────────────── */
+.mobile-bar{display:none;background:var(--c5);padding:10px 14px;
+  border-bottom:1px solid rgba(255,255,255,.06)}
+.mobile-select{width:100%;padding:9px 34px 9px 12px;
+  background:rgba(255,255,255,.07)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2384A98C' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")
+    no-repeat right 12px center;
+  border:1px solid rgba(255,255,255,.1);border-radius:7px;
+  color:rgba(255,255,255,.88);font-family:var(--sans);font-size:13.5px;
+  appearance:none;cursor:pointer;outline:none}
+.mobile-select option{background:#2F3E46;color:#fff}
+.mobile-select optgroup{font-size:11px;color:rgba(255,255,255,.4)}
+
+@media(max-width:800px){
+  .mobile-bar{display:block}
+  .main{padding:18px 14px 36px}
+  .viewer-header{flex-direction:column;align-items:flex-start}
+  .search-wrap{max-width:100%}
   .header{padding:14px 18px}
   .tabs-nav{top:66px}
   .tabs-nav-inner{padding:0 18px}
-  .main{padding:24px 18px 48px}
-  .home-hero h1{font-size:26px}
-  .viewer-header{flex-direction:column}
-  .login-card{padding:38px 26px 32px}
 }
+@media(max-width:480px){.brand-text-s{display:none}}
 </style>
 </head>
 <body>
@@ -281,7 +260,6 @@ tbody td:first-child{font-weight:600;color:var(--ink)}
     <img class="login-logo" src="logo.png" alt="Escudo">
     <div class="login-title" id="loginTitle">Infantiles Riestra</div>
     <div class="login-author" id="loginAuthor">Creado por Lic. Leandro Santagada</div>
-
     <label class="login-label" for="passInput">Contraseña</label>
     <div class="login-input-wrap">
       <input type="password" id="passInput" class="login-input" placeholder="Ingresá la contraseña"
@@ -293,9 +271,7 @@ tbody td:first-child{font-weight:600;color:var(--ink)}
         </svg>
       </button>
     </div>
-
     <div class="login-error" id="loginError">Contraseña incorrecta. Intentá de nuevo.</div>
-
     <button class="login-btn" id="loginBtn" onclick="submitLogin()">
       <span id="loginBtnText">Ingresar</span>
       <div class="login-spinner" id="loginSpinner"></div>
@@ -317,81 +293,133 @@ tbody td:first-child{font-weight:600;color:var(--ink)}
   </div>
 </header>
 
-<!-- TOP TABS -->
-<nav class="tabs-nav">
-  <div class="tabs-nav-inner" id="topTabs"></div>
-</nav>
+<!-- TABS -->
+<nav class="tabs-nav"><div class="tabs-nav-inner" id="topTabs"></div></nav>
+
+<!-- MOBILE -->
+<div class="mobile-bar">
+  <select class="mobile-select" id="mobileSelect" onchange="handleMobile(this.value)">
+    <option value="">— Seleccioná una sección —</option>
+  </select>
+</div>
 
 <!-- MAIN -->
 <main class="main" id="main"></main>
 
 <script>
-let manifest=null, activeData=[], sortState={col:-1,dir:'asc'}, sheets={}, activeFile=null, sheetNames=[];
-let currentCatId=null, currentChip=null;
-let pdfDoc=null, pdfScale=1.1, pdfPagesRendered=0;
+// ═══════════════════════════════════════════
+// ESTADO
+// ═══════════════════════════════════════════
+let manifest=null,activeData=[],sortState={col:-1,dir:'asc'},sheets={},activeFile=null,sheetNames=[];
+let pdfDoc=null,pdfScale=1.1;
 const SESSION_KEY='portal_auth_v1';
+Chart.register(ChartDataLabels);
 
-async function sha256(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));
-  return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('')}
+// ═══════════════════════════════════════════
+// PLUGINS
+// ═══════════════════════════════════════════
+const refLinesPlugin={
+  id:'refLines',
+  afterDraw(chart,args,opts){
+    if(!opts?.lines) return;
+    const{ctx,chartArea,scales}=chart;
+    opts.lines.forEach(line=>{
+      const scale=scales[line.axis]; if(!scale) return;
+      const pix=scale.getPixelForValue(line.value);
+      ctx.save();
+      ctx.strokeStyle=line.color||'#9FACA3';
+      ctx.setLineDash([4,4]); ctx.lineWidth=1;
+      ctx.beginPath();
+      if(line.axis==='x'){ctx.moveTo(pix,chartArea.top);ctx.lineTo(pix,chartArea.bottom);}
+      else{ctx.moveTo(chartArea.left,pix);ctx.lineTo(chartArea.right,pix);}
+      ctx.stroke();
+      if(line.label){
+        ctx.setLineDash([]);
+        ctx.font='10px Inter,system-ui,sans-serif';
+        ctx.fillStyle=line.color||'#9FACA3';
+        if(line.axis==='x'){ctx.textAlign='center';ctx.fillText(line.label,pix,chartArea.top-4);}
+        else{ctx.textAlign='right';ctx.fillText(line.label,chartArea.right-4,pix-4);}
+      }
+      ctx.restore();
+    });
+  }
+};
+Chart.register(refLinesPlugin);
+
+// ═══════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════
+async function sha256(t){
+  const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));
+  return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
+}
 
 async function submitLogin(){
   const input=document.getElementById('passInput').value; if(!input) return;
   const btn=document.getElementById('loginBtn'),sp=document.getElementById('loginSpinner'),
     bt=document.getElementById('loginBtnText'),err=document.getElementById('loginError');
-  btn.disabled=true; sp.style.display='block'; bt.style.display='none'; err.classList.remove('visible');
+  btn.disabled=true;sp.style.display='block';bt.style.display='none';err.classList.remove('visible');
   try{
     const r=await fetch('manifest.json?_='+Date.now()); const m=await r.json();
-    const hash=await sha256(input);
-    if(hash===m.passwordHash){
+    if(await sha256(input)===m.passwordHash){
       sessionStorage.setItem(SESSION_KEY,'ok');
       document.getElementById('loginOverlay').style.display='none';
       initApp(m);
-    } else {
-      err.classList.add('visible');
-      document.getElementById('passInput').value=''; document.getElementById('passInput').focus();
-    }
-  } catch(e){ err.textContent='Error al conectar.'; err.classList.add('visible'); }
-  btn.disabled=false; sp.style.display='none'; bt.style.display='inline';
+    }else{err.classList.add('visible');document.getElementById('passInput').value='';document.getElementById('passInput').focus();}
+  }catch(e){err.textContent='Error al conectar.';err.classList.add('visible');}
+  btn.disabled=false;sp.style.display='none';bt.style.display='inline';
 }
 
 function togglePass(){
-  const i=document.getElementById('passInput'); const isPass=i.type==='password';
-  i.type=isPass?'text':'password';
-  document.getElementById('eyeIcon').innerHTML=isPass
-    ? `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`
-    : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+  const i=document.getElementById('passInput'),isP=i.type==='password';
+  i.type=isP?'text':'password';
+  document.getElementById('eyeIcon').innerHTML=isP
+    ?`<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`
+    :`<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
 }
 
-function logout(){ if(!confirm('¿Cerrar sesión?')) return; sessionStorage.removeItem(SESSION_KEY); location.reload(); }
+function logout(){if(!confirm('¿Cerrar sesión?'))return;sessionStorage.removeItem(SESSION_KEY);location.reload();}
 
 async function checkSession(){
   try{
-    const r=await fetch('manifest.json?_='+Date.now()); const m=await r.json();
+    const r=await fetch('manifest.json?_='+Date.now());const m=await r.json();
     document.getElementById('loginTitle').textContent=m.nombre||'Portal';
-    document.getElementById('loginAuthor').textContent=m.creador?('Creado por '+m.creador):'';
+    document.getElementById('loginAuthor').textContent=m.creador?'Creado por '+m.creador:'';
     if(sessionStorage.getItem(SESSION_KEY)==='ok'){
-      document.getElementById('loginOverlay').style.display='none';
-      initApp(m);
+      document.getElementById('loginOverlay').style.display='none';initApp(m);
     }
   }catch(e){}
 }
 
+// ═══════════════════════════════════════════
+// APP INIT
+// ═══════════════════════════════════════════
 function initApp(m){
   manifest=m;
   document.getElementById('brandTitle').textContent=m.nombre||'Portal';
-  document.getElementById('brandSub').textContent=m.creador?('Creado por '+m.creador):'';
+  document.getElementById('brandSub').textContent=m.creador?'Creado por '+m.creador:'';
   document.title=m.nombre||'Portal';
-  buildTopTabs();
-  showHome();
+  buildTopTabs(); buildMobile(); showHome();
 }
 
 function buildTopTabs(){
-  const wrap=document.getElementById('topTabs');
   let html=`<button class="top-tab active" id="tab-home" onclick="showHome()">Inicio</button>`;
   manifest.categorias.forEach(c=>{
     html+=`<button class="top-tab" id="tab-${c.id}" onclick="showCategory('${c.id}')">${c.nombre}</button>`;
   });
-  wrap.innerHTML=html;
+  document.getElementById('topTabs').innerHTML=html;
+}
+
+function buildMobile(){
+  const sel=document.getElementById('mobileSelect');
+  sel.innerHTML=`<option value="">— Seleccioná una sección —</option><option value="home">Inicio</option>`;
+  manifest.categorias.forEach(c=>{sel.innerHTML+=`<option value="cat-${c.id}">${c.nombre}</option>`;});
+}
+
+function handleMobile(v){
+  if(!v)return;
+  if(v==='home')showHome();
+  else if(v.startsWith('cat-'))showCategory(v.replace('cat-',''));
 }
 
 function setActiveTab(id){
@@ -399,160 +427,114 @@ function setActiveTab(id){
   document.getElementById('tab-'+id)?.classList.add('active');
 }
 
-// ── HOME ──────────────────────────────────────
+// ═══════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════
 function showHome(){
   setActiveTab('home');
-  const logros = computeLogros();
-  let html = `
+  const logros=manifest.logros||[];
+  document.getElementById('main').innerHTML=`
     <div class="home-hero">
       <img src="logo.png" alt="Escudo">
       <h1>${manifest.nombre}</h1>
-      <p>${manifest.creador ? 'Creado por '+manifest.creador : ''}</p>
+      <p>${manifest.creador?'Creado por '+manifest.creador:''}</p>
     </div>
-    <div class="section-label">Resultados destacados</div>
-    <div class="logros-grid">
-      ${logros.map(l=>`<div class="logro-card"><div class="logro-valor">${l.valor}</div><div class="logro-label">${l.label}</div></div>`).join('')}
-    </div>
+    ${logros.length?`<div class="section-label">Resultados destacados</div>
+    <div class="logros-grid">${logros.map(l=>`<div class="logro-card"><div class="logro-valor">${l.valor}</div><div class="logro-label">${l.label}</div></div>`).join('')}</div>`:''}
     <div class="section-label">Categorías</div>
-    <div class="cats-grid">
-      ${manifest.categorias.map(c=>`
-        <div class="cat-card" onclick="showCategory('${c.id}')">
-          <div class="cat-card-title">${c.nombre}</div>
-          <div class="cat-card-meta">${c.excels.length} mediciones · ${c.informes.length} informes</div>
-        </div>`).join('')}
+    <div class="cats-grid">${manifest.categorias.map(c=>`
+      <div class="cat-card" onclick="showCategory('${c.id}')">
+        <div class="cat-card-title">${c.nombre}</div>
+        <div class="cat-card-meta">${(c.excels||[]).length} mediciones · ${(c.informes||[]).length} informes</div>
+      </div>`).join('')}
     </div>`;
-  document.getElementById('main').innerHTML = html;
 }
 
-function computeLogros(){
-  // Si el manifest trae logros manuales, se usan tal cual.
-  if (manifest.logros && manifest.logros.length) return manifest.logros;
-  return [{valor:'—', label:'Sin datos cargados'}];
-}
-
-// ── CATEGORY VIEW ─────────────────────────────
+// ═══════════════════════════════════════════
+// CATEGORY VIEW
+// ═══════════════════════════════════════════
 function showCategory(catId){
   setActiveTab(catId);
-  currentCatId = catId;
-  const cat = manifest.categorias.find(c => c.id === catId);
+  const cat=manifest.categorias.find(c=>c.id===catId);
+  const todos=cat.indicadores||[];
+  const minis=todos.filter(i=>i.tipo==='dona');
+  const fulls=todos.filter(i=>i.tipo!=='dona');
 
-  let chipsExcel = cat.excels.length
-    ? cat.excels.map((f,i)=>`<button class="chip" id="chip-x-${i}" onclick="openExcel('${catId}',${i})">${f.nombre}</button>`).join('')
-    : `<span class="chip-empty">Sin mediciones cargadas en esta categoría</span>`;
+  let indHTML='';
+  if(fulls.length) indHTML+=fulls.map((_,i)=>`<div class="evolucion-block" id="ind-${i}"></div>`).join('');
+  if(minis.length) indHTML+=`<div class="indicadores-wrap"><div class="section-label">Indicadores</div><div class="indicadores-grid" id="indicadoresGrid"></div></div>`;
 
-  let chipsPdf = cat.informes.length
-    ? cat.informes.map((f,i)=>`<button class="chip" id="chip-p-${i}" onclick="openPDF('${catId}',${i})">${f.nombre}</button>`).join('')
-    : `<span class="chip-empty">Sin informes cargados en esta categoría</span>`;
+  const excChips=(cat.excels||[]).length
+    ?(cat.excels||[]).map((f,i)=>`<button class="chip" id="chip-x-${i}" onclick="openExcel('${catId}',${i})">${f.nombre}</button>`).join('')
+    :`<span class="chip-empty">Sin mediciones cargadas</span>`;
+  const pdfChips=(cat.informes||[]).length
+    ?(cat.informes||[]).map((f,i)=>`<button class="chip" id="chip-p-${i}" onclick="openPDF('${catId}',${i})">${f.nombre}</button>`).join('')
+    :`<span class="chip-empty">Sin informes cargados</span>`;
 
-  const todosIndicadores = cat.indicadores || [];
-  const miniIndicadores  = todosIndicadores.filter(i => i.tipo === 'dona');
-  const fullIndicadores  = todosIndicadores.filter(i => i.tipo !== 'dona');
-
-  let indicadoresHTML = '';
-  if (fullIndicadores.length) {
-    indicadoresHTML += fullIndicadores.map((ind,i) => `<div class="evolucion-block" id="ind-${i}"></div>`).join('');
-  }
-  if (miniIndicadores.length) {
-    indicadoresHTML += `
-      <div class="indicadores-wrap">
-        <div class="section-label">Indicadores</div>
-        <div class="indicadores-grid" id="indicadoresGrid"></div>
-      </div>`;
-  }
-
-  document.getElementById('main').innerHTML = `
+  document.getElementById('main').innerHTML=`
     <div class="cat-header"><h2>${cat.nombre}</h2></div>
-    ${indicadoresHTML}
+    ${indHTML}
     <div class="chip-groups">
-      <div>
-        <div class="chip-group-label">📊 Mediciones (Excel)</div>
-        <div class="chips">${chipsExcel}</div>
-      </div>
-      <div>
-        <div class="chip-group-label">📄 Informes (PDF)</div>
-        <div class="chips">${chipsPdf}</div>
-      </div>
+      <div><div class="chip-group-label">📊 Mediciones (Excel)</div><div class="chips">${excChips}</div></div>
+      <div><div class="chip-group-label">📄 Informes (PDF)</div><div class="chips">${pdfChips}</div></div>
     </div>
     <div id="viewerArea"></div>`;
 
-  if (miniIndicadores.length) renderIndicadores(miniIndicadores);
-  fullIndicadores.forEach((ind,i) => renderIndicadorFull(ind, i));
+  if(minis.length) renderDonas(minis);
+  fulls.forEach((ind,i)=>renderFull(ind,i));
 }
 
-function renderIndicadorFull(ind, idx){
+function setChipActive(id){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  document.getElementById(id)?.classList.add('active');
+}
+
+// ═══════════════════════════════════════════
+// CHART DISPATCHER
+// ═══════════════════════════════════════════
+function renderFull(ind,idx){
   switch(ind.tipo){
-    case 'evolucion':             renderEvolucion(ind, idx); break;
-    case 'comparacion-promedios': renderComparacionPromedios(ind, idx); break;
-    case 'barras-grupo':          renderBarrasGrupo(ind, idx); break;
-    case 'maduracion':            renderMaduracion(ind, idx); break;
-    case 'dispersion':            renderDispersion(ind, idx); break;
-    case 'percentil':             renderPercentil(ind, idx); break;
+    case 'evolucion':             renderEvolucion(ind,idx); break;
+    case 'comparacion-promedios': renderComparacionPromedios(ind,idx); break;
+    case 'barras-grupo':          renderBarrasGrupo(ind,idx); break;
+    case 'maduracion':            renderMaduracion(ind,idx); break;
+    case 'dispersion':            renderDispersion(ind,idx); break;
+    case 'percentil':             renderPercentil(ind,idx); break;
   }
 }
 
 function toggleFullscreen(cardId){
-  const card = document.getElementById(cardId);
-  const isFs = card.classList.toggle('fullscreen');
-  card.querySelector('.ampliar-btn').textContent = isFs ? '✕ Cerrar' : '⛶ Ampliar';
-  if(!isFs) card.scrollTop = 0;
+  const card=document.getElementById(cardId);
+  const isFs=card.classList.toggle('fullscreen');
+  card.querySelector('.ampliar-btn').textContent=isFs?'✕ Cerrar':'⛶ Ampliar';
+  if(!isFs) card.scrollTop=0;
 }
 
-// Plugin de etiquetas de datos (números/nombres sobre barras y puntos)
-Chart.register(ChartDataLabels);
+// ═══════════════════════════════════════════
+// DONAS (mini chips en grid)
+// ═══════════════════════════════════════════
+const CHART_COLORS=['#52796F','#C99A4A','#B5604A','#84A98C','#354F52'];
 
-// Plugin propio: líneas de referencia punteadas (promedio, cero, etc.)
-const refLinesPlugin = {
-  id: 'refLines',
-  afterDraw(chart, args, opts){
-    if(!opts || !opts.lines) return;
-    const {ctx, chartArea, scales} = chart;
-    opts.lines.forEach(line => {
-      const scale = scales[line.axis];
-      if(!scale) return;
-      const pix = scale.getPixelForValue(line.value);
-      ctx.save();
-      ctx.strokeStyle = line.color || '#9FACA3';
-      ctx.setLineDash([4,4]);
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      if(line.axis === 'x'){ ctx.moveTo(pix, chartArea.top); ctx.lineTo(pix, chartArea.bottom); }
-      else { ctx.moveTo(chartArea.left, pix); ctx.lineTo(chartArea.right, pix); }
-      ctx.stroke();
-      ctx.restore();
-    });
-  }
-};
-Chart.register(refLinesPlugin);
-
-// Paleta tierra para gráficos: verde salvia / ocre / terracota
-const CHART_COLORS = ['#52796F', '#C99A4A', '#B5604A', '#84A98C', '#354F52'];
-
-function renderIndicadores(indicadores){
-  const grid = document.getElementById('indicadoresGrid');
-  grid.innerHTML = indicadores.map((ind,i) => `
+function renderDonas(inds){
+  const grid=document.getElementById('indicadoresGrid');
+  if(!grid) return;
+  grid.innerHTML=inds.map((ind,i)=>`
     <div class="indicador-card">
       <div class="indicador-title">${ind.titulo}</div>
       <div class="indicador-chart-wrap"><canvas id="chart-${i}"></canvas></div>
       <div class="indicador-legend" id="legend-${i}"></div>
     </div>`).join('');
-
-  indicadores.forEach((ind,i) => {
-    const labels = ind.datos.map(d=>d.etiqueta);
-    const values = ind.datos.map(d=>d.valor);
-    const colors = labels.map((_,j)=>CHART_COLORS[j % CHART_COLORS.length]);
-
-    new Chart(document.getElementById(`chart-${i}`), {
-      type: ind.tipo === 'barras' ? 'bar' : 'doughnut',
-      data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 0 }] },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, datalabels: { display: false } },
-        cutout: ind.tipo === 'barras' ? undefined : '62%'
-      }
+  inds.forEach((ind,i)=>{
+    const labels=ind.datos.map(d=>d.etiqueta),values=ind.datos.map(d=>d.valor);
+    const colors=labels.map((_,j)=>CHART_COLORS[j%CHART_COLORS.length]);
+    new Chart(document.getElementById(`chart-${i}`),{
+      type:'doughnut',
+      data:{labels,datasets:[{data:values,backgroundColor:colors,borderWidth:0}]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},datalabels:{display:false}},cutout:'62%'}
     });
-
-    const total = values.reduce((a,b)=>a+b,0);
-    document.getElementById(`legend-${i}`).innerHTML = ind.datos.map((d,j)=>`
+    const total=values.reduce((a,b)=>a+b,0);
+    document.getElementById(`legend-${i}`).innerHTML=ind.datos.map((d,j)=>`
       <div class="legend-row">
         <span class="legend-dot" style="background:${colors[j]}"></span>
         <span>${d.etiqueta}</span>
@@ -561,389 +543,347 @@ function renderIndicadores(indicadores){
   });
 }
 
-// ── EVOLUCIÓN: tarjetas automáticas + barras agrupadas ──
-function renderEvolucion(ind, idx){
-  const p1 = ind.jugadores.map(j => j.p1);
-  const p2 = ind.jugadores.map(j => j.p2);
-  const total = ind.jugadores.length;
-  const avg1 = p1.reduce((a,b)=>a+b,0) / total;
-  const avg2 = p2.reduce((a,b)=>a+b,0) / total;
-  const mejora = avg2 - avg1;
-  const mejoraPct = (mejora / avg1) * 100;
+// ═══════════════════════════════════════════
+// EVOLUCIÓN (barras agrupadas + stat cards + ref lines Y)
+// ═══════════════════════════════════════════
+function renderEvolucion(ind,idx){
+  const p1=ind.jugadores.map(j=>j.p1),p2=ind.jugadores.map(j=>j.p2),total=ind.jugadores.length;
+  const avg1=p1.reduce((a,b)=>a+b,0)/total,avg2=p2.reduce((a,b)=>a+b,0)/total;
+  const mejora=avg2-avg1,mejoraPct=(mejora/avg1)*100;
+  const uOpt=ind.umbral_optimo||0,uEle=ind.umbral_elevado||999;
+  const zona=v=>v<=uOpt?'Zona óptima':v>uEle?'Zona elevada':'Zona aceptable';
+  const opt1=p1.filter(v=>v<=uOpt).length,opt2=p2.filter(v=>v<=uOpt).length;
+  const ele1=p1.filter(v=>v>uEle).length,ele2=p2.filter(v=>v>uEle).length;
+  const mClass=mejora<=0?'good':'warn',mSign=mejora>0?'+':'';
+  const minW=Math.max(600,total*32);
+  const cardId=`evolCard-${idx}`;
+  const refLines=(ind.ref_lines_y||[]).map(r=>({axis:'y',value:r.value,color:r.color||'#9FACA3',label:r.label||''}));
 
-  const uOpt = ind.umbral_optimo, uEle = ind.umbral_elevado;
-  const zona = v => v <= uOpt ? 'Zona óptima' : v > uEle ? 'Zona elevada' : 'Zona aceptable';
+  const cardsHTML=`<div class="stat-cards-grid">
+    <div class="stat-card"><div class="stat-card-label">Promedio ${ind.unidad||''} ${ind.periodo1_label}</div>
+      <div class="stat-card-value">${avg1.toFixed(1)} ${ind.unidad||''}</div>
+      <div class="stat-card-sub">${zona(avg1)}</div></div>
+    <div class="stat-card"><div class="stat-card-label">Promedio ${ind.unidad||''} ${ind.periodo2_label}</div>
+      <div class="stat-card-value">${avg2.toFixed(1)} ${ind.unidad||''}</div>
+      <div class="stat-card-sub">${zona(avg2)}</div></div>
+    <div class="stat-card"><div class="stat-card-label">Mejora promedio</div>
+      <div class="stat-card-value ${mClass}">${mSign}${mejora.toFixed(1)} ${ind.unidad||''}</div>
+      <div class="stat-card-sub">${mSign}${mejoraPct.toFixed(0)}%</div></div>
+    ${uOpt?`<div class="stat-card"><div class="stat-card-label">En zona óptima (≤${uOpt})</div>
+      <div class="stat-card-value">${opt2}/${total}</div>
+      <div class="stat-card-sub">vs ${opt1} en ${ind.periodo1_label}</div></div>
+    <div class="stat-card"><div class="stat-card-label">En zona elevada (&gt;${uEle})</div>
+      <div class="stat-card-value">${ele2}/${total}</div>
+      <div class="stat-card-sub">vs ${ele1} en ${ind.periodo1_label}</div></div>`:''}
+  </div>`;
 
-  const opt1 = p1.filter(v => v <= uOpt).length, opt2 = p2.filter(v => v <= uOpt).length;
-  const ele1 = p1.filter(v => v > uEle).length,  ele2 = p2.filter(v => v > uEle).length;
-
-  const mejoraClass = mejora <= 0 ? 'good' : 'warn';
-  const mejoraSigno = mejora > 0 ? '+' : '';
-
-  const cardsHTML = `
-    <div class="stat-cards-grid">
-      <div class="stat-card">
-        <div class="stat-card-label">Promedio ${ind.unidad||''} ${ind.periodo1_label}</div>
-        <div class="stat-card-value">${avg1.toFixed(1)} ${ind.unidad||''}</div>
-        <div class="stat-card-sub">${zona(avg1)}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card-label">Promedio ${ind.unidad||''} ${ind.periodo2_label}</div>
-        <div class="stat-card-value">${avg2.toFixed(1)} ${ind.unidad||''}</div>
-        <div class="stat-card-sub">${zona(avg2)}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card-label">Mejora promedio</div>
-        <div class="stat-card-value ${mejoraClass}">${mejoraSigno}${mejora.toFixed(1)} ${ind.unidad||''}</div>
-        <div class="stat-card-sub">${mejoraSigno}${mejoraPct.toFixed(0)}%</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card-label">En zona óptima (≤${uOpt})</div>
-        <div class="stat-card-value">${opt2} / ${total}</div>
-        <div class="stat-card-sub">vs ${opt1} en ${ind.periodo1_label}</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-card-label">En zona elevada (&gt;${uEle})</div>
-        <div class="stat-card-value">${ele2} / ${total}</div>
-        <div class="stat-card-sub">vs ${ele1} en ${ind.periodo1_label}</div>
-      </div>
-    </div>`;
-
-  const chartHTML = `
-    <div class="evolucion-chart-card">
-      <div class="evolucion-chart-title">${ind.titulo}</div>
-      <div class="evolucion-legend-top">
+  document.getElementById(`ind-${idx}`).innerHTML=`
+    <div class="chart-card-full" id="${cardId}">
+      <button class="ampliar-btn" onclick="toggleFullscreen('${cardId}')">⛶ Ampliar</button>
+      <div class="chart-card-title">${ind.titulo||'Evolución'}</div>
+      <div class="chart-card-legend">
         <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:#B5604A"></span>${ind.periodo1_label}</div>
         <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:#52796F"></span>${ind.periodo2_label}</div>
       </div>
+      ${cardsHTML}
       <div class="evolucion-scroll">
-        <div class="evolucion-canvas-wrap" style="min-width:${Math.max(600, total*32)}px">
-          <canvas id="evolChart-${idx}"></canvas>
-        </div>
+        <div class="evolucion-canvas-wrap" style="min-width:${minW}px"><canvas id="evolChart-${idx}"></canvas></div>
       </div>
     </div>`;
 
-  document.getElementById(`ind-${idx}`).innerHTML = cardsHTML + chartHTML;
-
-  new Chart(document.getElementById(`evolChart-${idx}`), {
-    type: 'bar',
-    data: {
-      labels: ind.jugadores.map(j => j.nombre),
-      datasets: [
-        { label: ind.periodo1_label, data: p1, backgroundColor: '#B5604A', borderRadius: 3 },
-        { label: ind.periodo2_label, data: p2, backgroundColor: '#52796F', borderRadius: 3 }
+  new Chart(document.getElementById(`evolChart-${idx}`),{
+    type:'bar',
+    data:{
+      labels:ind.jugadores.map(j=>j.nombre),
+      datasets:[
+        {label:ind.periodo1_label,data:p1,backgroundColor:'#B5604A',borderRadius:3},
+        {label:ind.periodo2_label,data:p2,backgroundColor:'#52796F',borderRadius:3}
       ]
     },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, datalabels: { display: false } },
-      scales: {
-        x: { ticks: { font: { size: 10 } }, grid: { display: false } },
-        y: { beginAtZero: true, grid: { color: '#EDF0EC' } }
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},datalabels:{display:false},
+        refLines:{lines:refLines}},
+      scales:{
+        x:{ticks:{font:{size:10}},grid:{display:false}},
+        y:{beginAtZero:true,grid:{color:'#EDF0EC'},ticks:{font:{size:11}}}
       }
     }
   });
 }
 
-// ── COMPARACIÓN DE PROMEDIOS (3 mini gráficos: talla/peso/imc, etc.) ──
-function renderComparacionPromedios(ind, idx){
-  const subtitle = ind.subtitulo ? `<div class="chart-card-subtitle">${ind.subtitulo}</div>` : '';
-  const html = `
+// ═══════════════════════════════════════════
+// COMPARACIÓN DE PROMEDIOS (mini gráficos)
+// ═══════════════════════════════════════════
+function renderComparacionPromedios(ind,idx){
+  const sub=ind.subtitulo?`<div class="chart-card-subtitle">${ind.subtitulo}</div>`:'';
+  document.getElementById(`ind-${idx}`).innerHTML=`
     <div class="chart-card-full">
-      <div class="chart-card-title">${ind.titulo}</div>
-      ${subtitle}
-      <div class="promedios-row">
-        ${ind.metricas.map((m,j) => `
-          <div class="promedio-mini">
-            <div class="promedio-mini-label">${m.nombre}${m.unidad ? ' ('+m.unidad+')' : ''}</div>
-            <div class="promedio-mini-wrap"><canvas id="cmpChart-${idx}-${j}"></canvas></div>
-          </div>`).join('')}
+      <div class="chart-card-title">${ind.titulo}</div>${sub}
+      <div class="promedios-row">${ind.metricas.map((m,j)=>`
+        <div class="promedio-mini">
+          <div class="promedio-mini-label">${m.nombre}${m.unidad?' ('+m.unidad+')':''}</div>
+          <div class="promedio-mini-wrap"><canvas id="cmpChart-${idx}-${j}"></canvas></div>
+        </div>`).join('')}
       </div>
     </div>`;
-  document.getElementById(`ind-${idx}`).innerHTML = html;
-
-  ind.metricas.forEach((m,j) => {
-    new Chart(document.getElementById(`cmpChart-${idx}-${j}`), {
-      type: 'bar',
-      data: {
-        labels: [ind.periodo1_label, ind.periodo2_label],
-        datasets: [{ data: [m.p1, m.p2], backgroundColor: ['#A9C2B8','#354F52'], borderRadius: 4 }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          datalabels: {
-            anchor: 'end', align: 'top', color: '#2F3E46',
-            font: { size: 12, weight: '700' },
-            formatter: v => v
-          }
-        },
-        scales: {
-          x: { grid: { display: false }, ticks: { font: { size: 11 } } },
-          y: { display: false, beginAtZero: false }
-        },
-        layout: { padding: { top: 14 } }
-      }
+  ind.metricas.forEach((m,j)=>{
+    new Chart(document.getElementById(`cmpChart-${idx}-${j}`),{
+      type:'bar',
+      data:{labels:[ind.periodo1_label,ind.periodo2_label],
+        datasets:[{data:[m.p1,m.p2],backgroundColor:['#A9C2B8','#354F52'],borderRadius:4}]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},
+          datalabels:{anchor:'end',align:'top',color:'#2F3E46',font:{size:12,weight:'700'},formatter:v=>v}},
+        scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{display:false,beginAtZero:false}},
+        layout:{padding:{top:14}}}
     });
   });
 }
 
-// ── BARRAS AGRUPADAS POR CATEGORÍA (ej: estado nutricional) ──
-function renderBarrasGrupo(ind, idx){
-  const subtitle = ind.subtitulo ? `<div class="chart-card-subtitle">${ind.subtitulo}</div>` : '';
-  const html = `
-    <div class="chart-card-full">
-      <div class="chart-card-title">${ind.titulo}</div>
-      ${subtitle}
-      <div class="chart-card-legend">
+// ═══════════════════════════════════════════
+// BARRAS GRUPO (con colores por categoría opcionales)
+// ═══════════════════════════════════════════
+function renderBarrasGrupo(ind,idx){
+  const sub=ind.subtitulo?`<div class="chart-card-subtitle">${ind.subtitulo}</div>`:'';
+  const usaCatColors=!!ind.categorias[0]?.color1;
+  const bg1=usaCatColors?ind.categorias.map(c=>c.color1):'#A9C2B8';
+  const bg2=usaCatColors?ind.categorias.map(c=>c.color2):'#354F52';
+
+  const legHTML=usaCatColors
+    ?`<div class="chart-card-legend">${ind.categorias.map(c=>`
+        <div class="evolucion-legend-item">
+          <span style="display:inline-flex;gap:3px">
+            <span class="evolucion-legend-dot" style="background:${c.color1}"></span>
+            <span class="evolucion-legend-dot" style="background:${c.color2}"></span>
+          </span>${c.etiqueta}
+        </div>`).join('')}</div>`
+    :`<div class="chart-card-legend">
         <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:#A9C2B8"></span>${ind.periodo1_label}</div>
         <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:#354F52"></span>${ind.periodo2_label}</div>
-      </div>
+      </div>`;
+
+  document.getElementById(`ind-${idx}`).innerHTML=`
+    <div class="chart-card-full">
+      <div class="chart-card-title">${ind.titulo}</div>${sub}${legHTML}
       <div class="evolucion-canvas-wrap"><canvas id="grpChart-${idx}"></canvas></div>
     </div>`;
-  document.getElementById(`ind-${idx}`).innerHTML = html;
 
-  new Chart(document.getElementById(`grpChart-${idx}`), {
-    type: 'bar',
-    data: {
-      labels: ind.categorias.map(c => c.etiqueta),
-      datasets: [
-        { label: ind.periodo1_label, data: ind.categorias.map(c=>c.p1), backgroundColor: '#A9C2B8', borderRadius: 3 },
-        { label: ind.periodo2_label, data: ind.categorias.map(c=>c.p2), backgroundColor: '#354F52', borderRadius: 3 }
+  new Chart(document.getElementById(`grpChart-${idx}`),{
+    type:'bar',
+    data:{
+      labels:ind.categorias.map(c=>c.etiqueta),
+      datasets:[
+        {label:ind.periodo1_label,data:ind.categorias.map(c=>c.p1),backgroundColor:bg1,borderRadius:3},
+        {label:ind.periodo2_label,data:ind.categorias.map(c=>c.p2),backgroundColor:bg2,borderRadius:3}
       ]
     },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        datalabels: { anchor: 'end', align: 'top', color: '#2F3E46', font: { size: 11, weight: '700' } }
-      },
-      scales: {
-        x: { grid: { display: false } },
-        y: { beginAtZero: true, grid: { color: '#EDF0EC' }, title: { display: !!ind.eje_y_label, text: ind.eje_y_label||'' } }
-      },
-      layout: { padding: { top: 16 } }
-    }
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        datalabels:{anchor:'end',align:'top',color:'#2F3E46',font:{size:11,weight:'700'}}},
+      scales:{x:{grid:{display:false}},
+        y:{beginAtZero:true,grid:{color:'#EDF0EC'},
+          title:{display:!!ind.eje_y_label,text:ind.eje_y_label||''}}},
+      layout:{padding:{top:16}}}
   });
 }
 
-// ── MADURACIÓN BIOLÓGICA (puntos por jugador, ordenado, línea de promedio) ──
-function renderMaduracion(ind, idx){
-  const ordenados = [...ind.jugadores].sort((a,b) => b.valor - a.valor);
-  const promedio = ind.promedio ?? (ordenados.reduce((s,j)=>s+j.valor,0)/ordenados.length);
-  const h = Math.max(360, ordenados.length * 22 + 60);
-  const cardId = `madCard-${idx}`;
+// ═══════════════════════════════════════════
+// MADURACIÓN (barras horizontales o puntos/lollipop)
+// ═══════════════════════════════════════════
+function renderMaduracion(ind,idx){
+  const ordenados=[...ind.jugadores].sort((a,b)=>b.valor-a.valor);
+  const prom=ind.promedio??(ordenados.reduce((s,j)=>s+j.valor,0)/ordenados.length);
+  const h=Math.max(400,ordenados.length*22+60);
+  const cardId=`madCard-${idx}`;
+  const destacados=new Set(ind.destacados||[]);
+  const usePuntos=ind.estilo==='puntos';
 
-  const html = `
+  document.getElementById(`ind-${idx}`).innerHTML=`
     <div class="chart-card-full" id="${cardId}">
       <button class="ampliar-btn" onclick="toggleFullscreen('${cardId}')">⛶ Ampliar</button>
       <div class="chart-card-title">${ind.titulo}</div>
-      <div class="chart-card-subtitle">Promedio del plantel: ${promedio.toFixed(1)} ${ind.unidad||''}</div>
+      <div class="chart-card-subtitle">Promedio del plantel: ${prom.toFixed(1)} ${ind.unidad||''}</div>
       <div class="percentil-scroll">
         <div style="position:relative;height:${h}px;min-width:480px">
           <canvas id="madChart-${idx}"></canvas>
         </div>
       </div>
     </div>`;
-  document.getElementById(`ind-${idx}`).innerHTML = html;
 
-  new Chart(document.getElementById(`madChart-${idx}`), {
-    type: 'bar',
-    data: {
-      labels: ordenados.map(j => j.nombre),
-      datasets: [{ data: ordenados.map(j=>j.valor), backgroundColor:'#52796F', borderRadius:4, barThickness:14 }]
-    },
-    options: {
-      indexAxis:'y', responsive:true, maintainAspectRatio:false,
-      plugins: {
-        legend:{ display:false },
-        datalabels:{
-          anchor:'end', align:'right', color:'#354F52',
-          font:{ size:10.5, weight:'700' },
-          formatter: v => `${v} ${ind.unidad||''}`
+  if(usePuntos){
+    // Scatter horizontal: X=valor, Y=índice, nombres en ticks Y
+    new Chart(document.getElementById(`madChart-${idx}`),{
+      type:'scatter',
+      data:{datasets:[{
+        data:ordenados.map((j,i)=>({x:j.valor,y:i,nombre:j.nombre})),
+        backgroundColor:ordenados.map(j=>destacados.has(j.nombre)?'#CC3333':'#52796F'),
+        pointRadius:6,pointHoverRadius:8,pointStyle:'circle'
+      }]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{
+          legend:{display:false},
+          datalabels:{display:false},
+          tooltip:{callbacks:{label:ctx=>`${ctx.raw.nombre}: ${ctx.raw.x} ${ind.unidad||''}`}},
+          refLines:{lines:[{axis:'x',value:prom,color:'#9FACA3',label:`Promedio ${prom.toFixed(1)}`}]}
         },
-        refLines:{ lines:[{ axis:'x', value:promedio, color:'#C99A4A' }] }
-      },
-      scales:{
-        x:{ title:{ display:!!ind.unidad, text:ind.unidad||'' }, grid:{ color:'#EDF0EC' } },
-        y:{ ticks:{ font:{ size:10.5 } }, grid:{ display:false } }
-      },
-      layout:{ padding:{ right:55 } }
-    }
-  });
+        scales:{
+          x:{title:{display:!!ind.unidad,text:ind.unidad||''},grid:{color:'#EDF0EC'}},
+          y:{min:-1,max:ordenados.length,reverse:false,
+            ticks:{stepSize:1,font:{size:10.5},callback:(v)=>ordenados[v]?.nombre||''},
+            grid:{display:false}}
+        }
+      }
+    });
+  } else {
+    // Barras horizontales clásico
+    new Chart(document.getElementById(`madChart-${idx}`),{
+      type:'bar',
+      data:{labels:ordenados.map(j=>j.nombre),
+        datasets:[{data:ordenados.map(j=>j.valor),
+          backgroundColor:ordenados.map(j=>destacados.has(j.nombre)?'#CC3333':'#52796F'),
+          borderRadius:4,barThickness:14}]},
+      options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},
+          datalabels:{anchor:'end',align:'right',color:'#354F52',font:{size:10.5,weight:'700'},
+            formatter:v=>`${v} ${ind.unidad||''}`},
+          refLines:{lines:[{axis:'x',value:prom,color:'#C99A4A'}]}},
+        scales:{x:{title:{display:!!ind.unidad,text:ind.unidad||''},grid:{color:'#EDF0EC'}},
+          y:{ticks:{font:{size:10.5}},grid:{display:false}}},
+        layout:{padding:{right:55}}}
+    });
+  }
 }
 
-// ── DISPERSIÓN (Δ talla vs Δ peso, u otra relación de dos variables) ──
-function renderDispersion(ind, idx){
-  const subtitle = ind.subtitulo ? `<div class="chart-card-subtitle">${ind.subtitulo}</div>` : '';
-  const cardId = `dispCard-${idx}`;
-  const html = `
+// ═══════════════════════════════════════════
+// DISPERSIÓN
+// ═══════════════════════════════════════════
+function renderDispersion(ind,idx){
+  const sub=ind.subtitulo?`<div class="chart-card-subtitle">${ind.subtitulo}</div>`:'';
+  const cardId=`dispCard-${idx}`;
+  document.getElementById(`ind-${idx}`).innerHTML=`
     <div class="chart-card-full" id="${cardId}">
       <button class="ampliar-btn" onclick="toggleFullscreen('${cardId}')">⛶ Ampliar</button>
-      <div class="chart-card-title">${ind.titulo}</div>
-      ${subtitle}
+      <div class="chart-card-title">${ind.titulo}</div>${sub}
       <div class="scatter-chart-wrap"><canvas id="dispChart-${idx}"></canvas></div>
     </div>`;
-  document.getElementById(`ind-${idx}`).innerHTML = html;
-
-  new Chart(document.getElementById(`dispChart-${idx}`), {
-    type: 'scatter',
-    data: {
-      datasets: [{
-        data: ind.jugadores.map(j => ({ x:j.x, y:j.y, nombre:j.nombre })),
-        backgroundColor: '#354F52', pointRadius:5, pointHoverRadius:7
-      }]
-    },
-    options: {
-      responsive:true, maintainAspectRatio:false,
-      plugins: {
-        legend:{ display:false },
-        datalabels:{
-          align:'top', anchor:'end', color:'#52796F',
-          font:{ size:10 }, formatter:(v) => v.nombre
-        },
-        refLines:{ lines:[
-          { axis:'x', value:0, color:'#C7CDC8' },
-          { axis:'y', value:0, color:'#C7CDC8' }
-        ]}
-      },
-      scales: {
-        x:{ title:{ display:!!ind.eje_x_label, text:ind.eje_x_label||'' }, grid:{ color:'#F2F4F1' } },
-        y:{ title:{ display:!!ind.eje_y_label, text:ind.eje_y_label||'' }, grid:{ color:'#F2F4F1' } }
-      }
-    }
+  new Chart(document.getElementById(`dispChart-${idx}`),{
+    type:'scatter',
+    data:{datasets:[{data:ind.jugadores.map(j=>({x:j.x,y:j.y,nombre:j.nombre})),
+      backgroundColor:'#354F52',pointRadius:5,pointHoverRadius:7}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        datalabels:{align:'top',anchor:'end',color:'#52796F',font:{size:10},formatter:v=>v.nombre},
+        tooltip:{callbacks:{label:ctx=>`${ctx.raw.nombre} (${ctx.raw.x}, ${ctx.raw.y})`}},
+        refLines:{lines:[{axis:'x',value:0,color:'#C7CDC8'},{axis:'y',value:0,color:'#C7CDC8'}]}},
+      scales:{
+        x:{title:{display:!!ind.eje_x_label,text:ind.eje_x_label||''},grid:{color:'#F2F4F1'}},
+        y:{title:{display:!!ind.eje_y_label,text:ind.eje_y_label||''},grid:{color:'#F2F4F1'}}
+      }}
   });
 }
 
-// ── PERCENTIL POR JUGADOR (barras horizontales, colores por zona) ──
-function renderPercentil(ind, idx){
-  const ordenados = [...ind.jugadores].sort((a,b) => b.valor - a.valor);
-  const h = Math.max(400, ordenados.length * 22 + 60);
-  const cardId = `percCard-${idx}`;
-
-  const getColor = (v) => {
-    if (v < 10)  return '#4A90D9';
-    if (v <= 85) return '#2E8B57';
-    if (v <= 97) return '#E87722';
-    return '#CC2222';
-  };
-
-  const zonas = ind.zonas || [
-    { label:'Bajo (<P10)',        color:'#4A90D9' },
-    { label:'Normal (P10-P85)',   color:'#2E8B57' },
-    { label:'Elevado (P85-P97)',  color:'#E87722' },
-    { label:'Muy Elevado (>P97)', color:'#CC2222' }
+// ═══════════════════════════════════════════
+// PERCENTIL (barras horizontales, colores por zona)
+// ═══════════════════════════════════════════
+function renderPercentil(ind,idx){
+  const ordenados=[...ind.jugadores].sort((a,b)=>b.valor-a.valor);
+  const h=Math.max(400,ordenados.length*22+60);
+  const cardId=`percCard-${idx}`;
+  const getColor=v=>v<10?'#4A90D9':v<=85?'#2E8B57':v<=97?'#E87722':'#CC2222';
+  const zonas=ind.zonas||[
+    {label:'Bajo (<P10)',color:'#4A90D9'},
+    {label:'Normal (P10-P85)',color:'#2E8B57'},
+    {label:'Elevado (P85-P97)',color:'#E87722'},
+    {label:'Muy Elevado (>P97)',color:'#CC2222'}
   ];
+  const refLines=(ind.ref_lines||[10,85,97]).map(v=>({axis:'x',value:v,color:'rgba(160,80,80,.55)'}));
 
-  const legendHTML = zonas.map(z =>
-    `<div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:${z.color}"></span>${z.label}</div>`
-  ).join('');
-
-  const refLines = (ind.ref_lines || [10,85,97]).map(v => ({ axis:'x', value:v, color:'rgba(150,80,80,.55)' }));
-
-  const html = `
+  document.getElementById(`ind-${idx}`).innerHTML=`
     <div class="chart-card-full" id="${cardId}">
       <button class="ampliar-btn" onclick="toggleFullscreen('${cardId}')">⛶ Ampliar</button>
       <div class="chart-card-title">${ind.titulo}</div>
-      ${ind.subtitulo ? `<div class="chart-card-subtitle">${ind.subtitulo}</div>` : ''}
-      <div class="percentil-legend">${legendHTML}</div>
+      ${ind.subtitulo?`<div class="chart-card-subtitle">${ind.subtitulo}</div>`:''}
+      <div class="percentil-legend">${zonas.map(z=>`
+        <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:${z.color}"></span>${z.label}</div>`).join('')}
+      </div>
       <div class="percentil-scroll">
         <div style="position:relative;height:${h}px;min-width:480px">
           <canvas id="percChart-${idx}"></canvas>
         </div>
       </div>
     </div>`;
-  document.getElementById(`ind-${idx}`).innerHTML = html;
 
-  new Chart(document.getElementById(`percChart-${idx}`), {
-    type: 'bar',
-    data: {
-      labels: ordenados.map(j => j.nombre),
-      datasets: [{
-        data: ordenados.map(j => j.valor),
-        backgroundColor: ordenados.map(j => getColor(j.valor)),
-        borderRadius: 3, barThickness: 14
-      }]
-    },
-    options: {
-      indexAxis:'y', responsive:true, maintainAspectRatio:false,
-      plugins: {
-        legend:{ display:false },
-        datalabels:{
-          anchor:'end', align:'right',
-          color: ctx => getColor(ctx.dataset.data[ctx.dataIndex]),
-          font:{ size:10.5, weight:'700' },
-          formatter: v => `P${v}`
-        },
-        refLines:{ lines: refLines }
-      },
+  new Chart(document.getElementById(`percChart-${idx}`),{
+    type:'bar',
+    data:{labels:ordenados.map(j=>j.nombre),
+      datasets:[{data:ordenados.map(j=>j.valor),
+        backgroundColor:ordenados.map(j=>getColor(j.valor)),borderRadius:3,barThickness:14}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        datalabels:{anchor:'end',align:'right',
+          color:ctx=>getColor(ctx.dataset.data[ctx.dataIndex]),
+          font:{size:10.5,weight:'700'},formatter:v=>`P${v}`},
+        refLines:{lines:refLines}},
       scales:{
-        x:{ min:0, max:110, title:{ display:!!ind.eje_x_label, text:ind.eje_x_label||'' }, grid:{ color:'#F2F4F1' } },
-        y:{ ticks:{ font:{ size:10.5 } }, grid:{ display:false } }
-      },
-      layout:{ padding:{ right:40 } }
-    }
+        x:{min:0,max:110,title:{display:!!ind.eje_x_label,text:ind.eje_x_label||''},grid:{color:'#F2F4F1'}},
+        y:{ticks:{font:{size:10.5}},grid:{display:false}}
+      },layout:{padding:{right:40}}}
   });
 }
 
-function setChipActive(id){
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
-  document.getElementById(id)?.classList.add('active');
-}
-
-// ── EXCEL ─────────────────────────────────────
-async function openExcel(catId, idx){
-  const cat = manifest.categorias.find(c=>c.id===catId);
-  const file = cat.excels[idx];
+// ═══════════════════════════════════════════
+// EXCEL VIEWER
+// ═══════════════════════════════════════════
+async function openExcel(catId,idx){
+  const cat=manifest.categorias.find(c=>c.id===catId);
+  const file=(cat.excels||[])[idx];
   setChipActive(`chip-x-${idx}`);
   setViewer(`<div class="loading-state"><div class="spinner"></div><div>Cargando ${file.nombre}…</div></div>`);
-
   try{
-    const r = await fetch(`archivos/${catId}/excel/${file.archivo}?_=${Date.now()}`);
+    const r=await fetch(`archivos/${catId}/excel/${file.archivo}?_=${Date.now()}`);
     if(!r.ok) throw new Error(`Archivo no encontrado: ${file.archivo}`);
-    const buf = await r.arrayBuffer();
-    const wb = XLSX.read(buf,{type:'array',cellDates:true});
+    const buf=await r.arrayBuffer();
+    const wb=XLSX.read(buf,{type:'array',cellDates:true});
     sheets={};
     wb.SheetNames.forEach(name=>{
-      const data = XLSX.utils.sheet_to_json(wb.Sheets[name],{defval:''});
+      const data=XLSX.utils.sheet_to_json(wb.Sheets[name],{defval:''});
       if(data.length) sheets[name]=data;
     });
     const names=Object.keys(sheets);
     if(!names.length) throw new Error('El archivo no tiene datos tabulares.');
-    activeFile=file; sheetNames=names;
-    renderExcel(names[0]);
-  }catch(err){ showViewerError(err.message); }
+    activeFile=file; sheetNames=names; renderExcel(names[0]);
+  }catch(err){showViewerError(err.message);}
 }
 
 function renderExcel(activeSheet){
-  const data=sheets[activeSheet]||[]; activeData=data; sortState={col:-1,dir:'asc'};
+  const data=sheets[activeSheet]||[];activeData=data;sortState={col:-1,dir:'asc'};
   const cols=data.length?Object.keys(data[0]):[];
-  const tabsHTML = sheetNames.length>1
-    ? `<div class="tabs-bar">${sheetNames.map(n=>`<button class="sheet-tab${n===activeSheet?' active':''}" onclick="renderExcel('${n.replace(/'/g,"\\'")}')">${n}</button>`).join('')}</div>`
-    : '';
+  const tabsHTML=sheetNames.length>1?`<div class="tabs-bar">${sheetNames.map(n=>
+    `<button class="sheet-tab${n===activeSheet?' active':''}" onclick="renderExcel('${n.replace(/'/g,"\\'")}')">
+    ${n}</button>`).join('')}</div>`:'';
   setViewer(`
     <div class="viewer-header">
       <div><div class="viewer-title">${activeFile.nombre}</div>
         <div class="viewer-sub">${activeSheet} · ${data.length} registros</div></div>
       <span class="badge badge-xl">Excel</span>
-    </div>
-    ${tabsHTML}
+    </div>${tabsHTML}
     <div class="toolbar">
       <div class="search-wrap">
-        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         <input type="text" class="search-input" id="searchInput" placeholder="Buscar…" oninput="filterTable()">
       </div>
       <span class="row-count" id="rowCount">${data.length} registros</span>
     </div>
     <div class="table-card"><table>
-      <thead><tr>${cols.map((c,i)=>`<th onclick="sortTable(${i},'${c.replace(/'/g,"\\'")}')">${c}</th>`).join('')}</tr></thead>
+      <thead><tr>${cols.map((c,i)=>`<th onclick="sortTable(${i},'${c.replace(/'/g,"\\'")}')">
+        ${c}</th>`).join('')}</tr></thead>
       <tbody id="tbody">${buildRows(data,cols)}</tbody>
     </table></div>`);
 }
 
 function buildRows(data,cols){
-  if(!data.length) return `<tr><td class="no-rows" colspan="${cols.length||1}">Sin resultados</td></tr>`;
+  if(!data.length) return`<tr><td class="no-rows" colspan="${cols.length||1}">Sin resultados</td></tr>`;
   return data.map(row=>`<tr>${cols.map(c=>`<td>${row[c]??''}</td>`).join('')}</tr>`).join('');
 }
 
@@ -957,14 +897,15 @@ function filterTable(){
 
 function sortTable(colIdx,colName){
   document.querySelectorAll('thead th').forEach(t=>t.classList.remove('sort-asc','sort-desc'));
-  sortState.dir = sortState.col===colIdx ? (sortState.dir==='asc'?'desc':'asc') : 'asc';
+  sortState.dir=sortState.col===colIdx?(sortState.dir==='asc'?'desc':'asc'):'asc';
   sortState.col=colIdx;
   document.querySelectorAll('thead th')[colIdx].classList.add(`sort-${sortState.dir}`);
   const cols=activeData.length?Object.keys(activeData[0]):[];
   activeData=[...activeData].sort((a,b)=>{
-    const va=a[colName],vb=b[colName]; const na=parseFloat(va),nb=parseFloat(vb);
+    const va=a[colName],vb=b[colName];
+    const na=parseFloat(va),nb=parseFloat(vb);
     if(!isNaN(na)&&!isNaN(nb)) return sortState.dir==='asc'?na-nb:nb-na;
-    return sortState.dir==='asc' ? String(va).localeCompare(String(vb),'es') : String(vb).localeCompare(String(va),'es');
+    return sortState.dir==='asc'?String(va).localeCompare(String(vb),'es'):String(vb).localeCompare(String(va),'es');
   });
   const q=document.getElementById('searchInput')?.value.toLowerCase().trim()||'';
   const out=q?activeData.filter(r=>Object.values(r).some(v=>String(v).toLowerCase().includes(q))):activeData;
@@ -972,15 +913,16 @@ function sortTable(colIdx,colName){
   document.getElementById('rowCount').textContent=`${out.length} registros`;
 }
 
-// ── PDF (visor propio con pdf.js, sin barra de Chrome) ──
+// ═══════════════════════════════════════════
+// PDF VIEWER (pdf.js custom)
+// ═══════════════════════════════════════════
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-async function openPDF(catId, idx){
-  const cat = manifest.categorias.find(c=>c.id===catId);
-  const file = cat.informes[idx];
+async function openPDF(catId,idx){
+  const cat=manifest.categorias.find(c=>c.id===catId);
+  const file=(cat.informes||[])[idx];
   setChipActive(`chip-p-${idx}`);
-  const url = `archivos/${catId}/informes/${file.archivo}`;
-
+  const url=`archivos/${catId}/informes/${file.archivo}`;
   setViewer(`
     <div class="viewer-header">
       <div><div class="viewer-title">${file.nombre}</div><div class="viewer-sub">${file.fecha||''}</div></div>
@@ -989,59 +931,55 @@ async function openPDF(catId, idx){
     <div class="pdf-card">
       <div class="pdf-toolbar">
         <div class="pdf-toolbar-group">
-          <button class="pdf-btn" onclick="pdfZoom(-0.15)" title="Alejar">−</button>
-          <button class="pdf-btn" onclick="pdfZoom(0.15)" title="Acercar">+</button>
+          <button class="pdf-btn" onclick="pdfZoom(-.15)">−</button>
+          <button class="pdf-btn" onclick="pdfZoom(.15)">+</button>
         </div>
         <span class="pdf-page-info" id="pdfPageInfo">Cargando…</span>
         <a class="pdf-link" href="${url}" target="_blank">Abrir original ↗</a>
       </div>
       <div class="pdf-canvas-area" id="pdfCanvasArea">
-        <div class="pdf-loading">Cargando informe…</div>
+        <div class="loading-state"><div class="spinner"></div></div>
       </div>
     </div>`);
-
   try{
-    pdfDoc = await pdfjsLib.getDocument(url).promise;
-    pdfScale = 1.1;
-    await renderAllPdfPages();
-  }catch(err){
-    document.getElementById('pdfCanvasArea').innerHTML =
-      `<div class="error-card">No se pudo cargar el PDF.<br><span style="font-size:11.5px;opacity:.7">${err.message}</span></div>`;
-  }
+    pdfDoc=await pdfjsLib.getDocument(url).promise;
+    pdfScale=1.1; await renderAllPdfPages();
+  }catch(err){document.getElementById('pdfCanvasArea').innerHTML=`<div class="error-card">${err.message}</div>`;}
 }
 
 async function renderAllPdfPages(){
-  const area = document.getElementById('pdfCanvasArea');
-  area.innerHTML = '';
-  document.getElementById('pdfPageInfo').textContent = `${pdfDoc.numPages} página${pdfDoc.numPages>1?'s':''}`;
-
-  for(let n=1; n<=pdfDoc.numPages; n++){
-    const page = await pdfDoc.getPage(n);
-    const viewport = page.getViewport({ scale: pdfScale });
-    const canvas = document.createElement('canvas');
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    const ctx = canvas.getContext('2d');
-    await page.render({ canvasContext: ctx, viewport }).promise;
+  const area=document.getElementById('pdfCanvasArea'); area.innerHTML='';
+  document.getElementById('pdfPageInfo').textContent=`${pdfDoc.numPages} página${pdfDoc.numPages>1?'s':''}`;
+  for(let n=1;n<=pdfDoc.numPages;n++){
+    const page=await pdfDoc.getPage(n);
+    const vp=page.getViewport({scale:pdfScale});
+    const canvas=document.createElement('canvas');
+    canvas.width=vp.width; canvas.height=vp.height;
+    await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;
     area.appendChild(canvas);
   }
 }
 
 function pdfZoom(delta){
-  if(!pdfDoc) return;
-  pdfScale = Math.min(2.4, Math.max(0.5, pdfScale + delta));
+  if(!pdfDoc)return;
+  pdfScale=Math.min(2.4,Math.max(0.5,pdfScale+delta));
   renderAllPdfPages();
 }
 
-// ── HELPERS ───────────────────────────────────
+// ═══════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════
 function setViewer(html){
-  const v = document.getElementById('viewerArea');
-  if(v){ v.innerHTML = html; } else { document.getElementById('main').innerHTML = html; }
+  const v=document.getElementById('viewerArea');
+  if(v){v.innerHTML=html;}else{document.getElementById('main').innerHTML=html;}
 }
 function showViewerError(msg){
   setViewer(`<div class="error-card"><strong>No se pudo cargar el archivo.</strong><br>${msg}</div>`);
 }
 
+// ═══════════════════════════════════════════
+// ARRANCAR
+// ═══════════════════════════════════════════
 checkSession();
 </script>
 </body>
