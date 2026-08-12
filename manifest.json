@@ -160,9 +160,9 @@
         "tipo": "dona",
         "titulo": "Estado de pliegues cutáneos (Junio)",
         "datos": [
-            { "etiqueta": "Óptimo",    "valor": 20 },
-            { "etiqueta": "Aceptable", "valor": 4 },
-            { "etiqueta": "Elevado",   "valor": 2 }
+            { "etiqueta": "Óptimo",    "valor": 21 },
+            { "etiqueta": "Aceptable", "valor": 5 },
+            { "etiqueta": "Elevado",   "valor": 3 }
         ]
     },
     {
@@ -178,6 +178,8 @@
                         { "nombre": "Jonas Lucero", "p1": 85, "p2": 70 },
                         { "nombre": "Mateo Benitez", "p1": 53, "p2": 57 },
                         { "nombre": "Ian Rodas", "p1": 90, "p2": 81 },
+                        { "nombre": "Constantino Paparatto", "p1": 118, "p2": 90 },
+                        { "nombre": "Matias Rodriguez", "p1": 77, "p2": 71 },
                         { "nombre": "Noah Varas", "p1": 56, "p2": 50 },
                         { "nombre": "Ramiro Caceres", "p1": 93, "p2": 66 },
                         { "nombre": "Owen Luna", "p1": 46, "p2": 42 },
@@ -196,6 +198,7 @@
                         { "nombre": "Valentino Santillan", "p1": 86, "p2": 65 },
                         { "nombre": "Ian Bera", "p1": 42, "p2": 45 },
                         { "nombre": "Nehuen Atela", "p1": 92, "p2": 76 },
+                        { "nombre": "Tiziano Santapaola", "p1": 54, "p2": 52 },
                         { "nombre": "Santiago Palavecino", "p1": 37, "p2": 36 },
                         { "nombre": "Leon Ferreira", "p1": 65, "p2": 40 },
                         { "nombre": "Fabricio Allou", "p1": 65, "p2": 49 },
