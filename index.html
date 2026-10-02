@@ -240,8 +240,55 @@ tbody td:first-child{font-weight:600;color:var(--c5)}
 .mobile-select option{background:#2F3E46;color:#fff}
 .mobile-select optgroup{font-size:11px;color:rgba(255,255,255,.4)}
 
+/* ── SEGUIMIENTO INDIVIDUAL ──────────────── */
+.seg-intro{margin-bottom:22px}
+.seg-intro h2{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--c5);letter-spacing:-.3px}
+.seg-intro p{font-size:13px;color:var(--text-3);margin-top:4px}
+.seg-search{position:relative;max-width:460px;margin-bottom:28px}
+.seg-search-input{width:100%;padding:13px 16px 13px 42px;border:1.5px solid var(--border);border-radius:9px;
+  font-family:var(--sans);font-size:15px;color:var(--text);background:var(--card);outline:none;
+  transition:border-color .15s,box-shadow .15s}
+.seg-search-input:focus{border-color:var(--c3);box-shadow:0 0 0 3px rgba(82,121,111,.13)}
+.seg-search-input::placeholder{color:var(--text-3)}
+.seg-search-icon{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--text-3);pointer-events:none}
+.seg-results{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--card);
+  border:1px solid var(--border);border-radius:9px;box-shadow:0 12px 32px rgba(47,62,70,.12);
+  z-index:50;overflow:hidden;display:none}
+.seg-results.open{display:block}
+.seg-result{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;
+  padding:11px 16px;background:none;border:none;border-bottom:1px solid var(--border);
+  font-family:var(--sans);font-size:14px;color:var(--text);cursor:pointer;text-align:left}
+.seg-result:last-child{border-bottom:none}
+.seg-result:hover,.seg-result.hl{background:#F0F4F1}
+.seg-result mark{background:none;color:var(--c4);font-weight:700}
+.seg-result-cat{font-size:11.5px;color:var(--text-3);white-space:nowrap}
+.seg-noresult{padding:14px 16px;font-size:13px;color:var(--text-3)}
+
+.seg-player{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding-bottom:16px;margin-bottom:20px;border-bottom:1px solid var(--border)}
+.seg-player-name{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--c5);letter-spacing:-.3px}
+.seg-player-meta{font-size:13px;color:var(--text-2);display:flex;gap:18px;flex-wrap:wrap}
+.seg-player-meta b{color:var(--c5);font-weight:600}
+.seg-charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px;margin-bottom:22px}
+.seg-charts .chart-card-full{margin-bottom:0}
+.seg-canvas{position:relative;height:340px}
+.seg-key{display:flex;gap:16px;flex-wrap:wrap;margin:2px 0 12px;font-size:11.5px;color:var(--text-2)}
+.seg-key span{display:inline-flex;align-items:center;gap:6px}
+.seg-key i{display:inline-block;width:18px;height:9px;border-radius:2px}
+.seg-ref-note{font-size:11.5px;color:var(--text-3);margin-top:10px;line-height:1.5}
+.seg-ref-note.prov{color:#8A6420}
+.seg-empty{background:var(--card);border:1px dashed var(--border);border-radius:var(--r);
+  padding:40px 24px;text-align:center;color:var(--text-3);font-size:13.5px;line-height:1.6}
+.seg-warn{background:#FBF5E6;border:1px solid #EBD9A8;border-radius:8px;padding:12px 16px;
+  font-size:13px;color:#7A5C1E;margin-bottom:18px;line-height:1.55}
+.seg-table td.num{text-align:right;font-variant-numeric:tabular-nums}
+.seg-table th.num{text-align:right}
+.pct-chip{display:inline-block;min-width:38px;padding:2px 8px;border-radius:10px;font-size:11.5px;font-weight:600;text-align:center}
+
 @media(max-width:800px){
   .mobile-bar{display:block}
+  .seg-charts{grid-template-columns:1fr}
+  .seg-canvas{height:300px}
   .main{padding:18px 14px 36px}
   .viewer-header{flex-direction:column;align-items:flex-start}
   .search-wrap{max-width:100%}
@@ -404,6 +451,7 @@ function initApp(m){
 
 function buildTopTabs(){
   let html=`<button class="top-tab active" id="tab-home" onclick="showHome()">Inicio</button>`;
+  html+=`<button class="top-tab" id="tab-seguimiento" onclick="showSeguimiento()">Seguimiento</button>`;
   manifest.categorias.forEach(c=>{
     html+=`<button class="top-tab" id="tab-${c.id}" onclick="showCategory('${c.id}')">${c.nombre}</button>`;
   });
@@ -412,13 +460,14 @@ function buildTopTabs(){
 
 function buildMobile(){
   const sel=document.getElementById('mobileSelect');
-  sel.innerHTML=`<option value="">— Seleccioná una sección —</option><option value="home">Inicio</option>`;
+  sel.innerHTML=`<option value="">— Seleccioná una sección —</option><option value="home">Inicio</option><option value="seguimiento">Seguimiento</option>`;
   manifest.categorias.forEach(c=>{sel.innerHTML+=`<option value="cat-${c.id}">${c.nombre}</option>`;});
 }
 
 function handleMobile(v){
   if(!v)return;
   if(v==='home')showHome();
+  else if(v==='seguimiento')showSeguimiento();
   else if(v.startsWith('cat-'))showCategory(v.replace('cat-',''));
 }
 
@@ -964,6 +1013,319 @@ function pdfZoom(delta){
   if(!pdfDoc)return;
   pdfScale=Math.min(2.4,Math.max(0.5,pdfScale+delta));
   renderAllPdfPages();
+}
+
+// ═══════════════════════════════════════════
+// SEGUIMIENTO INDIVIDUAL (peso y talla longitudinal + percentilos)
+//   Datos:       archivos/seguimiento.xlsx  (hojas "Jugadores" y "Mediciones")
+//   Referencias: referencias.json           (tablas LMS por edad, varones)
+// ═══════════════════════════════════════════
+const SEG_FILE='archivos/seguimiento.xlsx';
+const REF_FILE='referencias.json';
+const PCTS=[3,10,25,50,75,90,97];
+const PCT_Z={3:-1.880794,10:-1.281552,25:-0.67449,50:0,75:0.67449,90:1.281552,97:1.880794};
+const MS_YEAR=365.25*864e5;
+let segDataPromise=null, segCharts=[], segCurrent=null;
+
+function segNorm(s){
+  return String(s??'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+}
+function segEsc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function segNum(v){
+  if(v===null||v===undefined||v==='') return null;
+  if(typeof v==='number') return isFinite(v)&&v>0?v:null;
+  const n=parseFloat(String(v).trim().replace(',','.'));
+  return isFinite(n)&&n>0?n:null;
+}
+function segDate(v){
+  if(v===null||v===undefined||v==='') return null;
+  if(v instanceof Date) return new Date(v.getFullYear(),v.getMonth(),v.getDate());
+  if(typeof v==='number'){ // número de serie de Excel
+    const p=XLSX.SSF.parse_date_code(v); return p?new Date(p.y,p.m-1,p.d):null;
+  }
+  const s=String(v).trim();
+  let m=s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
+  if(m){let y=+m[3]; if(y<100) y+=2000; return new Date(y,+m[2]-1,+m[1]);}
+  m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if(m) return new Date(+m[1],+m[2]-1,+m[3]);
+  return null;
+}
+function segFmt(n,d=1){return n==null?'—':n.toLocaleString('es-AR',{minimumFractionDigits:d,maximumFractionDigits:d});}
+function segFmtDate(d){return d?d.toLocaleDateString('es-AR',{day:'numeric',month:'short',year:'numeric'}):'sin fecha';}
+function segAge(dob,date){return (dob&&date)?(date-dob)/MS_YEAR:null;}
+
+// Busca una columna por encabezado, tolerando tildes, mayúsculas y unidades entre paréntesis
+function segCol(row,...names){
+  const keys=Object.keys(row);
+  for(const n of names){
+    const k=keys.find(k=>segNorm(k).replace(/\(.*?\)/g,'').trim()===n);
+    if(k!==undefined) return row[k];
+  }
+  return null;
+}
+
+async function segLoad(){
+  const [xls,ref]=await Promise.all([
+    fetch(SEG_FILE+'?_='+Date.now()).then(r=>r.ok?r.arrayBuffer():null).catch(()=>null),
+    fetch(REF_FILE+'?_='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null)
+  ]);
+  if(!xls) return {missing:true,ref};
+  const wb=XLSX.read(xls,{type:'array'});
+  const sheet=name=>{
+    const real=wb.SheetNames.find(n=>segNorm(n)===name);
+    return real?XLSX.utils.sheet_to_json(wb.Sheets[real],{defval:null,raw:true}):[];
+  };
+  const players=new Map(), orphans=new Set();
+  sheet('jugadores').forEach(r=>{
+    const name=segCol(r,'jugador','nombre'); if(!name) return;
+    const key=segNorm(name);
+    players.set(key,{key,name:String(name).trim(),cat:String(segCol(r,'categoria')??'').trim(),
+      dob:segDate(segCol(r,'fecha de nacimiento','nacimiento','fecha nacimiento')),meds:[]});
+  });
+  sheet('mediciones').forEach(r=>{
+    const name=segCol(r,'jugador','nombre'); if(!name) return;
+    const key=segNorm(name);
+    const peso=segNum(segCol(r,'peso')), talla=segNum(segCol(r,'talla'));
+    if(peso==null&&talla==null) return;
+    if(!players.has(key)){players.set(key,{key,name:String(name).trim(),cat:'',dob:null,meds:[]});orphans.add(String(name).trim());}
+    players.get(key).meds.push({date:segDate(segCol(r,'fecha de medicion','fecha')),peso,talla,
+      obs:String(segCol(r,'observaciones','observacion')??'').trim()});
+  });
+  players.forEach(p=>p.meds.sort((a,b)=>(a.date??Infinity)-(b.date??Infinity)));
+  const list=[...players.values()].filter(p=>p.meds.length).sort((a,b)=>a.name.localeCompare(b.name,'es'));
+  return {list,ref,orphans:[...orphans]};
+}
+
+// ── LMS: interpolación por edad, percentil ↔ valor ──
+function segLMS(table,age){
+  if(!table||!table.length||age<table[0][0]||age>table[table.length-1][0]) return null;
+  let i=0; while(i<table.length-2&&table[i+1][0]<age) i++;
+  const a=table[i],b=table[i+1],t=(age-a[0])/(b[0]-a[0]);
+  return [a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t,a[3]+(b[3]-a[3])*t];
+}
+function segValueAt(lms,z){const[L,M,S]=lms;return Math.abs(L)<1e-6?M*Math.exp(S*z):M*Math.pow(1+L*S*z,1/L);}
+function segNormCdf(z){ // Abramowitz-Stegun 7.1.26
+  const t=1/(1+0.3275911*Math.abs(z)/Math.SQRT2);
+  const e=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-z*z/2);
+  return z>=0?(1+e)/2:(1-e)/2;
+}
+function segPercentile(table,age,x){
+  const lms=segLMS(table,age); if(!lms||x==null) return null;
+  const[L,M,S]=lms;
+  const z=Math.abs(L)<1e-6?Math.log(x/M)/S:(Math.pow(x/M,L)-1)/(L*S);
+  return Math.min(99.9,Math.max(0.1,segNormCdf(z)*100));
+}
+function segPctChip(p){
+  if(p==null) return '<span style="color:var(--text-3)">—</span>';
+  const r=Math.round(p), out=p<3||p>97;
+  const label=p<1?'&lt;P1':p>99?'&gt;P99':'P'+r;
+  return `<span class="pct-chip" style="background:${out?'#FBEAE9':'#EEF2EE'};color:${out?'#9A3B34':'#354F52'}">${label}</span>`;
+}
+
+// ── Vista ──
+async function showSeguimiento(){
+  setActiveTab('seguimiento');
+  document.getElementById('main').innerHTML=`
+    <div class="seg-intro">
+      <h2>Seguimiento individual</h2>
+      <p>Buscá un jugador por nombre o apellido para ver su evolución de peso y talla sobre las curvas de percentilos.</p>
+    </div>
+    <div class="seg-search">
+      <svg class="seg-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" class="seg-search-input" id="segInput" placeholder="Cargando jugadores…" disabled
+        autocomplete="off" aria-label="Buscar jugador" aria-controls="segResults" aria-expanded="false">
+      <div class="seg-results" id="segResults" role="listbox"></div>
+    </div>
+    <div id="segBody"></div>`;
+
+  if(!segDataPromise) segDataPromise=segLoad();
+  let data;
+  try{ data=await segDataPromise; }
+  catch(e){ segDataPromise=null; document.getElementById('segBody').innerHTML=`<div class="error-card">No se pudo leer la planilla de seguimiento.<br><span style="font-size:12px;opacity:.7">${segEsc(e.message)}</span></div>`; return; }
+  if(!document.getElementById('segInput')) return; // el usuario cambió de pestaña
+
+  const input=document.getElementById('segInput'), body=document.getElementById('segBody');
+  if(data.missing||!data.list.length){
+    segDataPromise=null;
+    body.innerHTML=`<div class="seg-empty">Todavía no hay mediciones cargadas para el seguimiento.<br>
+      Subí la planilla <b>seguimiento.xlsx</b> a la carpeta <b>archivos</b> del repositorio.</div>`;
+    input.placeholder='Sin datos cargados'; return;
+  }
+  input.disabled=false; input.placeholder=`Ej: felipe  ·  ${data.list.length} jugadores`;
+  segWireSearch(input,data);
+  if(segCurrent){const p=data.list.find(p=>p.key===segCurrent); if(p) segRenderPlayer(p,data.ref);}
+  else body.innerHTML=`<div class="seg-empty">Escribí al menos dos letras del nombre o apellido.</div>`;
+  input.focus();
+}
+
+function segWireSearch(input,data){
+  const box=document.getElementById('segResults');
+  let matches=[],hl=0;
+  const close=()=>{box.classList.remove('open');input.setAttribute('aria-expanded','false');};
+  const pick=p=>{segCurrent=p.key;input.value=p.name;close();segRenderPlayer(p,data.ref);};
+  const draw=()=>{
+    const q=segNorm(input.value);
+    if(q.length<2){close();return;}
+    const toks=q.split(' ');
+    matches=data.list.filter(p=>toks.every(t=>p.key.includes(t)))
+      .sort((a,b)=>{
+        const sa=a.key.split(' ').some(w=>w.startsWith(toks[0]))?0:1, sb=b.key.split(' ').some(w=>w.startsWith(toks[0]))?0:1;
+        return sa-sb||a.name.localeCompare(b.name,'es');
+      }).slice(0,8);
+    hl=0;
+    box.innerHTML=matches.length?matches.map((p,i)=>{
+      const idx=p.key.indexOf(toks[0]);
+      const nm=idx<0?segEsc(p.name):segEsc(p.name.slice(0,idx))+'<mark>'+segEsc(p.name.slice(idx,idx+toks[0].length))+'</mark>'+segEsc(p.name.slice(idx+toks[0].length));
+      return `<button type="button" class="seg-result${i===0?' hl':''}" role="option" data-i="${i}">
+        <span>${nm}</span><span class="seg-result-cat">${p.cat?'Cat. '+segEsc(p.cat)+' · ':''}${p.meds.length} med.</span></button>`;
+    }).join(''):`<div class="seg-noresult">No hay jugadores que coincidan con “${segEsc(input.value)}”.</div>`;
+    box.classList.add('open');input.setAttribute('aria-expanded','true');
+    box.querySelectorAll('.seg-result').forEach(b=>b.addEventListener('mousedown',e=>{e.preventDefault();pick(matches[+b.dataset.i]);}));
+  };
+  const move=d=>{
+    const items=box.querySelectorAll('.seg-result'); if(!items.length) return;
+    items[hl]?.classList.remove('hl'); hl=(hl+d+items.length)%items.length; items[hl].classList.add('hl');
+  };
+  input.addEventListener('input',draw);
+  input.addEventListener('focus',()=>{if(input.value&&!segCurrent)draw();});
+  input.addEventListener('blur',()=>setTimeout(close,120));
+  input.addEventListener('keydown',e=>{
+    if(e.key==='ArrowDown'){e.preventDefault();move(1);}
+    else if(e.key==='ArrowUp'){e.preventDefault();move(-1);}
+    else if(e.key==='Enter'){if(matches[hl]&&box.classList.contains('open')){e.preventDefault();pick(matches[hl]);}}
+    else if(e.key==='Escape') close();
+    else segCurrent=null;
+  });
+}
+
+function segRenderPlayer(p,ref){
+  segCharts.forEach(c=>c.destroy()); segCharts=[];
+  const body=document.getElementById('segBody'); if(!body) return;
+  const today=new Date(), ageNow=segAge(p.dob,today);
+  const dated=p.meds.filter(m=>m.date);
+  const pts=m=>({age:segAge(p.dob,m.date)});
+  const warns=[];
+  if(!p.dob) warns.push('Falta la <b>fecha de nacimiento</b> de este jugador en la hoja “Jugadores”. Sin ese dato no se puede calcular la edad ni ubicarlo en las curvas; abajo se muestran solo sus mediciones.');
+  if(p.meds.length>dated.length) warns.push(`${p.meds.length-dated.length} medición(es) sin <b>fecha de medición</b>: aparecen en la tabla pero no en los gráficos.`);
+  if(!ref) warns.push('No se encontró el archivo de referencias de percentilos (referencias.json): los gráficos se muestran sin bandas.');
+
+  const refT={peso:ref?.peso?.varones, talla:ref?.talla?.varones};
+  const prov=ref&&/provisori/i.test(ref.nombre||'');
+  const canChart=p.dob&&dated.length>0;
+
+  let prevP=null,prevT=null;
+  const rows=p.meds.map(m=>{
+    const age=segAge(p.dob,m.date);
+    const pp=age!=null?segPercentile(refT.peso,age,m.peso):null;
+    const pt=age!=null?segPercentile(refT.talla,age,m.talla):null;
+    const dP=(m.peso!=null&&prevP!=null)?m.peso-prevP:null, dT=(m.talla!=null&&prevT!=null)?m.talla-prevT:null;
+    if(m.peso!=null) prevP=m.peso; if(m.talla!=null) prevT=m.talla;
+    const sg=v=>v==null?'<span style="color:var(--text-3)">—</span>':(v>0?'+':'')+segFmt(v);
+    return `<tr><td>${segFmtDate(m.date)}</td><td class="num">${age!=null?segFmt(age):'—'}</td>
+      <td class="num">${segFmt(m.peso)}</td><td class="num">${sg(dP)}</td><td>${segPctChip(pp)}</td>
+      <td class="num">${segFmt(m.talla)}</td><td class="num">${sg(dT)}</td><td>${segPctChip(pt)}</td>
+      <td style="white-space:normal;color:var(--text-2);font-size:12.5px">${segEsc(m.obs)}</td></tr>`;
+  }).join('');
+
+  const key=`<div class="seg-key">
+      <span><i style="background:rgba(82,121,111,.30)"></i>P25–P75</span>
+      <span><i style="background:rgba(82,121,111,.17)"></i>P10–P90</span>
+      <span><i style="background:rgba(82,121,111,.10)"></i>P3–P97</span>
+      <span><i style="height:0;border-top:1.5px dashed rgba(53,79,82,.7);border-radius:0"></i>P50</span>
+      <span><i style="width:10px;height:10px;border-radius:50%;background:#2F3E46"></i>${segEsc(p.name.split(' ')[0])}</span>
+    </div>`;
+  const card=(id,title)=>`<div class="chart-card-full" id="segCard-${id}">
+      <button class="ampliar-btn" onclick="toggleFullscreen('segCard-${id}')">⛶ Ampliar</button>
+      <div class="chart-card-title">${title}</div>${key}
+      <div class="seg-canvas"><canvas id="segChart-${id}"></canvas></div></div>`;
+
+  body.innerHTML=`
+    <div class="seg-player">
+      <div class="seg-player-name">${segEsc(p.name)}</div>
+      <div class="seg-player-meta">
+        ${p.cat?`<span>Categoría <b>${segEsc(p.cat)}</b></span>`:''}
+        ${ageNow!=null?`<span>Edad actual <b>${segFmt(ageNow)} años</b></span>`:''}
+        <span><b>${p.meds.length}</b> ${p.meds.length===1?'medición':'mediciones'}</span>
+      </div>
+    </div>
+    ${warns.map(w=>`<div class="seg-warn">${w}</div>`).join('')}
+    ${canChart?`<div class="seg-charts">${card('peso','Peso para la edad')}${card('talla','Talla para la edad')}</div>`:''}
+    <div class="section-label">Mediciones</div>
+    <div class="table-card seg-table"><table>
+      <thead><tr><th>Fecha</th><th class="num">Edad (años)</th><th class="num">Peso (kg)</th><th class="num">Δ peso</th><th>Pc peso</th>
+        <th class="num">Talla (cm)</th><th class="num">Δ talla</th><th>Pc talla</th><th>Observaciones</th></tr></thead>
+      <tbody>${rows}</tbody></table></div>
+    ${ref?`<div class="seg-ref-note${prov?' prov':''}">Percentilos calculados con ${segEsc(ref.nombre)} (método LMS).${ref.nota?' '+segEsc(ref.nota):''}</div>`:''}`;
+
+  if(canChart){
+    segCharts.push(segChart('peso',p,refT.peso,'kg','Peso'));
+    segCharts.push(segChart('talla',p,refT.talla,'cm','Talla'));
+  }
+}
+
+function segChart(kind,p,table,unit,label){
+  const obs=p.meds.filter(m=>m.date&&m[kind]!=null).map(m=>{
+    const age=segAge(p.dob,m.date);
+    return {x:age,y:m[kind],date:m.date,pct:segPercentile(table,age,m[kind])};
+  });
+  const ages=p.meds.filter(m=>m.date).map(m=>segAge(p.dob,m.date));
+  let lo=Math.min(...ages)-0.6, hi=Math.max(...ages)+0.6;
+  if(hi-lo<2){const c=(hi+lo)/2; lo=c-1; hi=c+1;}
+  if(table){lo=Math.max(lo,table[0][0]); hi=Math.min(hi,table[table.length-1][0]);}
+  lo=Math.floor(lo*2)/2; hi=Math.ceil(hi*2)/2;
+
+  const curve=z=>{const out=[]; for(let a=lo;a<=hi+1e-9;a+=0.05){const l=segLMS(table,a); if(l) out.push({x:+a.toFixed(3),y:segValueAt(l,z)});} return out;};
+  const band='82,121,111';
+  const refDs=(pc,fill,bg,extra={})=>({label:'P'+pc,data:table?curve(PCT_Z[pc]):[],_ref:pc,
+    borderColor:`rgba(${band},.28)`,borderWidth:1,pointRadius:0,pointHitRadius:0,tension:0.2,
+    fill:fill,backgroundColor:bg,order:2,...extra});
+  const datasets=[
+    refDs(3,false,'transparent'),
+    refDs(97,0,`rgba(${band},.10)`),
+    refDs(10,false,'transparent'),
+    refDs(90,2,`rgba(${band},.09)`),
+    refDs(25,false,'transparent'),
+    refDs(75,4,`rgba(${band},.13)`),
+    refDs(50,false,'transparent',{borderColor:'rgba(53,79,82,.7)',borderWidth:1.5,borderDash:[5,4]}),
+    {label:p.name,data:obs,_player:true,order:1,borderColor:'#2F3E46',borderWidth:2,tension:0,
+      pointRadius:5.5,pointHoverRadius:7,pointHitRadius:14,pointBackgroundColor:'#2F3E46',
+      pointBorderColor:'#FFFFFF',pointBorderWidth:2,fill:false}
+  ];
+  const last=datasets[0].data.length-1;
+  return new Chart(document.getElementById('segChart-'+kind),{
+    type:'line',
+    data:{datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,animation:{duration:250},
+      layout:{padding:{right:30,top:18}},
+      interaction:{mode:'nearest',intersect:false},
+      scales:{
+        x:{type:'linear',min:lo,max:hi,title:{display:true,text:'Edad (años)',color:'#6B7B72',font:{size:11}},
+          ticks:{stepSize:0.5,color:'#6B7B72',font:{size:11},callback:v=>segFmt(v)},grid:{color:'#EFF2EE'}},
+        y:{title:{display:true,text:`${label} (${unit})`,color:'#6B7B72',font:{size:11}},
+          ticks:{color:'#6B7B72',font:{size:11}},grid:{color:'#EFF2EE'}}
+      },
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          filter:it=>!!it.dataset._player,displayColors:false,backgroundColor:'#2F3E46',padding:10,
+          titleFont:{family:'Inter',size:12,weight:'600'},bodyFont:{family:'Inter',size:12},
+          callbacks:{
+            title:its=>its[0]?segFmtDate(its[0].raw.date):'',
+            label:it=>[`Edad: ${segFmt(it.raw.x)} años`,`${label}: ${segFmt(it.raw.y)} ${unit}`+(it.raw.pct!=null?` · P${Math.round(it.raw.pct)}`:'')]
+          }
+        },
+        datalabels:{
+          display:ctx=>ctx.dataset._player||(ctx.dataset._ref&&ctx.dataIndex===last),
+          formatter:(v,ctx)=>ctx.dataset._player?segFmt(v.y):'P'+ctx.dataset._ref,
+          align:ctx=>ctx.dataset._player?'top':'right',
+          anchor:'center',offset:ctx=>ctx.dataset._player?6:2,clamp:true,
+          color:ctx=>ctx.dataset._player?'#2F3E46':'#9FACA3',
+          font:ctx=>({family:'Inter',size:ctx.dataset._player?11:9.5,weight:ctx.dataset._player?'600':'500'})
+        }
+      }
+    }
+  });
 }
 
 // ═══════════════════════════════════════════
