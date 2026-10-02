@@ -92,11 +92,15 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .logro-valor{font-family:var(--serif);font-size:36px;font-weight:700;color:var(--c4);letter-spacing:-1px}
 .logro-label{font-size:12.5px;color:var(--text-2);margin-top:4px;font-weight:500}
 .cats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
-.cat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);
-  padding:22px;cursor:pointer;transition:border-color .15s,transform .12s}
+.cat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);text-align:left;
+  padding:22px;cursor:pointer;transition:border-color .15s,transform .12s;font-family:var(--sans);width:100%}
+.cat-card:focus-visible{outline:2px solid var(--c3);outline-offset:2px}
 .cat-card:hover{border-color:var(--c2);transform:translateY(-2px)}
 .cat-card-title{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--c5)}
-.cat-card-meta{font-size:12px;color:var(--text-3);margin-top:5px}
+.cat-card-meta{font-size:12px;color:var(--text-3);margin-top:6px;line-height:1.6}
+.logro-skel .logro-valor,.logro-skel .logro-label{background:#EEF1EE;border-radius:4px;color:transparent}
+.logro-skel .logro-valor{width:60%;margin:0 auto 8px}.logro-skel .logro-label{width:80%;margin:0 auto}
+.home-note{font-size:12px;color:var(--text-3);margin:-34px 0 40px}
 .section-label{font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;
   letter-spacing:1px;margin-bottom:16px}
 
@@ -106,7 +110,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 
 /* ── INDICADORES ─────────────────────────── */
 .indicadores-wrap{margin-bottom:36px}
-.indicadores-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.indicadores-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-bottom:24px}
 .indicador-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px}
 .indicador-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--c5);margin-bottom:14px}
 .indicador-chart-wrap{position:relative;height:200px;display:flex;align-items:center;justify-content:center}
@@ -125,6 +129,18 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 .chip:hover{border-color:var(--c2);color:var(--text)}
 .chip.active{background:var(--c4);border-color:var(--c4);color:#fff}
 .chip-empty{font-size:12.5px;color:var(--text-3);font-style:italic}
+.doc-row{margin-bottom:24px}
+.doc-chip{display:inline-flex;align-items:center;gap:8px;border-radius:8px;padding:9px 14px}
+.doc-tag{font-size:10px;font-weight:700;letter-spacing:.5px;padding:2px 6px;border-radius:4px}
+.doc-tag.pdf{background:#F3EFE6;color:#7A5C2E}
+.doc-tag.xls{background:#EAF1EC;color:var(--c4)}
+.chip.active .doc-tag{background:rgba(255,255,255,.18);color:#fff}
+.doc-link{border-style:dashed;color:var(--c4)}
+.viewer-wrap{margin-bottom:32px;padding:18px;background:#EEF1EE;border-radius:var(--r)}
+.viewer-bar{display:flex;justify-content:flex-end;margin-bottom:8px}
+.viewer-close{padding:6px 12px;font-size:12px;font-weight:500;background:var(--card);border:1px solid var(--border);
+  border-radius:6px;color:var(--text-2);cursor:pointer;font-family:var(--sans)}
+.viewer-close:hover{color:var(--text);border-color:var(--c2)}
 
 /* ── CONTENT VIEWER ──────────────────────── */
 .viewer-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:12px}
@@ -189,8 +205,8 @@ tbody td:first-child{font-weight:600;color:var(--c5)}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px}
 .stat-card-label{font-size:12px;color:var(--text-3);margin-bottom:9px;line-height:1.3}
 .stat-card-value{font-family:var(--serif);font-size:23px;font-weight:700;color:var(--c5);letter-spacing:-.3px}
-.stat-card-value.good{color:#52796F}
-.stat-card-value.warn{color:#B5604A}
+.stat-card-value.good{color:#167F5C}
+.stat-card-value.warn{color:#AF5234}
 .stat-card-sub{font-size:11.5px;color:var(--text-3);margin-top:4px}
 .chart-card-full{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:24px}
 .chart-card-title{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--c5);margin-bottom:3px}
@@ -226,19 +242,6 @@ tbody td:first-child{font-weight:600;color:var(--c5)}
 @keyframes spin{to{transform:rotate(360deg)}}
 .error-card{background:var(--err-bg);border:1px solid var(--err-border);border-radius:8px;
   padding:20px 24px;color:var(--err-text);font-size:13.5px;line-height:1.6}
-
-/* ── MOBILE ──────────────────────────────── */
-.mobile-bar{display:none;background:var(--c5);padding:10px 14px;
-  border-bottom:1px solid rgba(255,255,255,.06)}
-.mobile-select{width:100%;padding:9px 34px 9px 12px;
-  background:rgba(255,255,255,.07)
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2384A98C' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")
-    no-repeat right 12px center;
-  border:1px solid rgba(255,255,255,.1);border-radius:7px;
-  color:rgba(255,255,255,.88);font-family:var(--sans);font-size:13.5px;
-  appearance:none;cursor:pointer;outline:none}
-.mobile-select option{background:#2F3E46;color:#fff}
-.mobile-select optgroup{font-size:11px;color:rgba(255,255,255,.4)}
 
 /* ── SEGUIMIENTO INDIVIDUAL ──────────────── */
 .seg-intro{margin-bottom:22px}
@@ -284,9 +287,57 @@ tbody td:first-child{font-weight:600;color:var(--c5)}
 .seg-table td.num{text-align:right;font-variant-numeric:tabular-nums}
 .seg-table th.num{text-align:right}
 .pct-chip{display:inline-block;min-width:38px;padding:2px 8px;border-radius:10px;font-size:11.5px;font-weight:600;text-align:center}
+.seg-back{background:none;border:none;padding:0;margin-bottom:14px;font-family:var(--sans);font-size:13px;
+  font-weight:500;color:var(--c3);cursor:pointer}
+.seg-back:hover{color:var(--c5);text-decoration:underline}
+.plantel-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.seg-filters{display:flex;gap:4px;flex-wrap:wrap;background:#EEF1EE;padding:3px;border-radius:9px}
+.seg-filter{padding:7px 14px;border:none;background:none;border-radius:7px;font-family:var(--sans);font-size:12.5px;
+  font-weight:600;color:var(--text-2);cursor:pointer}
+.seg-filter:hover{color:var(--c5)}
+.seg-filter.active{background:var(--card);color:var(--c5);box-shadow:0 1px 3px rgba(47,62,70,.12)}
+.plantel-summary{display:flex;align-items:center;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--text-2);margin-bottom:12px}
+.plantel-summary b{color:var(--c5);font-weight:700}
+.plantel-summary .is-fuera b{color:#7E3520}
+.seg-toggle{margin-left:auto;display:inline-flex;align-items:center;gap:7px;cursor:pointer;font-size:12.5px}
+.seg-toggle input{accent-color:var(--c4);width:15px;height:15px}
+.plantel-row{cursor:pointer}
+.plantel-row:hover td,.plantel-row:focus td{background:#F0F4F1}
+.plantel-row:focus{outline:none}
+.plantel-row.fuera td:first-child{box-shadow:inset 3px 0 0 #AF5234}
+.plantel-name{font-weight:600;color:var(--c5)}
+.plantel-sub{display:none;font-size:11.5px;color:var(--text-3);margin-top:2px;white-space:normal}
+@media(max-width:600px){.plantel-table .hm{display:none}.plantel-sub{display:block}.plantel-table td,.plantel-table th{padding:10px 12px}}
+.muted{color:var(--text-3);font-size:12px}
+
+.header-actions{display:flex;gap:8px}
+.guia-overlay{position:fixed;inset:0;z-index:6000;background:rgba(47,62,70,.55);display:flex;align-items:center;
+  justify-content:center;padding:20px;animation:guiaIn .18s ease-out}
+.guia-card{width:100%;max-width:440px;background:#fff;border-radius:14px;padding:30px 30px 24px;
+  box-shadow:0 24px 70px rgba(0,0,0,.28)}
+.guia-eyebrow{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--c3);margin-bottom:8px}
+.guia-card h3{font-family:var(--serif);font-size:21px;font-weight:600;color:var(--c5);letter-spacing:-.2px;line-height:1.3}
+.guia-p{font-size:13.5px;color:var(--text-2);margin-top:8px}
+.guia-list{display:grid;gap:12px;margin-top:16px}
+.guia-list dt{font-size:13px;font-weight:700;color:var(--c5)}
+.guia-list dd{font-size:13px;color:var(--text-2);margin-top:1px;line-height:1.5}
+.guia-colors{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);
+  font-size:12px;color:var(--text-2)}
+.guia-colors span{display:inline-flex;align-items:center;gap:6px}
+.guia-colors i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.guia-actions{display:flex;gap:10px;margin-top:22px}
+.guia-btn{flex:1;padding:11px 14px;border-radius:8px;border:1.5px solid var(--border);background:#fff;
+  font-family:var(--sans);font-size:14px;font-weight:600;color:var(--text-2);cursor:pointer}
+.guia-btn:hover{border-color:var(--c2);color:var(--c5)}
+.guia-btn.primary{background:var(--c4);border-color:var(--c4);color:#fff}
+.guia-btn.primary:hover{background:var(--c5)}
+.guia-btn:focus-visible{outline:2px solid var(--c3);outline-offset:2px}
+.guia-foot{font-size:11.5px;color:var(--text-3);margin-top:12px;text-align:center}
+@keyframes guiaIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.guia-overlay{animation:none}}
 
 @media(max-width:800px){
-  .mobile-bar{display:block}
+  .tabs-nav-inner{-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent)}
   .seg-charts{grid-template-columns:1fr}
   .seg-canvas{height:300px}
   .main{padding:18px 14px 36px}
@@ -296,7 +347,7 @@ tbody td:first-child{font-weight:600;color:var(--c5)}
   .tabs-nav{top:66px}
   .tabs-nav-inner{padding:0 18px}
 }
-@media(max-width:480px){.brand-text-s{display:none}}
+@media(max-width:480px){.brand-text-s{display:none}.brand-text-h{font-size:16px}.logout-btn{padding:7px 11px}.seg-toggle{margin-left:0}}
 </style>
 </head>
 <body>
@@ -336,19 +387,15 @@ tbody td:first-child{font-weight:600;color:var(--c5)}
         <div class="brand-text-s" id="brandSub">Creado por Lic. Leandro Santagada</div>
       </div>
     </div>
-    <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+    <div class="header-actions">
+      <button class="logout-btn" onclick="abrirGuia('guia')">Guía</button>
+      <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
+    </div>
   </div>
 </header>
 
 <!-- TABS -->
 <nav class="tabs-nav"><div class="tabs-nav-inner" id="topTabs"></div></nav>
-
-<!-- MOBILE -->
-<div class="mobile-bar">
-  <select class="mobile-select" id="mobileSelect" onchange="handleMobile(this.value)">
-    <option value="">— Seleccioná una sección —</option>
-  </select>
-</div>
 
 <!-- MAIN -->
 <main class="main" id="main"></main>
@@ -446,7 +493,7 @@ function initApp(m){
   document.getElementById('brandTitle').textContent=m.nombre||'Portal';
   document.getElementById('brandSub').textContent=m.creador?'Creado por '+m.creador:'';
   document.title=m.nombre||'Portal';
-  buildTopTabs(); buildMobile(); showHome();
+  buildTopTabs(); showHome(); bienvenidaInicio();
 }
 
 function buildTopTabs(){
@@ -458,22 +505,10 @@ function buildTopTabs(){
   document.getElementById('topTabs').innerHTML=html;
 }
 
-function buildMobile(){
-  const sel=document.getElementById('mobileSelect');
-  sel.innerHTML=`<option value="">— Seleccioná una sección —</option><option value="home">Inicio</option><option value="seguimiento">Seguimiento</option>`;
-  manifest.categorias.forEach(c=>{sel.innerHTML+=`<option value="cat-${c.id}">${c.nombre}</option>`;});
-}
-
-function handleMobile(v){
-  if(!v)return;
-  if(v==='home')showHome();
-  else if(v==='seguimiento')showSeguimiento();
-  else if(v.startsWith('cat-'))showCategory(v.replace('cat-',''));
-}
-
 function setActiveTab(id){
   document.querySelectorAll('.top-tab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+id)?.classList.add('active');
+  const t=document.getElementById('tab-'+id);
+  if(t){ t.classList.add('active'); try{ t.scrollIntoView({block:'nearest',inline:'center'}); }catch(e){} }
 }
 
 // ═══════════════════════════════════════════
@@ -481,22 +516,59 @@ function setActiveTab(id){
 // ═══════════════════════════════════════════
 function showHome(){
   setActiveTab('home');
-  const logros=manifest.logros||[];
   document.getElementById('main').innerHTML=`
     <div class="home-hero">
       <img src="logo.png" alt="Escudo">
       <h1>${manifest.nombre}</h1>
       <p>${manifest.creador?'Creado por '+manifest.creador:''}</p>
     </div>
-    ${logros.length?`<div class="section-label">Resultados destacados</div>
-    <div class="logros-grid">${logros.map(l=>`<div class="logro-card"><div class="logro-valor">${l.valor}</div><div class="logro-label">${l.label}</div></div>`).join('')}</div>`:''}
+    <div class="section-label">Resumen del seguimiento</div>
+    <div class="logros-grid" id="homeStats">${[1,2,3,4].map(()=>`<div class="logro-card logro-skel"><div class="logro-valor">&nbsp;</div><div class="logro-label">&nbsp;</div></div>`).join('')}</div>
+    <div class="home-note" id="homeNote"></div>
     <div class="section-label">Categorías</div>
     <div class="cats-grid">${manifest.categorias.map(c=>`
-      <div class="cat-card" onclick="showCategory('${c.id}')">
+      <button type="button" class="cat-card" onclick="showCategory('${c.id}')">
         <div class="cat-card-title">${c.nombre}</div>
-        <div class="cat-card-meta">${(c.excels||[]).length} mediciones · ${(c.informes||[]).length} informes</div>
-      </div>`).join('')}
+        <div class="cat-card-meta" id="catMeta-${c.id}">${(c.informes||[]).length} ${(c.informes||[]).length===1?'informe':'informes'} · ${(c.excels||[]).length} ${(c.excels||[]).length===1?'planilla':'planillas'}</div>
+      </button>`).join('')}
     </div>`;
+  homeFillStats();
+}
+
+// Calcula el resumen desde seguimiento.xlsx; si no está, usa los logros escritos en el manifest.
+async function homeFillStats(){
+  let data=null;
+  try{ if(!segDataPromise) segDataPromise=segLoad(); data=await segDataPromise; }catch(e){ segDataPromise=null; }
+  const box=document.getElementById('homeStats'); if(!box) return;
+  const card=(v,l)=>`<div class="logro-card"><div class="logro-valor">${v}</div><div class="logro-label">${l}</div></div>`;
+  if(!data||data.missing||!data.list.length){
+    segDataPromise=null;
+    const logros=manifest.logros||[];
+    box.innerHTML=logros.map(l=>card(segEsc(l.valor),segEsc(l.label))).join('');
+    if(!logros.length) box.previousElementSibling.remove(), box.remove();
+    return;
+  }
+  const st=segStats(data.list);
+  box.innerHTML=card(st.jugadores,'Jugadores en seguimiento')+card(st.mediciones,'Mediciones registradas')
+    +card(st.cats.size,st.cats.size===1?'Categoría':'Categorías')
+    +card(st.ultima?st.ultima.toLocaleDateString('es-AR',{day:'numeric',month:'short'}):'—','Última medición');
+  document.getElementById('homeNote').textContent='Se actualiza solo cada vez que se sube una planilla de seguimiento nueva.';
+  manifest.categorias.forEach(c=>{
+    const el=document.getElementById('catMeta-'+c.id); const cs=st.porCat[c.id];
+    if(!el||!cs) return;
+    const inf=(c.informes||[]).length;
+    el.innerHTML=`${cs.jugadores} jugadores · ${cs.ultima?'última medición '+segFmtDate(cs.ultima):'faltan cargar las fechas'}<br>${inf} ${inf===1?'informe':'informes'}`;
+  });
+}
+
+function segStats(list){
+  const st={jugadores:list.length,mediciones:0,cats:new Set(),ultima:null,porCat:{}};
+  list.forEach(p=>{
+    st.mediciones+=p.meds.length; if(p.cat) st.cats.add(p.cat);
+    const c=st.porCat[p.cat]||(st.porCat[p.cat]={jugadores:0,ultima:null}); c.jugadores++;
+    p.meds.forEach(m=>{ if(m.date){ if(!st.ultima||m.date>st.ultima) st.ultima=m.date; if(!c.ultima||m.date>c.ultima) c.ultima=m.date; } });
+  });
+  return st;
 }
 
 // ═══════════════════════════════════════════
@@ -508,29 +580,30 @@ function showCategory(catId){
   const todos=cat.indicadores||[];
   const minis=todos.filter(i=>i.tipo==='dona');
   const fulls=todos.filter(i=>i.tipo!=='dona');
-
-  let indHTML='';
-  if(fulls.length) indHTML+=fulls.map((_,i)=>`<div class="evolucion-block" id="ind-${i}"></div>`).join('');
-  if(minis.length) indHTML+=`<div class="indicadores-wrap"><div class="section-label">Indicadores</div><div class="indicadores-grid" id="indicadoresGrid"></div></div>`;
-
-  const excChips=(cat.excels||[]).length
-    ?(cat.excels||[]).map((f,i)=>`<button class="chip" id="chip-x-${i}" onclick="openExcel('${catId}',${i})">${f.nombre}</button>`).join('')
-    :`<span class="chip-empty">Sin mediciones cargadas</span>`;
-  const pdfChips=(cat.informes||[]).length
-    ?(cat.informes||[]).map((f,i)=>`<button class="chip" id="chip-p-${i}" onclick="openPDF('${catId}',${i})">${f.nombre}</button>`).join('')
-    :`<span class="chip-empty">Sin informes cargados</span>`;
+  const inf=cat.informes||[], exc=cat.excels||[];
+  const docs=[
+    ...inf.map((f,i)=>`<button class="chip doc-chip" id="chip-p-${i}" onclick="openPDF('${catId}',${i})"><span class="doc-tag pdf">PDF</span>${segEsc(f.nombre)}</button>`),
+    ...exc.map((f,i)=>`<button class="chip doc-chip" id="chip-x-${i}" onclick="openExcel('${catId}',${i})"><span class="doc-tag xls">XLS</span>${segEsc(f.nombre)}</button>`)
+  ];
+  docs.push(`<button class="chip doc-chip doc-link" onclick="segCurrent=null;segCatFilter='${catId}';showSeguimiento()">Ver el plantel en Seguimiento →</button>`);
 
   document.getElementById('main').innerHTML=`
     <div class="cat-header"><h2>${cat.nombre}</h2></div>
-    ${indHTML}
-    <div class="chip-groups">
-      <div><div class="chip-group-label">📊 Mediciones (Excel)</div><div class="chips">${excChips}</div></div>
-      <div><div class="chip-group-label">📄 Informes (PDF)</div><div class="chips">${pdfChips}</div></div>
-    </div>
-    <div id="viewerArea"></div>`;
+    <div class="section-label">Informes y planillas</div>
+    <div class="chips doc-row">${docs.join('')}</div>
+    ${(inf.length||exc.length)?'':'<div class="chip-empty" style="margin:-14px 0 24px">Todavía no hay informes ni planillas cargados en esta categoría.</div>'}
+    <div id="viewerArea"></div>
+    ${todos.length?'<div class="section-label">Indicadores</div>':''}
+    ${minis.length?'<div class="indicadores-grid" id="indicadoresGrid"></div>':''}
+    ${fulls.map((_,i)=>`<div class="evolucion-block" id="ind-${i}"></div>`).join('')}`;
 
   if(minis.length) renderDonas(minis);
   fulls.forEach((ind,i)=>renderFull(ind,i));
+}
+
+function closeViewer(){
+  const v=document.getElementById('viewerArea'); if(v) v.innerHTML='';
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
 }
 
 function setChipActive(id){
@@ -562,7 +635,30 @@ function toggleFullscreen(cardId){
 // ═══════════════════════════════════════════
 // DONAS (mini chips en grid)
 // ═══════════════════════════════════════════
-const CHART_COLORS=['#52796F','#C99A4A','#B5604A','#84A98C','#354F52'];
+// Colores de zona: los mismos en todo el portal (validados para daltonismo).
+const ZONA={
+  dentro:{color:'#167F5C',soft:'#E3F0EA',ink:'#11573F',label:'Dentro de lo esperado'},
+  vigilar:{color:'#CA933E',soft:'#F7ECD9',ink:'#7A5414',label:'A vigilar'},
+  encima:{color:'#AF5234',soft:'#F5E1DA',ink:'#7E3520',label:'Por encima del rango'},
+  debajo:{color:'#4A8CC1',soft:'#E1ECF5',ink:'#245A85',label:'Por debajo del rango'}
+};
+// Colores de período (antes / después): neutros, para no confundirlos con zonas.
+const PERIODO={antes:'#A9C2B8',despues:'#354F52'};
+function zonaTint(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${n>>16},${(n>>8)&255},${n&255},${a})`;}
+function zonaPorTexto(txt,hayMuy){
+  const s=segNorm(txt);
+  if(/muy elev|exceso|obesid/.test(s)) return 'encima';
+  if(/\bbajo/.test(s)) return 'debajo';
+  if(/bien|optim|adecuad|normal|\bok\b/.test(s)) return 'dentro';
+  if(/aceptab|sobrepes/.test(s)) return 'vigilar';
+  if(/elevad/.test(s)) return hayMuy?'vigilar':'encima';
+  return null;
+}
+function zonasDeEtiquetas(labels){
+  const hayMuy=labels.some(l=>/muy elev|exceso|obesid/.test(segNorm(l)));
+  const orden=labels.length>=4?['debajo','dentro','vigilar','encima']:['dentro','vigilar','encima'];
+  return labels.map((l,i)=>zonaPorTexto(l,hayMuy)||orden[Math.min(i,orden.length-1)]);
+}
 
 function renderDonas(inds){
   const grid=document.getElementById('indicadoresGrid');
@@ -575,7 +671,7 @@ function renderDonas(inds){
     </div>`).join('');
   inds.forEach((ind,i)=>{
     const labels=ind.datos.map(d=>d.etiqueta),values=ind.datos.map(d=>d.valor);
-    const colors=labels.map((_,j)=>CHART_COLORS[j%CHART_COLORS.length]);
+    const colors=zonasDeEtiquetas(labels).map(z=>ZONA[z].color);
     new Chart(document.getElementById(`chart-${i}`),{
       type:'doughnut',
       data:{labels,datasets:[{data:values,backgroundColor:colors,borderWidth:0}]},
@@ -606,7 +702,7 @@ function renderEvolucion(ind,idx){
   const mClass=mejora<=0?'good':'warn',mSign=mejora>0?'+':'';
   const minW=Math.max(600,total*32);
   const cardId=`evolCard-${idx}`;
-  const refLines=(ind.ref_lines_y||[]).map(r=>({axis:'y',value:r.value,color:r.color||'#9FACA3',label:r.label||''}));
+  const refLines=(ind.ref_lines_y||[]).map(r=>{const z=zonaPorTexto(r.label||'',false);return {axis:'y',value:r.value,color:z?ZONA[z].color:'#9FACA3',label:r.label||''};});
 
   const cardsHTML=`<div class="stat-cards-grid">
     <div class="stat-card"><div class="stat-card-label">Promedio ${ind.unidad||''} ${ind.periodo1_label}</div>
@@ -631,8 +727,8 @@ function renderEvolucion(ind,idx){
       <button class="ampliar-btn" onclick="toggleFullscreen('${cardId}')">⛶ Ampliar</button>
       <div class="chart-card-title">${ind.titulo||'Evolución'}</div>
       <div class="chart-card-legend">
-        <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:#B5604A"></span>${ind.periodo1_label}</div>
-        <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:#52796F"></span>${ind.periodo2_label}</div>
+        <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:${PERIODO.antes}"></span>${ind.periodo1_label}</div>
+        <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:${PERIODO.despues}"></span>${ind.periodo2_label}</div>
       </div>
       ${cardsHTML}
       <div class="evolucion-scroll">
@@ -645,8 +741,8 @@ function renderEvolucion(ind,idx){
     data:{
       labels:ind.jugadores.map(j=>j.nombre),
       datasets:[
-        {label:ind.periodo1_label,data:p1,backgroundColor:'#B5604A',borderRadius:3},
-        {label:ind.periodo2_label,data:p2,backgroundColor:'#52796F',borderRadius:3}
+        {label:ind.periodo1_label,data:p1,backgroundColor:PERIODO.antes,borderRadius:3},
+        {label:ind.periodo2_label,data:p2,backgroundColor:PERIODO.despues,borderRadius:3}
       ]
     },
     options:{responsive:true,maintainAspectRatio:false,
@@ -679,12 +775,12 @@ function renderComparacionPromedios(ind,idx){
     new Chart(document.getElementById(`cmpChart-${idx}-${j}`),{
       type:'bar',
       data:{labels:[ind.periodo1_label,ind.periodo2_label],
-        datasets:[{data:[m.p1,m.p2],backgroundColor:['#A9C2B8','#354F52'],borderRadius:4}]},
+        datasets:[{data:[m.p1,m.p2],backgroundColor:[PERIODO.antes,PERIODO.despues],borderRadius:4}]},
       options:{responsive:true,maintainAspectRatio:false,
         plugins:{legend:{display:false},
           datalabels:{anchor:'end',align:'top',color:'#2F3E46',font:{size:12,weight:'700'},formatter:v=>v}},
-        scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{display:false,beginAtZero:false}},
-        layout:{padding:{top:14}}}
+        scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{display:false,beginAtZero:true,grace:'18%'}},
+        layout:{padding:{top:6}}}
     });
   });
 }
@@ -694,22 +790,13 @@ function renderComparacionPromedios(ind,idx){
 // ═══════════════════════════════════════════
 function renderBarrasGrupo(ind,idx){
   const sub=ind.subtitulo?`<div class="chart-card-subtitle">${ind.subtitulo}</div>`:'';
-  const usaCatColors=!!ind.categorias[0]?.color1;
-  const bg1=usaCatColors?ind.categorias.map(c=>c.color1):'#A9C2B8';
-  const bg2=usaCatColors?ind.categorias.map(c=>c.color2):'#354F52';
-
-  const legHTML=usaCatColors
-    ?`<div class="chart-card-legend">${ind.categorias.map(c=>`
-        <div class="evolucion-legend-item">
-          <span style="display:inline-flex;gap:3px">
-            <span class="evolucion-legend-dot" style="background:${c.color1}"></span>
-            <span class="evolucion-legend-dot" style="background:${c.color2}"></span>
-          </span>${c.etiqueta}
-        </div>`).join('')}</div>`
-    :`<div class="chart-card-legend">
-        <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:#A9C2B8"></span>${ind.periodo1_label}</div>
-        <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:#354F52"></span>${ind.periodo2_label}</div>
-      </div>`;
+  const zs=zonasDeEtiquetas(ind.categorias.map(c=>c.etiqueta));
+  const bg1=zs.map(z=>zonaTint(ZONA[z].color,.38));
+  const bg2=zs.map(z=>ZONA[z].color);
+  const legHTML=`<div class="chart-card-legend">
+      <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:${zonaTint('#354F52',.35)}"></span>Tono claro: ${ind.periodo1_label}</div>
+      <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:#354F52"></span>Tono pleno: ${ind.periodo2_label}</div>
+    </div>`;
 
   document.getElementById(`ind-${idx}`).innerHTML=`
     <div class="chart-card-full">
@@ -730,7 +817,7 @@ function renderBarrasGrupo(ind,idx){
       plugins:{legend:{display:false},
         datalabels:{anchor:'end',align:'top',color:'#2F3E46',font:{size:11,weight:'700'}}},
       scales:{x:{grid:{display:false}},
-        y:{beginAtZero:true,grid:{color:'#EDF0EC'},
+        y:{beginAtZero:true,grace:'10%',grid:{color:'#EDF0EC'},
           title:{display:!!ind.eje_y_label,text:ind.eje_y_label||''}}},
       layout:{padding:{top:16}}}
   });
@@ -751,7 +838,7 @@ function renderMaduracion(ind,idx){
     <div class="chart-card-full" id="${cardId}">
       <button class="ampliar-btn" onclick="toggleFullscreen('${cardId}')">⛶ Ampliar</button>
       <div class="chart-card-title">${ind.titulo}</div>
-      <div class="chart-card-subtitle">Promedio del plantel: ${prom.toFixed(1)} ${ind.unidad||''}</div>
+      <div class="chart-card-subtitle">Promedio del plantel: ${prom.toFixed(1)} ${ind.unidad||''}${destacados.size?` · <span style="color:${ZONA.encima.ink}">● Destacados en el informe: ${[...destacados].join(', ')}</span>`:''}</div>
       <div class="percentil-scroll">
         <div style="position:relative;height:${h}px;min-width:480px">
           <canvas id="madChart-${idx}"></canvas>
@@ -765,7 +852,7 @@ function renderMaduracion(ind,idx){
       type:'scatter',
       data:{datasets:[{
         data:ordenados.map((j,i)=>({x:j.valor,y:i,nombre:j.nombre})),
-        backgroundColor:ordenados.map(j=>destacados.has(j.nombre)?'#CC3333':'#52796F'),
+        backgroundColor:ordenados.map(j=>destacados.has(j.nombre)?ZONA.encima.color:'#52796F'),
         pointRadius:6,pointHoverRadius:8,pointStyle:'circle'
       }]},
       options:{responsive:true,maintainAspectRatio:false,
@@ -789,7 +876,7 @@ function renderMaduracion(ind,idx){
       type:'bar',
       data:{labels:ordenados.map(j=>j.nombre),
         datasets:[{data:ordenados.map(j=>j.valor),
-          backgroundColor:ordenados.map(j=>destacados.has(j.nombre)?'#CC3333':'#52796F'),
+          backgroundColor:ordenados.map(j=>destacados.has(j.nombre)?ZONA.encima.color:'#52796F'),
           borderRadius:4,barThickness:14}]},
       options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
         plugins:{legend:{display:false},
@@ -838,14 +925,12 @@ function renderPercentil(ind,idx){
   const ordenados=[...ind.jugadores].sort((a,b)=>b.valor-a.valor);
   const h=Math.max(400,ordenados.length*22+60);
   const cardId=`percCard-${idx}`;
-  const getColor=v=>v<10?'#4A90D9':v<=85?'#2E8B57':v<=97?'#E87722':'#CC2222';
-  const zonas=ind.zonas||[
-    {label:'Bajo (<P10)',color:'#4A90D9'},
-    {label:'Normal (P10-P85)',color:'#2E8B57'},
-    {label:'Elevado (P85-P97)',color:'#E87722'},
-    {label:'Muy Elevado (>P97)',color:'#CC2222'}
-  ];
-  const refLines=(ind.ref_lines||[10,85,97]).map(v=>({axis:'x',value:v,color:'rgba(160,80,80,.55)'}));
+  const zonaDe=v=>v<10?'debajo':v<=85?'dentro':v<=97?'vigilar':'encima';
+  const getColor=v=>ZONA[zonaDe(v)].color;
+  const etiquetas=(ind.zonas||[]).map(z=>z.label);
+  const nombres=etiquetas.length===4?etiquetas:['Bajo (<P10)','Normal (P10–P85)','Elevado (P85–P97)','Muy elevado (>P97)'];
+  const zonas=['debajo','dentro','vigilar','encima'].map((k,i)=>({label:nombres[i],color:ZONA[k].color}));
+  const refLines=(ind.ref_lines||[10,85,97]).map(v=>({axis:'x',value:v,color:'#B8C2BC'}));
 
   document.getElementById(`ind-${idx}`).innerHTML=`
     <div class="chart-card-full" id="${cardId}">
@@ -853,7 +938,7 @@ function renderPercentil(ind,idx){
       <div class="chart-card-title">${ind.titulo}</div>
       ${ind.subtitulo?`<div class="chart-card-subtitle">${ind.subtitulo}</div>`:''}
       <div class="percentil-legend">${zonas.map(z=>`
-        <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:${z.color}"></span>${z.label}</div>`).join('')}
+        <div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:${z.color}"></span>${segEsc(z.label)}</div>`).join('')}
       </div>
       <div class="percentil-scroll">
         <div style="position:relative;height:${h}px;min-width:480px">
@@ -870,7 +955,7 @@ function renderPercentil(ind,idx){
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},
         datalabels:{anchor:'end',align:'right',
-          color:ctx=>getColor(ctx.dataset.data[ctx.dataIndex]),
+          color:ctx=>ZONA[zonaDe(ctx.dataset.data[ctx.dataIndex])].ink,
           font:{size:10.5,weight:'700'},formatter:v=>`P${v}`},
         refLines:{lines:refLines}},
       scales:{
@@ -1025,7 +1110,7 @@ const REF_FILE='referencias.json';
 const PCTS=[3,10,25,50,75,90,97];
 const PCT_Z={3:-1.880794,10:-1.281552,25:-0.67449,50:0,75:0.67449,90:1.281552,97:1.880794};
 const MS_YEAR=365.25*864e5;
-let segDataPromise=null, segCharts=[], segCurrent=null;
+let segDataPromise=null, segCharts=[], segCurrent=null, segDataCache=null, segCatFilter='todas', segSoloFuera=false;
 
 function segNorm(s){
   return String(s??'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
@@ -1117,9 +1202,9 @@ function segPercentile(table,age,x){
 }
 function segPctChip(p){
   if(p==null) return '<span style="color:var(--text-3)">—</span>';
-  const r=Math.round(p), out=p<3||p>97;
+  const r=Math.round(p), z=ZONA[p<3?'debajo':p>97?'encima':'dentro'];
   const label=p<1?'&lt;P1':p>99?'&gt;P99':'P'+r;
-  return `<span class="pct-chip" style="background:${out?'#FBEAE9':'#EEF2EE'};color:${out?'#9A3B34':'#354F52'}">${label}</span>`;
+  return `<span class="pct-chip" style="background:${z.soft};color:${z.ink}">${label}</span>`;
 }
 
 // ── Vista ──
@@ -1127,8 +1212,8 @@ async function showSeguimiento(){
   setActiveTab('seguimiento');
   document.getElementById('main').innerHTML=`
     <div class="seg-intro">
-      <h2>Seguimiento individual</h2>
-      <p>Buscá un jugador por nombre o apellido para ver su evolución de peso y talla sobre las curvas de percentilos.</p>
+      <h2>Seguimiento</h2>
+      <p>Buscá un jugador para ver su evolución de peso y talla sobre las curvas de percentilos, o revisá el plantel completo.</p>
     </div>
     <div class="seg-search">
       <svg class="seg-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -1151,11 +1236,13 @@ async function showSeguimiento(){
       Subí la planilla <b>seguimiento.xlsx</b> a la carpeta <b>archivos</b> del repositorio.</div>`;
     input.placeholder='Sin datos cargados'; return;
   }
-  input.disabled=false; input.placeholder=`Ej: felipe  ·  ${data.list.length} jugadores`;
+  segDataCache=data;
+  input.disabled=false; input.placeholder=`Buscar jugador · ej: felipe`;
   segWireSearch(input,data);
-  if(segCurrent){const p=data.list.find(p=>p.key===segCurrent); if(p) segRenderPlayer(p,data.ref);}
-  else body.innerHTML=`<div class="seg-empty">Escribí al menos dos letras del nombre o apellido.</div>`;
-  input.focus();
+  const cur=segCurrent&&data.list.find(p=>p.key===segCurrent);
+  if(cur){ input.value=cur.name; segRenderPlayer(cur,data.ref); }
+  else segRenderPlantel(data);
+  if(window.innerWidth>800&&!cur) input.focus();
 }
 
 function segWireSearch(input,data){
@@ -1195,6 +1282,69 @@ function segWireSearch(input,data){
     else if(e.key==='Enter'){if(matches[hl]&&box.classList.contains('open')){e.preventDefault();pick(matches[hl]);}}
     else if(e.key==='Escape') close();
     else segCurrent=null;
+  });
+}
+
+// Última medición de cada jugador y sus percentilos (se calcula una vez y se guarda)
+function segUltimos(p,ref){
+  if(p._ult) return p._ult;
+  const refT={peso:ref?.peso?.varones,talla:ref?.talla?.varones};
+  const last=k=>{let b=null; p.meds.forEach(m=>{ if(m[k]==null) return; if(!b||(m.date&&(!b.date||m.date>=b.date))) b=m; }); return b;};
+  const mp=last('peso'), mt=last('talla');
+  const ultima=p.meds.reduce((a,m)=>m.date&&(!a||m.date>a)?m.date:a,null);
+  const pc=(m,k)=>(m&&p.dob&&m.date)?segPercentile(refT[k],segAge(p.dob,m.date),m[k]):null;
+  const pp=pc(mp,'peso'), pt=pc(mt,'talla');
+  return p._ult={peso:mp?mp.peso:null,talla:mt?mt.talla:null,pp,pt,ultima,edad:segAge(p.dob,ultima),
+    fuera:[pp,pt].some(v=>v!=null&&(v<3||v>97))};
+}
+
+function segVolverPlantel(){
+  segCurrent=null; const i=document.getElementById('segInput'); if(i) i.value='';
+  if(segDataCache) segRenderPlantel(segDataCache);
+}
+
+function segRenderPlantel(data){
+  segCharts.forEach(c=>c.destroy()); segCharts=[];
+  const body=document.getElementById('segBody'); if(!body) return;
+  const cats=[...new Set(data.list.map(p=>p.cat).filter(Boolean))].sort();
+  if(segCatFilter!=='todas'&&!cats.includes(segCatFilter)) segCatFilter='todas';
+  let rows=data.list.filter(p=>segCatFilter==='todas'||p.cat===segCatFilter).map(p=>({p,u:segUltimos(p,data.ref)}));
+  const total=rows.length, nFuera=rows.filter(r=>r.u.fuera).length, sinFecha=rows.filter(r=>!r.p.dob).length;
+  if(segSoloFuera) rows=rows.filter(r=>r.u.fuera);
+  rows.sort((a,b)=>(b.u.fuera-a.u.fuera)||a.p.name.localeCompare(b.p.name,'es'));
+  const filtros=['todas',...cats].map(c=>`<button type="button" class="seg-filter${c===segCatFilter?' active':''}" aria-pressed="${c===segCatFilter}"
+      onclick="segCatFilter='${c}';segRenderPlantel(segDataCache)">${c==='todas'?'Todas':'Cat. '+segEsc(c)}</button>`).join('');
+  body.innerHTML=`
+    <div class="plantel-head">
+      <div class="section-label" style="margin:0">Plantel</div>
+      <div class="seg-filters" role="group" aria-label="Filtrar por categoría">${filtros}</div>
+    </div>
+    <div class="plantel-summary">
+      <span><b>${total}</b> jugadores</span>
+      <span class="${nFuera?'is-fuera':''}"><b>${nFuera}</b> fuera del rango P3–P97</span>
+      ${sinFecha?`<span><b>${sinFecha}</b> sin fecha de nacimiento</span>`:''}
+      <label class="seg-toggle"><input type="checkbox" ${segSoloFuera?'checked':''}
+        onchange="segSoloFuera=this.checked;segRenderPlantel(segDataCache)">Solo fuera de rango</label>
+    </div>
+    <div class="table-card seg-table plantel-table"><table>
+      <thead><tr><th>Jugador</th><th class="hm">Cat.</th><th class="hm">Última medición</th><th class="num hm">Edad</th>
+        <th class="num hm">Peso (kg)</th><th>Pc peso</th><th class="num hm">Talla (cm)</th><th>Pc talla</th></tr></thead>
+      <tbody>${rows.length?rows.map(({p,u})=>`<tr class="plantel-row${u.fuera?' fuera':''}" tabindex="0" data-key="${segEsc(p.key)}">
+          <td><span class="plantel-name">${segEsc(p.name)}</span><span class="plantel-sub">Cat. ${segEsc(p.cat||'—')} · ${segFmt(u.peso)} kg · ${segFmt(u.talla)} cm${p.dob?'':' · sin fecha nac.'}</span></td>
+          <td class="hm">${segEsc(p.cat||'—')}</td>
+          <td class="hm">${u.ultima?segFmtDate(u.ultima):'sin fecha'}</td>
+          <td class="num hm">${u.edad!=null?segFmt(u.edad):(p.dob?'—':'<span class="muted" title="Falta la fecha de nacimiento">s/ fecha nac.</span>')}</td>
+          <td class="num hm">${segFmt(u.peso)}</td><td>${segPctChip(u.pp)}</td>
+          <td class="num hm">${segFmt(u.talla)}</td><td>${segPctChip(u.pt)}</td></tr>`).join('')
+        :`<tr><td colspan="8" class="no-rows">No hay jugadores fuera del rango P3–P97 en esta selección.</td></tr>`}</tbody>
+    </table></div>
+    <div class="seg-ref-note">Primero aparecen los jugadores fuera de rango. Tocá un jugador para ver su evolución.${data.ref?' Percentilos: '+segEsc(data.ref.nombre)+'.':''}</div>`;
+  body.querySelectorAll('.plantel-row').forEach(tr=>{
+    const go=()=>{const p=data.list.find(x=>x.key===tr.dataset.key); if(!p) return;
+      segCurrent=p.key; const i=document.getElementById('segInput'); if(i) i.value=p.name;
+      segRenderPlayer(p,data.ref); window.scrollTo({top:0,behavior:'smooth'});};
+    tr.addEventListener('click',go);
+    tr.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});
   });
 }
 
@@ -1240,6 +1390,7 @@ function segRenderPlayer(p,ref){
       <div class="seg-canvas"><canvas id="segChart-${id}"></canvas></div></div>`;
 
   body.innerHTML=`
+    <button type="button" class="seg-back" onclick="segVolverPlantel()">← Volver al plantel</button>
     <div class="seg-player">
       <div class="seg-player-name">${segEsc(p.name)}</div>
       <div class="seg-player-meta">
@@ -1329,11 +1480,51 @@ function segChart(kind,p,table,unit,label){
 }
 
 // ═══════════════════════════════════════════
+// BIENVENIDA (primera visita). Se recuerda en este navegador.
+// ═══════════════════════════════════════════
+const GUIA_KEY='riestra_bienvenida_v1';
+function guiaLeer(){try{return localStorage.getItem(GUIA_KEY);}catch(e){return null;}}
+function guiaGuardar(v){try{localStorage.setItem(GUIA_KEY,v);}catch(e){}}
+function bienvenidaInicio(){ if(!guiaLeer()) abrirGuia('pregunta'); }
+function cerrarGuia(){ document.getElementById('guiaOverlay')?.remove(); }
+function abrirGuia(paso){
+  cerrarGuia();
+  const ov=document.createElement('div'); ov.id='guiaOverlay'; ov.className='guia-overlay';
+  ov.innerHTML = paso==='pregunta' ? `
+    <div class="guia-card" role="dialog" aria-modal="true" aria-labelledby="guiaT">
+      <div class="guia-eyebrow">Bienvenido</div>
+      <h3 id="guiaT">¿Es la primera vez que entrás al portal?</h3>
+      <p class="guia-p">Si querés, te mostramos en un vistazo dónde está cada cosa.</p>
+      <div class="guia-actions">
+        <button type="button" class="guia-btn primary" onclick="abrirGuia('guia')">Sí, mostrame</button>
+        <button type="button" class="guia-btn" onclick="guiaGuardar('omitida');cerrarGuia()">No</button>
+      </div>
+    </div>` : `
+    <div class="guia-card" role="dialog" aria-modal="true" aria-labelledby="guiaT">
+      <div class="guia-eyebrow">Un vistazo rápido</div>
+      <h3 id="guiaT">Qué vas a encontrar</h3>
+      <dl class="guia-list">
+        <div><dt>Inicio</dt><dd>El resumen del plantel, siempre al día.</dd></div>
+        <div><dt>Seguimiento</dt><dd>Buscá un jugador y mirá su peso y talla sobre las curvas de percentilos, o revisá la categoría entera.</dd></div>
+        <div><dt>Categorías</dt><dd>Arriba, los informes y planillas. Abajo, los gráficos del grupo.</dd></div>
+      </dl>
+      <div class="guia-colors">${['dentro','vigilar','encima','debajo'].map(k=>`<span><i style="background:${ZONA[k].color}"></i>${ZONA[k].label}</span>`).join('')}</div>
+      <div class="guia-actions"><button type="button" class="guia-btn primary" onclick="guiaGuardar('vista');cerrarGuia()">Entendido</button></div>
+      <div class="guia-foot">Podés volver a verlo con el botón “Guía”, arriba a la derecha.</div>
+    </div>`;
+  ov.addEventListener('click',e=>{ if(e.target===ov){ guiaGuardar(guiaLeer()||'omitida'); cerrarGuia(); } });
+  document.body.appendChild(ov);
+  ov.querySelector('.guia-btn')?.focus();
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&document.getElementById('guiaOverlay')){ guiaGuardar(guiaLeer()||'omitida'); cerrarGuia(); } });
+
+// ═══════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════
 function setViewer(html){
   const v=document.getElementById('viewerArea');
-  if(v){v.innerHTML=html;}else{document.getElementById('main').innerHTML=html;}
+  if(v){v.innerHTML=`<div class="viewer-wrap"><div class="viewer-bar"><button class="viewer-close" onclick="closeViewer()">Cerrar ✕</button></div>${html}</div>`;}
+  else{document.getElementById('main').innerHTML=html;}
 }
 function showViewerError(msg){
   setViewer(`<div class="error-card"><strong>No se pudo cargar el archivo.</strong><br>${msg}</div>`);
