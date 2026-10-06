@@ -334,6 +334,35 @@ tbody td:first-child{font-weight:600;color:var(--c5)}
 .guia-btn:focus-visible{outline:2px solid var(--c3);outline-offset:2px}
 .guia-foot{font-size:11.5px;color:var(--text-3);margin-top:12px;text-align:center}
 @keyframes guiaIn{from{opacity:0}to{opacity:1}}
+.inf-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.inf-print{white-space:nowrap}
+.inf-note{font-size:12.5px;color:var(--text-3);margin:-4px 0 18px}
+.inf-arrow{color:var(--text-3);font-weight:400;margin:0 2px}
+.inf-conclusion{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--c3);border-radius:var(--r);
+  padding:16px 20px;font-size:14px;line-height:1.7;color:var(--text);margin-bottom:24px}
+.inf-conclusion b{color:var(--c5)}
+.inf-total td{font-weight:600;color:var(--c5);background:#F7F8F6}
+.inf-cambios{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.inf-list{list-style:none;display:grid;gap:8px}
+.inf-list li{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  padding:9px 12px;background:var(--bg);border:1px solid var(--border);border-radius:7px}
+.inf-name{background:none;border:none;padding:0;font-family:var(--sans);font-size:13.5px;font-weight:600;color:var(--c5);cursor:pointer;text-align:left}
+.inf-name:hover{text-decoration:underline}
+.inf-trans{display:inline-flex;align-items:center;gap:6px}
+.inf-empty{font-size:13px;color:var(--text-3);font-style:italic}
+.inf-matrix td.diag{background:#F0F4F1;font-weight:700}
+.inf-matrix th:first-child{text-transform:none;letter-spacing:0}
+.print-only{display:none}
+@media print{
+  .header,.tabs-nav,.inf-head,.inf-filters,.inf-note,#guiaOverlay{display:none!important}
+  body{background:#fff}
+  .main{padding:0;max-width:none}
+  .print-only{display:block}
+  .inf-print-title{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--c5);margin-bottom:14px}
+  .chart-card-full,.stat-card,.inf-conclusion{break-inside:avoid;box-shadow:none}
+  .seg-intro p{color:#555}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
 @media (prefers-reduced-motion:reduce){.guia-overlay{animation:none}}
 
 @media(max-width:800px){
@@ -499,6 +528,7 @@ function initApp(m){
 function buildTopTabs(){
   let html=`<button class="top-tab active" id="tab-home" onclick="showHome()">Inicio</button>`;
   html+=`<button class="top-tab" id="tab-seguimiento" onclick="showSeguimiento()">Seguimiento</button>`;
+  html+=`<button class="top-tab" id="tab-informe" onclick="showInforme()">Informe final</button>`;
   manifest.categorias.forEach(c=>{
     html+=`<button class="top-tab" id="tab-${c.id}" onclick="showCategory('${c.id}')">${c.nombre}</button>`;
   });
@@ -1480,6 +1510,179 @@ function segChart(kind,p,table,unit,label){
 }
 
 // ═══════════════════════════════════════════
+// INFORME FINAL: evolución del estado nutricional (IMC para la edad, OMS 2007)
+//   Bajo peso < P3 · Adecuado P3–P85 · Sobrepeso P85–P97 · Obesidad ≥ P97
+//   Las fechas de medición a menos de 45 días entre sí se agrupan en una misma sesión.
+// ═══════════════════════════════════════════
+const ESTADOS=[{k:'Bajo peso',z:'debajo'},{k:'Adecuado',z:'dentro'},{k:'Sobrepeso',z:'vigilar'},{k:'Obesidad',z:'encima'}];
+const NIVEL={'Bajo peso':0,'Adecuado':1,'Sobrepeso':2,'Obesidad':3};
+const ZONA_DE_ESTADO={'Bajo peso':'debajo','Adecuado':'dentro','Sobrepeso':'vigilar','Obesidad':'encima'};
+const MESES=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const MESES_LARGO=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+let infCat=null, infCharts=[];
+
+function infEstado(pc){ return pc<3?'Bajo peso':pc>=97?'Obesidad':pc>=85?'Sobrepeso':'Adecuado'; }
+
+function infSesiones(players){
+  const ds=[...new Set(players.flatMap(p=>p.meds.filter(m=>m.date).map(m=>+m.date)))].sort((a,b)=>a-b);
+  const ses=[];
+  ds.forEach(d=>{ const u=ses[ses.length-1]; if(u&&d-u.hasta<=45*864e5) u.hasta=d; else ses.push({desde:d,hasta:d}); });
+  return ses.map(x=>{const f=new Date(x.desde); return {...x,label:MESES[f.getMonth()]+' '+f.getFullYear(),mes:MESES_LARGO[f.getMonth()],anio:f.getFullYear()};});
+}
+
+function infAnalisis(players,ref){
+  const tabla=ref&&ref.imc&&ref.imc.varones; if(!tabla) return null;
+  const ses=infSesiones(players).map(x=>{
+    const est={}, sinDatos=[];
+    players.forEach(p=>{
+      const ms=p.meds.filter(m=>m.date&&+m.date>=x.desde&&+m.date<=x.hasta);
+      if(!ms.length) return;
+      const m=ms[ms.length-1];
+      if(!p.dob||m.peso==null||m.talla==null){ sinDatos.push(p.name); return; }
+      const pc=segPercentile(tabla,segAge(p.dob,m.date),m.peso/Math.pow(m.talla/100,2));
+      if(pc==null){ sinDatos.push(p.name); return; }
+      est[p.key]=infEstado(pc);
+    });
+    const cuenta={}; ESTADOS.forEach(e=>cuenta[e.k]=0); Object.values(est).forEach(v=>cuenta[v]++);
+    return {...x,est,cuenta,n:Object.keys(est).length,sinDatos};
+  }).filter(x=>x.n>0);
+  return {ses};
+}
+
+async function showInforme(){
+  setActiveTab('informe');
+  infCharts.forEach(c=>c.destroy()); infCharts=[];
+  const main=document.getElementById('main');
+  main.innerHTML=`<div class="loading-state"><div class="spinner"></div><div>Preparando el informe…</div></div>`;
+  let data=null;
+  try{ if(!segDataPromise) segDataPromise=segLoad(); data=await segDataPromise; }catch(e){ segDataPromise=null; }
+  if(!document.querySelector('#tab-informe.active')) return;
+  if(!data||data.missing||!data.list.length){
+    segDataPromise=null;
+    main.innerHTML=`<div class="seg-empty">Para el informe hace falta la planilla <b>seguimiento.xlsx</b> en la carpeta <b>archivos</b>.</div>`; return;
+  }
+  if(!data.ref||!data.ref.imc){
+    main.innerHTML=`<div class="error-card">El archivo <b>referencias.json</b> no tiene las tablas de IMC. Subí la versión nueva de referencias.json a la raíz del repositorio.</div>`; return;
+  }
+  const cats=[...new Set(data.list.map(p=>p.cat).filter(Boolean))].sort();
+  const anal={}, noApto=[];
+  cats.forEach(c=>{ const a=infAnalisis(data.list.filter(p=>p.cat===c),data.ref);
+    if(a&&a.ses.length>=2&&a.ses.every(x=>x.n>=5)) anal[c]=a; else noApto.push(c); });
+  const aptas=Object.keys(anal);
+  if(!aptas.length){ main.innerHTML=`<div class="seg-empty">Ninguna categoría tiene todavía al menos dos mediciones con fechas de nacimiento y de medición cargadas.</div>`; return; }
+  if(!infCat||!anal[infCat]) infCat=aptas[0];
+  main.innerHTML=`
+    <div class="inf-head">
+      <div class="seg-intro" style="margin:0">
+        <h2>Informe final</h2>
+        <p>Cómo cambió el estado nutricional de cada categoría a lo largo de las mediciones del año.</p>
+      </div>
+      <button type="button" class="viewer-close inf-print" onclick="window.print()">Imprimir o guardar PDF</button>
+    </div>
+    <div class="plantel-head inf-filters">
+      <div class="seg-filters" role="group" aria-label="Elegir categoría">${aptas.map(c=>`<button type="button" class="seg-filter${c===infCat?' active':''}" aria-pressed="${c===infCat}"
+        onclick="infCat='${c}';showInforme()">Cat. ${segEsc(c)}</button>`).join('')}</div>
+    </div>
+    ${noApto.length?`<div class="inf-note">Cat. ${noApto.map(segEsc).join(' y ')}: todavía no se pueden analizar, faltan fechas de nacimiento o de medición en la planilla.</div>`:''}
+    <div id="infBody"></div>`;
+  infRender(infCat,anal[infCat],data);
+}
+
+function infRender(cat,a,data){
+  const body=document.getElementById('infBody'); if(!body) return;
+  const s0=a.ses[0], sN=a.ses[a.ses.length-1];
+  const co=Object.keys(s0.est).filter(k=>k in sN.est);
+  const n=co.length;
+  const pc=v=>n?Math.round(v/n*100):0;
+  const exc=e=>co.filter(k=>e[k]==='Sobrepeso'||e[k]==='Obesidad').length;
+  const ade=e=>co.filter(k=>e[k]==='Adecuado').length;
+  const nombre=k=>(data.list.find(p=>p.key===k)||{}).name||k;
+  const dist=k=>Math.abs(NIVEL[k]-1);
+  const mej=co.filter(k=>dist(sN.est[k])<dist(s0.est[k])), emp=co.filter(k=>dist(sN.est[k])>dist(s0.est[k]));
+  const e0=pc(exc(s0.est)), e1=pc(exc(sN.est)), a0=pc(ade(s0.est)), a1=pc(ade(sN.est));
+  const verbo=e1<e0?'bajó':e1>e0?'subió':'se mantuvo';
+  const pl=(x,u,v)=>x===1?u:v;
+  const periodo=s0.anio===sN.anio?`entre ${s0.mes} y ${sN.mes} de ${sN.anio}`:`entre ${s0.mes} de ${s0.anio} y ${sN.mes} de ${sN.anio}`;
+  const cuantos=(x,u,v)=>x===0?`ninguno ${u}`:`${x} ${pl(x,u,v)}`;
+  const conclusion=`${periodo.charAt(0).toUpperCase()+periodo.slice(1)}, de los <b>${n} jugadores</b> medidos en ambas fechas,
+    la proporción con sobrepeso u obesidad <b>${verbo}${e1!==e0?` de ${e0}% a ${e1}%`:` en ${e1}%`}</b>.
+    ${mej.length?cuantos(mej.length,'mejoró','mejoraron'):'Ninguno mejoró'} de categoría y ${cuantos(emp.length,'empeoró','empeoraron')}; ${pl(n-mej.length-emp.length,'el resto se mantuvo','los demás se mantuvieron')}.`;
+  const conc1=conclusion.trim(); 
+  const chip=k=>{const z=ZONA[ZONA_DE_ESTADO[k]];return `<span class="pct-chip" style="background:${z.soft};color:${z.ink}">${k}</span>`;};
+  const lista=(ks,vacio)=>ks.length?`<ul class="inf-list">${ks.map(k=>`<li><button type="button" class="inf-name" data-key="${segEsc(k)}">${segEsc(nombre(k))}</button>
+      <span class="inf-trans">${chip(s0.est[k])}<span class="inf-arrow">→</span>${chip(sN.est[k])}</span></li>`).join('')}</ul>`:`<div class="inf-empty">${vacio}</div>`;
+  const legend=ESTADOS.map(e=>`<div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:${ZONA[e.z].color}"></span>${e.k}</div>`).join('');
+  const faltan={}; a.ses.forEach(x=>x.sinDatos.forEach(nm=>(faltan[nm]=faltan[nm]||[]).push(x.label)));
+  const sinDatos=Object.entries(faltan).map(([nm,ls])=>`${nm} (${ls.join(', ')})`);
+
+  body.innerHTML=`
+    <div class="print-only inf-print-title">Infantiles Riestra · Informe final · Categoría ${segEsc(cat)}</div>
+    <div class="stat-cards-grid">
+      <div class="stat-card"><div class="stat-card-label">Sobrepeso u obesidad</div>
+        <div class="stat-card-value ${e1<e0?'good':e1>e0?'warn':''}">${e0}% <span class="inf-arrow">→</span> ${e1}%</div>
+        <div class="stat-card-sub">${s0.label} → ${sN.label}</div></div>
+      <div class="stat-card"><div class="stat-card-label">Peso adecuado</div>
+        <div class="stat-card-value ${a1>a0?'good':a1<a0?'warn':''}">${a0}% <span class="inf-arrow">→</span> ${a1}%</div>
+        <div class="stat-card-sub">${s0.label} → ${sN.label}</div></div>
+      <div class="stat-card"><div class="stat-card-label">Mejoraron de categoría</div>
+        <div class="stat-card-value ${mej.length?'good':''}">${mej.length}</div>
+        <div class="stat-card-sub">de ${n} medidos en ambas fechas</div></div>
+      <div class="stat-card"><div class="stat-card-label">Empeoraron de categoría</div>
+        <div class="stat-card-value ${emp.length?'warn':''}">${emp.length}</div>
+        <div class="stat-card-sub">de ${n} medidos en ambas fechas</div></div>
+    </div>
+    <div class="inf-conclusion">${conc1.charAt(0).toUpperCase()+conc1.slice(1)}</div>
+
+    <div class="chart-card-full">
+      <div class="chart-card-title">Distribución en cada medición</div>
+      <div class="chart-card-subtitle">Todos los jugadores medidos en cada fecha (la cantidad puede variar entre mediciones)</div>
+      <div class="chart-card-legend">${legend}</div>
+      <div style="position:relative;height:${a.ses.length*62+50}px"><canvas id="infChart"></canvas></div>
+      <div class="table-card seg-table inf-table" style="margin-top:16px"><table>
+        <thead><tr><th>Estado nutricional</th>${a.ses.map(x=>`<th class="num">${x.label}</th>`).join('')}</tr></thead>
+        <tbody>${ESTADOS.map(e=>`<tr><td><span class="legend-dot" style="display:inline-block;background:${ZONA[e.z].color};margin-right:8px"></span>${e.k}</td>
+          ${a.ses.map(x=>`<td class="num">${x.cuenta[e.k]} <span class="muted">(${Math.round(x.cuenta[e.k]/x.n*100)}%)</span></td>`).join('')}</tr>`).join('')}
+          <tr class="inf-total"><td>Jugadores medidos</td>${a.ses.map(x=>`<td class="num">${x.n}</td>`).join('')}</tr></tbody>
+      </table></div>
+    </div>
+
+    <div class="chart-card-full">
+      <div class="chart-card-title">Cambios de categoría</div>
+      <div class="chart-card-subtitle">Los mismos ${n} jugadores en ${s0.label} y en ${sN.label}</div>
+      <div class="inf-cambios">
+        <div><div class="chip-group-label">Mejoraron</div>${lista(mej,'Nadie cambió hacia peso adecuado.')}</div>
+        <div><div class="chip-group-label">Empeoraron</div>${lista(emp,'Nadie se alejó del peso adecuado.')}</div>
+      </div>
+      <div class="table-card seg-table inf-matrix" style="margin-top:18px"><table>
+        <thead><tr><th>${s0.label} ↓ · ${sN.label} →</th>${ESTADOS.map(e=>`<th class="num">${e.k}</th>`).join('')}</tr></thead>
+        <tbody>${ESTADOS.map(r=>`<tr><td>${r.k}</td>${ESTADOS.map(c=>{const v=co.filter(k=>s0.est[k]===r.k&&sN.est[k]===c.k).length;
+          return `<td class="num${r.k===c.k?' diag':''}">${v?v:'<span class="muted">·</span>'}</td>`;}).join('')}</tr>`).join('')}</tbody>
+      </table></div>
+    </div>
+
+    <div class="seg-ref-note">Clasificación por IMC para la edad (OMS 2007): bajo peso por debajo de P3, adecuado entre P3 y P85, sobrepeso entre P85 y P97, obesidad desde P97.
+      Las fechas de medición cercanas (menos de 45 días) cuentan como una misma medición.
+      ${sinDatos.length?`No se cuentan en esas fechas por falta de peso, talla o fecha de nacimiento: ${sinDatos.map(segEsc).join('; ')}.`:''}</div>`;
+
+  body.querySelectorAll('.inf-name').forEach(b=>b.addEventListener('click',()=>{ segCurrent=b.dataset.key; showSeguimiento(); }));
+
+  infCharts.push(new Chart(document.getElementById('infChart'),{
+    type:'bar',
+    data:{labels:a.ses.map(x=>`${x.label} (n=${x.n})`),
+      datasets:ESTADOS.map(e=>({label:e.k,cnt:a.ses.map(x=>x.cuenta[e.k]),
+        data:a.ses.map(x=>x.cuenta[e.k]/x.n*100),backgroundColor:ZONA[e.z].color,
+        borderColor:'#FFFFFF',borderWidth:{right:2},borderSkipped:false,barThickness:32}))},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,animation:false,
+      scales:{x:{stacked:true,min:0,max:100,ticks:{callback:v=>v+'%',color:'#6B7B72',font:{size:11}},grid:{color:'#EFF2EE'}},
+              y:{stacked:true,ticks:{color:'#2F3E46',font:{size:12,weight:'600'}},grid:{display:false}}},
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.dataset.cnt[ctx.dataIndex]} ${ctx.dataset.cnt[ctx.dataIndex]===1?'jugador':'jugadores'} (${Math.round(ctx.raw)}%)`}},
+        datalabels:{display:ctx=>ctx.raw>=7,formatter:(v,ctx)=>ctx.dataset.cnt[ctx.dataIndex],
+          color:ctx=>ctx.dataset.label==='Sobrepeso'?'#3D2A08':'#FFFFFF',font:{size:11.5,weight:'700'}}}}
+  }));
+}
+
+// ═══════════════════════════════════════════
 // BIENVENIDA (primera visita). Se recuerda en este navegador.
 // ═══════════════════════════════════════════
 const GUIA_KEY='riestra_bienvenida_v1';
@@ -1506,6 +1709,7 @@ function abrirGuia(paso){
       <dl class="guia-list">
         <div><dt>Inicio</dt><dd>El resumen del plantel, siempre al día.</dd></div>
         <div><dt>Seguimiento</dt><dd>Buscá un jugador y mirá su peso y talla sobre las curvas de percentilos, o revisá la categoría entera.</dd></div>
+        <div><dt>Informe final</dt><dd>Cómo cambió el estado nutricional de cada categoría a lo largo del año, listo para imprimir.</dd></div>
         <div><dt>Categorías</dt><dd>Arriba, los informes y planillas. Abajo, los gráficos del grupo.</dd></div>
       </dl>
       <div class="guia-colors">${['dentro','vigilar','encima','debajo'].map(k=>`<span><i style="background:${ZONA[k].color}"></i>${ZONA[k].label}</span>`).join('')}</div>
