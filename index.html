@@ -352,6 +352,41 @@ tbody td:first-child{font-weight:600;color:var(--c5)}
 .inf-empty{font-size:13px;color:var(--text-3);font-style:italic}
 .inf-matrix td.diag{background:#F0F4F1;font-weight:700}
 .inf-matrix th:first-child{text-transform:none;letter-spacing:0}
+[hidden]{display:none!important}
+.cat-subtabs{display:inline-flex;gap:4px;background:#EEF1EE;padding:3px;border-radius:9px;margin:-10px 0 24px}
+.cat-subtab{padding:8px 18px;border:none;background:none;border-radius:7px;font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text-2);cursor:pointer}
+.cat-subtab:hover{color:var(--c5)}
+.cat-subtab.active{background:var(--card);color:var(--c5);box-shadow:0 1px 3px rgba(47,62,70,.12)}
+.cat-subtab:focus-visible{outline:2px solid var(--c3);outline-offset:2px}
+.stat-unit{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--text-3);letter-spacing:0}
+.pl-plot{display:grid;gap:2px}
+.pl-row{display:grid;grid-template-columns:170px 1fr 92px;align-items:center;gap:12px;min-height:26px}
+.pl-name{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-track{position:relative;height:22px;border-radius:4px}
+.pl-line{position:absolute;top:50%;height:2px;margin-top:-1px;background:#B9C4BD}
+.pl-dot{position:absolute;top:50%;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;border:1.5px solid #fff;box-shadow:0 0 0 .5px rgba(47,62,70,.25)}
+.pl-val{font-size:12.5px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pl-val b{color:var(--c5)}
+.pl-down{color:#11573F;font-weight:600}
+.pl-up{color:#7E3520;font-weight:600}
+.pl-axis{min-height:20px;border-bottom:1px solid var(--border);margin-bottom:4px}
+.pl-axis .pl-val{font-size:11px}
+.pl-ticks{position:relative;height:18px}
+.pl-ticks span{position:absolute;transform:translateX(-50%);font-size:11px;color:var(--text-3);font-variant-numeric:tabular-nums}
+.pl-swatch{width:14px;height:10px;border-radius:2px;display:inline-block;border:1px solid rgba(47,62,70,.12)}
+@media(max-width:600px){.pl-row{grid-template-columns:100px 1fr 66px;gap:8px;padding:2px 0}.pl-name{font-size:12px;white-space:normal;line-height:1.25}
+  .pl-val{font-size:11.5px;white-space:normal;line-height:1.3}.pl-val span{display:block}.pl-odd{display:none}.pl-axis .pl-val{font-size:10px}}
+.inf-cat-title{font-family:var(--serif);font-size:18px;font-weight:600;color:var(--c5);margin:4px 0 14px}
+.vg-bar{display:flex;height:26px;border-radius:5px;overflow:hidden}
+.vg-bar span{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;border-right:2px solid #fff}
+.vg-bar span:last-child{border-right:none}
+.vg-rows{display:grid;gap:10px}
+.vg-row{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:center}
+.vg-row-label{font-size:13px;font-weight:600;color:var(--c5);line-height:1.3}
+.vg-row-label small{display:block;font-weight:400;font-size:11.5px;color:var(--text-3)}
+.vg-row.total{padding-top:10px;border-top:1px solid var(--border)}
+.vg-sin{font-size:12.5px;color:var(--text-3);font-style:italic}
+@media(max-width:600px){.vg-row{grid-template-columns:1fr;gap:5px}}
 .print-only{display:none}
 @media print{
   .header,.tabs-nav,.inf-head,.inf-filters,.inf-note,#guiaOverlay{display:none!important}
@@ -617,18 +652,47 @@ function showCategory(catId){
   ];
   docs.push(`<button class="chip doc-chip doc-link" onclick="segCurrent=null;segCatFilter='${catId}';showSeguimiento()">Ver el plantel en Seguimiento →</button>`);
 
+  catPlCharts.forEach(c=>c.destroy()); catPlCharts=[];
+  const vista=catVista[catId]||'general';
   document.getElementById('main').innerHTML=`
     <div class="cat-header"><h2>${cat.nombre}</h2></div>
+    <div class="cat-subtabs" id="catSubtabs" role="tablist" aria-label="Secciones de la categoría" hidden></div>
+    <div id="catPliegues" hidden></div>
+    <div id="catGeneral">
     <div class="section-label">Informes y planillas</div>
     <div class="chips doc-row">${docs.join('')}</div>
     ${(inf.length||exc.length)?'':'<div class="chip-empty" style="margin:-14px 0 24px">Todavía no hay informes ni planillas cargados en esta categoría.</div>'}
     <div id="viewerArea"></div>
     ${todos.length?'<div class="section-label">Indicadores</div>':''}
     ${minis.length?'<div class="indicadores-grid" id="indicadoresGrid"></div>':''}
-    ${fulls.map((_,i)=>`<div class="evolucion-block" id="ind-${i}"></div>`).join('')}`;
+    ${fulls.map((_,i)=>`<div class="evolucion-block" id="ind-${i}"></div>`).join('')}
+    </div>`;
 
   if(minis.length) renderDonas(minis);
   fulls.forEach((ind,i)=>renderFull(ind,i));
+  catSubtabsInit(catId,vista);
+}
+
+// ── Subpestañas de categoría: General | Pliegues (sólo si la planilla tiene pliegues de esa categoría) ──
+let catVista={}, catPlCharts=[];
+async function catSubtabsInit(catId,vista){
+  let data=null;
+  try{ if(!segDataPromise) segDataPromise=segLoad(); data=await segDataPromise; }catch(e){ segDataPromise=null; }
+  if(!document.querySelector('#tab-'+CSS.escape(catId)+'.active')) return;
+  const nav=document.getElementById('catSubtabs'); if(!nav||!data||data.missing) return;
+  const jug=(data.all||[]).filter(p=>p.cat===catId&&p.pls.length);
+  if(!jug.length) return;
+  nav.hidden=false;
+  nav.innerHTML=[['general','General'],['pliegues','Pliegues']].map(([k,t])=>
+    `<button type="button" role="tab" class="cat-subtab" id="sub-${k}" aria-selected="false" onclick="catMostrar('${catId}','${k}')">${t}</button>`).join('');
+  catMostrar(catId,vista);
+}
+function catMostrar(catId,vista){
+  catVista[catId]=vista;
+  document.querySelectorAll('.cat-subtab').forEach(b=>{const on=b.id==='sub-'+vista; b.classList.toggle('active',on); b.setAttribute('aria-selected',on);});
+  const g=document.getElementById('catGeneral'), pl=document.getElementById('catPliegues'); if(!g||!pl) return;
+  g.hidden=vista!=='general'; pl.hidden=vista!=='pliegues';
+  if(vista==='pliegues'&&!pl.dataset.ok){ pl.dataset.ok='1'; segDataPromise.then(d=>plRender(catId,d)); }
 }
 
 function closeViewer(){
@@ -1197,18 +1261,30 @@ async function segLoad(){
     players.set(key,{key,name:String(name).trim(),cat:String(segCol(r,'categoria')??'').trim(),
       dob:segDate(segCol(r,'fecha de nacimiento','nacimiento','fecha nacimiento')),meds:[]});
   });
-  sheet('mediciones').forEach(r=>{
+  sheet('mediciones').forEach((r,i)=>{
     const name=segCol(r,'jugador','nombre'); if(!name) return;
     const key=segNorm(name);
     const peso=segNum(segCol(r,'peso')), talla=segNum(segCol(r,'talla'));
-    if(peso==null&&talla==null) return;
+    const plKey=Object.keys(r).find(k=>segNorm(k).startsWith('pliegue'));
+    const pl=plKey!==undefined?segNum(r[plKey]):null;
+    if(peso==null&&talla==null&&pl==null) return;
     if(!players.has(key)){players.set(key,{key,name:String(name).trim(),cat:'',dob:null,meds:[]});orphans.add(String(name).trim());}
-    players.get(key).meds.push({date:segDate(segCol(r,'fecha de medicion','fecha')),peso,talla,
-      obs:String(segCol(r,'observaciones','observacion')??'').trim()});
+    const pj=players.get(key), date=segDate(segCol(r,'fecha de medicion','fecha'));
+    const ses=String(segCol(r,'sesion')??'').split('·')[0].trim();
+    if(pl!=null) (pj.pls=pj.pls||[]).push({date,ses,val:pl,i});
+    if(peso==null&&talla==null) return;
+    pj.meds.push({date,ses,peso,talla,pl,obs:String(segCol(r,'observaciones','observacion')??'').trim()});
   });
-  players.forEach(p=>p.meds.sort((a,b)=>(a.date??Infinity)-(b.date??Infinity)));
-  const list=[...players.values()].filter(p=>p.meds.length).sort((a,b)=>a.name.localeCompare(b.name,'es'));
-  return {list,ref,orphans:[...orphans]};
+  players.forEach(p=>{p.pls=p.pls||[];p.meds.sort((a,b)=>(a.date??Infinity)-(b.date??Infinity));});
+  // Criterios de pliegues por categoría (hoja opcional)
+  const crit={};
+  sheet('criterios pliegues').forEach(r=>{
+    const c=String(segCol(r,'categoria')??'').trim(), o=segNum(segCol(r,'optimo hasta')), a=segNum(segCol(r,'aceptable hasta'));
+    if(c&&o!=null&&a!=null&&a>=o) crit[c]={opt:o,acc:a};
+  });
+  const all=[...players.values()].filter(p=>p.meds.length||p.pls.length).sort((a,b)=>a.name.localeCompare(b.name,'es'));
+  const list=all.filter(p=>p.meds.length);
+  return {list,all,ref,crit,orphans:[...orphans]};
 }
 
 // ── LMS: interpolación por edad, percentil ↔ valor ──
@@ -1393,6 +1469,7 @@ function segRenderPlayer(p,ref){
   const prov=ref&&/provisori/i.test(ref.nombre||'');
   const canChart=p.dob&&dated.length>0;
 
+  const hayPl=p.meds.some(m=>m.pl!=null);
   let prevP=null,prevT=null;
   const rows=p.meds.map(m=>{
     const age=segAge(p.dob,m.date);
@@ -1404,6 +1481,7 @@ function segRenderPlayer(p,ref){
     return `<tr><td>${segFmtDate(m.date)}</td><td class="num">${age!=null?segFmt(age):'—'}</td>
       <td class="num">${segFmt(m.peso)}</td><td class="num">${sg(dP)}</td><td>${segPctChip(pp)}</td>
       <td class="num">${segFmt(m.talla)}</td><td class="num">${sg(dT)}</td><td>${segPctChip(pt)}</td>
+      ${hayPl?`<td class="num">${segFmt(m.pl)}</td>`:''}
       <td style="white-space:normal;color:var(--text-2);font-size:12.5px">${segEsc(m.obs)}</td></tr>`;
   }).join('');
 
@@ -1434,7 +1512,7 @@ function segRenderPlayer(p,ref){
     <div class="section-label">Mediciones</div>
     <div class="table-card seg-table"><table>
       <thead><tr><th>Fecha</th><th class="num">Edad (años)</th><th class="num">Peso (kg)</th><th class="num">Δ peso</th><th>Pc peso</th>
-        <th class="num">Talla (cm)</th><th class="num">Δ talla</th><th>Pc talla</th><th>Observaciones</th></tr></thead>
+        <th class="num">Talla (cm)</th><th class="num">Δ talla</th><th>Pc talla</th>${hayPl?'<th class="num">Σ6 pliegues (mm)</th>':''}<th>Observaciones</th></tr></thead>
       <tbody>${rows}</tbody></table></div>
     ${ref?`<div class="seg-ref-note${prov?' prov':''}">Percentilos calculados con ${segEsc(ref.nombre)} (método LMS).${ref.nota?' '+segEsc(ref.nota):''}</div>`:''}`;
 
@@ -1527,7 +1605,13 @@ function infSesiones(players){
   const ds=[...new Set(players.flatMap(p=>p.meds.filter(m=>m.date).map(m=>+m.date)))].sort((a,b)=>a-b);
   const ses=[];
   ds.forEach(d=>{ const u=ses[ses.length-1]; if(u&&d-u.hasta<=45*864e5) u.hasta=d; else ses.push({desde:d,hasta:d}); });
-  return ses.map(x=>{const f=new Date(x.desde); return {...x,label:MESES[f.getMonth()]+' '+f.getFullYear(),mes:MESES_LARGO[f.getMonth()],anio:f.getFullYear()};});
+  return ses.map(x=>{
+    // Si la planilla trae la etiqueta de la sesión (ej. "Feb 2026"), se usa esa; si no, el mes de la primera fecha
+    const et={}; players.forEach(p=>p.meds.forEach(m=>{ if(m.date&&m.ses&&+m.date>=x.desde&&+m.date<=x.hasta) et[m.ses]=(et[m.ses]||0)+1; }));
+    const top=Object.keys(et).sort((a,b)=>et[b]-et[a])[0], mm=top&&top.match(/^([A-Za-zé]{3})\S* (\d{4})$/);
+    const f=new Date(x.desde), mi=mm?MESES.findIndex(n=>n.toLowerCase()===mm[1].toLowerCase()):-1;
+    return mi>=0?{...x,label:top,mes:MESES_LARGO[mi],anio:+mm[2]}:{...x,label:MESES[f.getMonth()]+' '+f.getFullYear(),mes:MESES_LARGO[f.getMonth()],anio:f.getFullYear()};
+  });
 }
 
 function infAnalisis(players,ref){
@@ -1565,12 +1649,11 @@ async function showInforme(){
     main.innerHTML=`<div class="error-card">El archivo <b>referencias.json</b> no tiene las tablas de IMC. Subí la versión nueva de referencias.json a la raíz del repositorio.</div>`; return;
   }
   const cats=[...new Set(data.list.map(p=>p.cat).filter(Boolean))].sort();
-  const anal={}, noApto=[];
-  cats.forEach(c=>{ const a=infAnalisis(data.list.filter(p=>p.cat===c),data.ref);
+  const anal={}, todas={}, noApto=[];
+  cats.forEach(c=>{ const a=infAnalisis(data.list.filter(p=>p.cat===c),data.ref); todas[c]=a;
     if(a&&a.ses.length>=2&&a.ses.every(x=>x.n>=5)) anal[c]=a; else noApto.push(c); });
   const aptas=Object.keys(anal);
-  if(!aptas.length){ main.innerHTML=`<div class="seg-empty">Ninguna categoría tiene todavía al menos dos mediciones con fechas de nacimiento y de medición cargadas.</div>`; return; }
-  if(!infCat||!anal[infCat]) infCat=aptas[0];
+  if(!infCat||!anal[infCat]) infCat=aptas[0]||null;
   main.innerHTML=`
     <div class="inf-head">
       <div class="seg-intro" style="margin:0">
@@ -1579,13 +1662,71 @@ async function showInforme(){
       </div>
       <button type="button" class="viewer-close inf-print" onclick="window.print()">Imprimir o guardar PDF</button>
     </div>
-    <div class="plantel-head inf-filters">
+    <div class="print-only inf-print-title">Infantiles Riestra · Informe final</div>
+    <div class="section-label">Vista general · todas las categorías</div>
+    <div id="infGeneral"></div>
+    <div class="section-label" style="margin-top:8px">Evolución por categoría</div>
+    ${aptas.length?`<div class="plantel-head inf-filters">
       <div class="seg-filters" role="group" aria-label="Elegir categoría">${aptas.map(c=>`<button type="button" class="seg-filter${c===infCat?' active':''}" aria-pressed="${c===infCat}"
         onclick="infCat='${c}';showInforme()">Cat. ${segEsc(c)}</button>`).join('')}</div>
-    </div>
-    ${noApto.length?`<div class="inf-note">Cat. ${noApto.map(segEsc).join(' y ')}: todavía no se pueden analizar, faltan fechas de nacimiento o de medición en la planilla.</div>`:''}
+    </div>`:''}
+    ${noApto.length?`<div class="inf-note">Cat. ${noApto.map(segEsc).join(' y ')}: todavía no ${noApto.length===1?'tiene':'tienen'} la evolución, hacen falta al menos dos mediciones con fechas de nacimiento y de medición cargadas.</div>`:''}
     <div id="infBody"></div>`;
-  infRender(infCat,anal[infCat],data);
+  infGeneral(cats,todas,data);
+  if(infCat) infRender(infCat,anal[infCat],data);
+}
+
+// Vista general: tasas de la última medición de cada categoría y del total
+function infGeneral(cats,todas,data){
+  const box=document.getElementById('infGeneral'); if(!box) return;
+  const filas=cats.map(c=>{ const a=todas[c], s=a&&a.ses.length?a.ses[a.ses.length-1]:null;
+    const r={cat:c,s,cuenta:s?s.cuenta:null,n:s?s.n:0};
+    if(s&&a.ses.length>1){ const s0=a.ses[0], co=Object.keys(s0.est).filter(k=>k in s.est);
+      const ex=e=>co.filter(k=>e[k]==='Sobrepeso'||e[k]==='Obesidad').length;
+      r.prev={label:s0.label,n:co.length,e0:co.length?Math.round(ex(s0.est)/co.length*100):0,e1:co.length?Math.round(ex(s.est)/co.length*100):0}; }
+    return r; });
+  const con=filas.filter(f=>f.n), sin=filas.filter(f=>!f.n);
+  if(!con.length){ box.innerHTML=`<div class="seg-empty">Todavía no hay mediciones con fechas de nacimiento y de medición para calcular las tasas.</div>`; return; }
+  const tot={}; ESTADOS.forEach(e=>tot[e.k]=con.reduce((a,f)=>a+f.cuenta[e.k],0));
+  const N=con.reduce((a,f)=>a+f.n,0);
+  const pc=(v,n)=>n?Math.round(v/n*1000)/10:0;
+  const fp=v=>v.toLocaleString('es-AR',{maximumFractionDigits:1})+'%';
+  const exT=tot['Sobrepeso']+tot['Obesidad'];
+  const card=(l,v,sub,z)=>`<div class="stat-card vg-card" style="border-top:3px solid ${ZONA[z].color}"><div class="stat-card-label">${l}</div>
+    <div class="stat-card-value">${fp(pc(v,N))}</div><div class="stat-card-sub">${v} de ${N} jugadores</div></div>`;
+  const barra=(cu,n)=>`<div class="vg-bar" role="img" aria-label="${ESTADOS.map(e=>`${e.k} ${fp(pc(cu[e.k],n))}`).join(', ')}">${ESTADOS.filter(e=>cu[e.k]).map(e=>{const v=pc(cu[e.k],n);
+    return `<span style="width:${v}%;background:${ZONA[e.z].color}${e.k==='Sobrepeso'?';color:#3D2A08':''}" title="${e.k}: ${cu[e.k]} (${fp(v)})">${v>=8?Math.round(v)+'%':''}</span>`;}).join('')}</div>`;
+  const legend=ESTADOS.map(e=>`<div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:${ZONA[e.z].color}"></span>${e.k}</div>`).join('');
+  const conPrev=con.filter(f=>f.prev);
+  box.innerHTML=`
+    <div class="stat-cards-grid">
+      ${card('Bajo peso',tot['Bajo peso'],'','debajo')}
+      ${card('Sobrepeso',tot['Sobrepeso'],'','vigilar')}
+      ${card('Obesidad',tot['Obesidad'],'','encima')}
+      ${card('Sobrepeso + obesidad',exT,'','encima')}
+    </div>
+    <div class="chart-card-full">
+      <div class="chart-card-title">Estado nutricional en la última medición de cada categoría</div>
+      <div class="chart-card-subtitle">${N} jugadores en total · porcentaje de cada categoría</div>
+      <div class="chart-card-legend">${legend}</div>
+      <div class="vg-rows">
+        ${con.map(f=>`<div class="vg-row"><div class="vg-row-label">Cat. ${segEsc(f.cat)}<small>${f.s.label} · n=${f.n}</small></div>${barra(f.cuenta,f.n)}</div>`).join('')}
+        ${sin.map(f=>`<div class="vg-row"><div class="vg-row-label">Cat. ${segEsc(f.cat)}</div><div class="vg-sin">Sin datos: faltan fechas de nacimiento o de medición en la planilla.</div></div>`).join('')}
+        ${con.length>1?`<div class="vg-row total"><div class="vg-row-label">Total<small>n=${N}</small></div>${barra(tot,N)}</div>`:''}
+      </div>
+      <div class="table-card seg-table inf-table" style="margin-top:18px"><table>
+        <thead><tr><th>Categoría</th><th>Medición</th><th class="num">n</th>${ESTADOS.map(e=>`<th class="num">${e.k}</th>`).join('')}<th class="num">Sobrep. + obes.</th>${conPrev.length?'<th class="num">Desde la 1.ª medición*</th>':''}</tr></thead>
+        <tbody>${con.map(f=>`<tr><td>Cat. ${segEsc(f.cat)}</td><td>${f.s.label}</td><td class="num">${f.n}</td>
+          ${ESTADOS.map(e=>`<td class="num">${f.cuenta[e.k]} <span class="muted">(${fp(pc(f.cuenta[e.k],f.n))})</span></td>`).join('')}
+          <td class="num"><b>${fp(pc(f.cuenta['Sobrepeso']+f.cuenta['Obesidad'],f.n))}</b></td>
+          ${conPrev.length?`<td class="num">${f.prev?`<span title="${f.prev.label} → ${f.s.label}">${f.prev.e0}% → ${f.prev.e1}%</span> <span class="muted">n=${f.prev.n}</span>`:'<span class="muted">—</span>'}</td>`:''}</tr>`).join('')}
+          <tr class="inf-total"><td>Total</td><td></td><td class="num">${N}</td>${ESTADOS.map(e=>`<td class="num">${tot[e.k]} <span class="muted">(${fp(pc(tot[e.k],N))})</span></td>`).join('')}
+          <td class="num">${fp(pc(exT,N))}</td>${conPrev.length?'<td></td>':''}</tr></tbody>
+      </table></div>
+      <div class="seg-ref-note" style="margin-top:12px">Se toma la medición más reciente de cada categoría, por eso las fechas pueden no coincidir.
+        ${conPrev.length?'* Sobrepeso + obesidad en la primera medición de la categoría → en la última, contando sólo a los jugadores medidos en ambas (n).':''}
+        ${sin.length?`Cat. ${sin.map(f=>segEsc(f.cat)).join(' y ')} no ${sin.length===1?'entra':'entran'} en el total.`:''}</div>
+    </div>`;
 }
 
 function infRender(cat,a,data){
@@ -1616,7 +1757,7 @@ function infRender(cat,a,data){
   const sinDatos=Object.entries(faltan).map(([nm,ls])=>`${nm} (${ls.join(', ')})`);
 
   body.innerHTML=`
-    <div class="print-only inf-print-title">Infantiles Riestra · Informe final · Categoría ${segEsc(cat)}</div>
+    <div class="inf-cat-title">Categoría ${segEsc(cat)}</div>
     <div class="stat-cards-grid">
       <div class="stat-card"><div class="stat-card-label">Sobrepeso u obesidad</div>
         <div class="stat-card-value ${e1<e0?'good':e1>e0?'warn':''}">${e0}% <span class="inf-arrow">→</span> ${e1}%</div>
@@ -1680,6 +1821,165 @@ function infRender(cat,a,data){
         datalabels:{display:ctx=>ctx.raw>=7,formatter:(v,ctx)=>ctx.dataset.cnt[ctx.dataIndex],
           color:ctx=>ctx.dataset.label==='Sobrepeso'?'#3D2A08':'#FFFFFF',font:{size:11.5,weight:'700'}}}}
   }));
+}
+
+// ═══════════════════════════════════════════
+// PLIEGUES (Σ6) por categoría
+// ═══════════════════════════════════════════
+const PL_UMBRAL=3; // mm: cambios menores se consideran "sin cambios" (margen de error de la medición)
+const PL_ZONAS=[{k:'Óptimo',z:'dentro'},{k:'Aceptable',z:'vigilar'},{k:'Exceso',z:'encima'}];
+function plZona(v,c){ return !c||v==null?null:v<=c.opt?'Óptimo':v<=c.acc?'Aceptable':'Exceso'; }
+function plChip(v,c){
+  const k=plZona(v,c); if(!k) return '<span class="muted">—</span>';
+  const z=ZONA[PL_ZONAS.find(x=>x.k===k).z];
+  return `<span class="pct-chip" style="background:${z.soft};color:${z.ink}">${k}</span>`;
+}
+function plFmtDelta(d){ return d==null?'—':(d>0?'+':d<0?'−':'')+segFmt(Math.abs(d)); }
+
+// Agrupa las filas en sesiones: por la etiqueta de la columna "Sesión"; si falta, por fechas cercanas (45 días)
+function plSesiones(players){
+  const filas=players.flatMap(p=>p.pls.map(r=>({...r,key:p.key})));
+  const sinEt=[...new Set(filas.filter(r=>!r.ses&&r.date).map(r=>+r.date))].sort((a,b)=>a-b), grupos=[];
+  sinEt.forEach(d=>{const u=grupos[grupos.length-1]; if(u&&d-u.hasta<=45*864e5) u.hasta=d; else grupos.push({desde:d,hasta:d});});
+  filas.forEach(r=>{
+    if(r.ses) return;
+    if(!r.date){ r.ses='Sin fecha'; return; }
+    const g=grupos.find(g=>+r.date>=g.desde&&+r.date<=g.hasta), f=new Date(g.desde);
+    r.ses=MESES[f.getMonth()]+' '+f.getFullYear();
+  });
+  const ses=new Map();
+  filas.forEach(r=>{
+    const s=ses.get(r.ses)||ses.set(r.ses,{label:r.ses,fecha:null,idx:Infinity,val:{}}).get(r.ses);
+    if(r.date&&(!s.fecha||r.date<s.fecha)) s.fecha=r.date;
+    s.idx=Math.min(s.idx,r.i);
+    if(!(r.key in s.val)||r.i>s.val[r.key].i) s.val[r.key]={v:r.val,i:r.i}; // si hay dos en la misma sesión, vale la última fila
+  });
+  const out=[...ses.values()];
+  const todasConFecha=out.every(s=>s.fecha);
+  out.sort((a,b)=>todasConFecha?a.fecha-b.fecha:a.idx-b.idx);
+  out.forEach(s=>{Object.keys(s.val).forEach(k=>s.val[k]=s.val[k].v);
+    const vs=Object.values(s.val); s.n=vs.length; s.prom=vs.reduce((a,b)=>a+b,0)/vs.length;
+    s.min=Math.min(...vs); s.max=Math.max(...vs);});
+  return out;
+}
+
+function plRender(catId,data){
+  const box=document.getElementById('catPliegues'); if(!box||!data) return;
+  const jug=(data.all||[]).filter(p=>p.cat===catId&&p.pls.length);
+  const ses=plSesiones(jug), c=(data.crit||{})[catId]||null;
+  if(!ses.length){ box.innerHTML='<div class="seg-empty">No hay pliegues cargados para esta categoría.</div>'; return; }
+  const s0=ses[0], sN=ses[ses.length-1], varias=ses.length>1;
+  const nombre=k=>(jug.find(p=>p.key===k)||{}).name||k;
+  // Mismos jugadores en la primera y la última medición
+  const co=varias?Object.keys(s0.val).filter(k=>k in sN.val):[];
+  const deltas=co.map(k=>sN.val[k]-s0.val[k]);
+  const dProm=deltas.length?deltas.reduce((a,b)=>a+b,0)/deltas.length:null;
+  const bajaron=deltas.filter(d=>d<=-PL_UMBRAL).length, subieron=deltas.filter(d=>d>=PL_UMBRAL).length;
+  const pctZ=(s,k)=>{const vs=Object.values(s.val); return vs.length?Math.round(vs.filter(v=>plZona(v,c)===k).length/vs.length*100):0;};
+  const cls=(a,b,menosEsMejor)=>a===b?'':(b<a)===menosEsMejor?'good':'warn';
+  const pl=(x,u,v)=>x===1?u:v;
+
+  const cards=[
+    `<div class="stat-card"><div class="stat-card-label">Promedio Σ6 del plantel</div>
+      <div class="stat-card-value">${varias?`${segFmt(s0.prom)} <span class="inf-arrow">→</span> `:''}${segFmt(sN.prom)}<span class="stat-unit"> mm</span></div>
+      <div class="stat-card-sub">${varias?`${s0.label} (n=${s0.n}) → ${sN.label} (n=${sN.n})`:`${sN.label} · ${sN.n} jugadores`}</div></div>`
+  ];
+  if(varias&&co.length) cards.push(
+    `<div class="stat-card"><div class="stat-card-label">Cambio promedio, mismos jugadores</div>
+      <div class="stat-card-value ${Math.abs(dProm)<1?'':dProm<0?'good':'warn'}">${plFmtDelta(dProm)}<span class="stat-unit"> mm</span></div>
+      <div class="stat-card-sub">${co.length} medidos en ${s0.label} y ${sN.label}</div></div>`,
+    `<div class="stat-card"><div class="stat-card-label">Bajaron / subieron (≥ ${PL_UMBRAL} mm)</div>
+      <div class="stat-card-value">${bajaron} <span class="inf-arrow">/</span> ${subieron}</div>
+      <div class="stat-card-sub">${co.length-bajaron-subieron} sin cambios relevantes</div></div>`);
+  if(c) cards.push(
+    `<div class="stat-card"><div class="stat-card-label">En zona óptima (≤ ${segFmt(c.opt,0)} mm)</div>
+      <div class="stat-card-value ${varias?cls(pctZ(s0,'Óptimo'),pctZ(sN,'Óptimo'),false):''}">${varias?`${pctZ(s0,'Óptimo')}% <span class="inf-arrow">→</span> `:''}${pctZ(sN,'Óptimo')}%</div>
+      <div class="stat-card-sub">${varias?`${s0.label} → ${sN.label}`:sN.label}</div></div>`);
+
+  let conc='';
+  if(varias&&co.length){
+    const dir=Math.abs(dProm)<1?`se mantuvo estable (${plFmtDelta(dProm)} mm)`:dProm<0?`bajó ${segFmt(-dProm)} mm`:`subió ${segFmt(dProm)} mm`;
+    conc=`Entre ${s0.label} y ${sN.label}, en los <b>${co.length} jugadores</b> medidos en ambas fechas la suma de 6 pliegues
+      <b>${dir}</b>${Math.abs(dProm)<1?'':' en promedio'}. ${bajaron?`${bajaron} ${pl(bajaron,'bajó','bajaron')}`:'Ninguno bajó'} ${PL_UMBRAL} mm o más
+      y ${subieron?`${subieron} ${pl(subieron,'subió','subieron')}`:'ninguno subió'}${c?`; en la última medición el ${pctZ(sN,'Óptimo')}% del plantel está en zona óptima y el ${pctZ(sN,'Exceso')}% en exceso`:''}.`;
+  }
+
+  // Gráfico de puntos: una fila por jugador, ordenado por el último valor
+  const filas=jug.map(p=>{const vals=ses.map(s=>s.val[p.key]??null), hay=vals.filter(v=>v!=null);
+    const ult=[...vals].reverse().find(v=>v!=null), pri=vals.find(v=>v!=null);
+    return {p,vals,ult,pri,d:hay.length>1?ult-pri:null};}).sort((a,b)=>b.ult-a.ult||a.p.name.localeCompare(b.p.name,'es'));
+  const todos=filas.flatMap(f=>f.vals.filter(v=>v!=null));
+  const lo=Math.max(0,Math.floor((Math.min(...todos)-5)/10)*10), hi=Math.ceil((Math.max(...todos)+5)/10)*10;
+  const X=v=>((v-lo)/(hi-lo)*100).toFixed(2)+'%';
+  const tonos=ses.length===1?[PERIODO.despues]:ses.map((_,i)=>{const t=i/(ses.length-1);
+    const a=[0xA9,0xC2,0xB8],b=[0x35,0x4F,0x52]; return '#'+a.map((x,j)=>Math.round(x+(b[j]-x)*t).toString(16).padStart(2,'0')).join('');});
+  let bandas='';
+  if(c){ const a=Math.min(Math.max(c.opt,lo),hi), b=Math.min(Math.max(c.acc,lo),hi);
+    bandas=`background:linear-gradient(90deg,${zonaTint(ZONA.dentro.color,.09)} 0 ${X(a)},${zonaTint(ZONA.vigilar.color,.12)} ${X(a)} ${X(b)},${zonaTint(ZONA.encima.color,.09)} ${X(b)} 100%)`; }
+  const ticks=[]; for(let v=lo;v<=hi;v+=10) ticks.push(v);
+  const filasHtml=filas.map(f=>{
+    const hay=f.vals.filter(v=>v!=null), mn=Math.min(...hay), mx=Math.max(...hay);
+    const tip=ses.map((s,i)=>`${s.label}: ${f.vals[i]==null?'sin medir':segFmt(f.vals[i])+' mm'}`).join(' · ');
+    return `<div class="pl-row">
+      <button type="button" class="inf-name pl-name" data-key="${segEsc(f.p.key)}">${segEsc(f.p.name)}</button>
+      <div class="pl-track" style="${bandas}" title="${segEsc(tip)}">
+        ${hay.length>1?`<span class="pl-line" style="left:${X(mn)};width:calc(${X(mx)} - ${X(mn)})"></span>`:''}
+        ${f.vals.map((v,i)=>v==null?'':`<span class="pl-dot" style="left:${X(v)};background:${tonos[i]}"></span>`).join('')}
+      </div>
+      <div class="pl-val"><b>${segFmt(f.ult)}</b> <span class="${f.d==null?'muted':f.d<=-PL_UMBRAL?'pl-down':f.d>=PL_UMBRAL?'pl-up':'muted'}">${f.d==null?'':plFmtDelta(f.d)}</span></div>
+    </div>`;}).join('');
+  const leyenda=ses.map((s,i)=>`<div class="evolucion-legend-item"><span class="evolucion-legend-dot" style="background:${tonos[i]}"></span>${segEsc(s.label)}</div>`).join('')
+    +(c?PL_ZONAS.map(z=>`<div class="evolucion-legend-item"><span class="pl-swatch" style="background:${zonaTint(ZONA[z.z].color,z.z==='vigilar'?.25:.2)}"></span>${z.k}</div>`).join(''):'');
+
+  // Tabla por jugador (orden alfabético)
+  const tabla=[...filas].sort((a,b)=>a.p.name.localeCompare(b.p.name,'es')).map(f=>`<tr>
+      <td><button type="button" class="inf-name" data-key="${segEsc(f.p.key)}">${segEsc(f.p.name)}</button></td>
+      ${f.vals.map(v=>`<td class="num">${v==null?'<span class="muted">—</span>':segFmt(v)}</td>`).join('')}
+      ${varias?`<td class="num">${f.d==null?'<span class="muted">—</span>':plFmtDelta(f.d)}</td>`:''}
+      ${c?`<td>${plChip(f.ult,c)}</td>`:''}</tr>`).join('');
+
+  box.innerHTML=`
+    <div class="stat-cards-grid">${cards.join('')}</div>
+    ${conc?`<div class="inf-conclusion">${conc}</div>`:''}
+
+    <div class="chart-card-full">
+      <div class="chart-card-title">Pliegues de cada jugador</div>
+      <div class="chart-card-subtitle">Suma de 6 pliegues (mm). Cada punto es una medición; ordenados de mayor a menor según la última. Tocá un nombre para ver su ficha.</div>
+      <div class="chart-card-legend">${leyenda}</div>
+      <div class="pl-plot">
+        <div class="pl-row pl-axis"><span></span><div class="pl-ticks">${ticks.map((v,i)=>`<span class="${i%2?'pl-odd':''}" style="left:${X(v)}">${v}</span>`).join('')}</div><span class="pl-val muted">Últ. · cambio</span></div>
+        ${filasHtml}
+      </div>
+    </div>
+
+    <div class="chart-card-full">
+      <div class="chart-card-title">Resumen por medición</div>
+      <div class="chart-card-subtitle">Todos los jugadores medidos en cada fecha</div>
+      <div class="table-card seg-table"><table>
+        <thead><tr><th></th>${ses.map(s=>`<th class="num">${segEsc(s.label)}</th>`).join('')}</tr></thead>
+        <tbody>
+          <tr><td>Promedio (mm)</td>${ses.map(s=>`<td class="num"><b>${segFmt(s.prom)}</b></td>`).join('')}</tr>
+          <tr><td>Rango (mm)</td>${ses.map(s=>`<td class="num">${segFmt(s.min)} – ${segFmt(s.max)}</td>`).join('')}</tr>
+          ${c?PL_ZONAS.map(z=>`<tr><td><span class="legend-dot" style="display:inline-block;background:${ZONA[z.z].color};margin-right:8px"></span>${z.k}</td>
+            ${ses.map(s=>{const n=Object.values(s.val).filter(v=>plZona(v,c)===z.k).length;return `<td class="num">${n} <span class="muted">(${Math.round(n/s.n*100)}%)</span></td>`;}).join('')}</tr>`).join(''):''}
+          <tr class="inf-total"><td>Jugadores medidos</td>${ses.map(s=>`<td class="num">${s.n}</td>`).join('')}</tr>
+        </tbody></table></div>
+    </div>
+
+    <div class="chart-card-full">
+      <div class="chart-card-title">Valores por jugador</div>
+      <div class="chart-card-subtitle">Σ6 pliegues en mm${varias?'; el cambio compara la primera y la última medición de cada jugador':''}</div>
+      <div class="table-card seg-table"><table>
+        <thead><tr><th>Jugador</th>${ses.map(s=>`<th class="num">${segEsc(s.label)}</th>`).join('')}${varias?'<th class="num">Cambio</th>':''}${c?'<th>Zona actual</th>':''}</tr></thead>
+        <tbody>${tabla}
+          <tr class="inf-total"><td>Promedio del plantel</td>${ses.map(s=>`<td class="num">${segFmt(s.prom)}</td>`).join('')}${varias?`<td class="num">${co.length?plFmtDelta(dProm):'—'}</td>`:''}${c?'<td></td>':''}</tr>
+        </tbody></table></div>
+    </div>
+
+    <div class="seg-ref-note">${c?`Zonas de la categoría ${segEsc(catId)} según la hoja «Criterios pliegues» de la planilla: óptimo hasta ${segFmt(c.opt,0)} mm, aceptable hasta ${segFmt(c.acc,0)} mm, exceso por encima.`:'Esta categoría no tiene criterios cargados en la hoja «Criterios pliegues», por eso no se clasifica por zona.'}
+      Cambios menores a ${PL_UMBRAL} mm se consideran dentro del margen de error de la medición.
+      Los promedios de cada fecha incluyen sólo a los jugadores medidos ese día (los ausentes no cuentan como cero).</div>`;
+  box.querySelectorAll('.inf-name').forEach(b=>b.addEventListener('click',()=>{ segCurrent=b.dataset.key; segCatFilter=catId; showSeguimiento(); }));
 }
 
 // ═══════════════════════════════════════════
