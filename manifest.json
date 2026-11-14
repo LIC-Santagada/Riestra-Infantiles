@@ -23,8 +23,13 @@
             ],
             "informes": [
                 {
+                    "nombre":  "Informe antropométrico 2026",
+                    "archivo": "Informe_2013.pdf",
+                    "fecha":   "Noviembre 2026"
+                },
+                {
                     "nombre":  "Informe evoluciones Junio 2025",
-                    "archivo": "Informe_2013.pdf"
+                    "archivo": "informe_riestra_cat2013.pdf"
                 }
             ],
             "indicadores": [
@@ -151,6 +156,11 @@
             ],
             "informes": [
                 {
+                    "nombre":  "Informe antropométrico 2026",
+                    "archivo": "Informe_2014.pdf",
+                    "fecha":   "Noviembre 2026"
+                },
+                {
                     "nombre":  "Informe Junio 2025",
                     "archivo": "informe_cat2014.pdf"
                 }
@@ -217,6 +227,11 @@
                 }
             ],
             "informes": [
+                {
+                    "nombre":  "Informe antropométrico 2026",
+                    "archivo": "Informe_2015.pdf",
+                    "fecha":   "Noviembre 2026"
+                },
                 {
                     "nombre": "Informe JUN 2026",
                     "archivo": "informe_riestra_cat2015_feb-jun2026.pdf"
@@ -341,6 +356,11 @@
                 }
             ],
             "informes": [
+                {
+                    "nombre":  "Informe antropométrico 2026",
+                    "archivo": "Informe_2016.pdf",
+                    "fecha":   "Noviembre 2026"
+                },
                 {
                     "nombre": "Informe JUN 2026",
                     "archivo": "riestra_cat2016_informe_junio2026.pdf"
